@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hors ligne - SIF Burkina</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .offline-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .offline-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .offline-icon {
+            font-size: 4rem;
+            color: #f39c12;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .status-online {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 2px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .status-offline {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 2px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .btn-refresh {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .btn-refresh:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+        
+        .features-list {
+            text-align: left;
+            margin: 2rem 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+        
+        .feature-icon {
+            color: #667eea;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-card">
+            <div class="offline-icon">
+                <i class="fas fa-wifi" id="wifi-icon"></i>
+            </div>
+            
+            <h1 class="h3 mb-3">Mode hors ligne</h1>
+            <p class="text-muted mb-4">
+                Vous n'êtes pas connecté à Internet. L'application continue de fonctionner 
+                avec les données mises en cache.
+            </p>
+            
+            <div class="connection-status status-offline mb-4" id="connection-status">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Hors ligne</span>
+            </div>
+            
+            <div class="features-list">
+                <h5 class="mb-3">Fonctionnalités disponibles :</h5>
+                <div class="feature-item">
+                    <i class="fas fa-eye feature-icon"></i>
+                    <span>Consultation des données en cache</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-user feature-icon"></i>
+                    <span>Informations du profil</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-clock feature-icon"></i>
+                    <span>Historique des transactions</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-save feature-icon"></i>
+                    <span>Sauvegarde automatique</span>
+                </div>
+            </div>
+            
+            <button class="btn btn-refresh" onclick="checkConnection()">
+                <span class="btn-text">Vérifier la connexion</span>
+                <span class="spinner d-none"></span>
+            </button>
+            
+            <div class="mt-4">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    La synchronisation reprendra automatiquement une fois connecté
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gestion du statut de connexion
+        function updateConnectionStatus() {
+            const status = document.getElementById('connection-status');
+            const icon = document.getElementById('wifi-icon');
+            
+            if (navigator.onLine) {
+                status.className = 'connection-status status-online mb-4';
+                status.innerHTML = '<i class="fas fa-check-circle"></i><span>En ligne</span>';
+                icon.className = 'fas fa-wifi';
+                
+                // Rediriger vers l'accueil après un délai
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                status.className = 'connection-status status-offline mb-4';
+                status.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Hors ligne</span>';
+                icon.className = 'fas fa-wifi-slash';
+            }
+        }
+        
+        // Vérifier la connexion
+        function checkConnection() {
+            const btn = document.querySelector('.btn-refresh');
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = btn.querySelector('.spinner');
+            
+            // Afficher le spinner
+            btnText.textContent = 'Vérification...';
+            spinner.classList.remove('d-none');
+            btn.disabled = true;
+            
+            // Simuler une vérification
+            setTimeout(() => {
+                updateConnectionStatus();
+                
+                // Restaurer le bouton
+                btnText.textContent = 'Vérifier la connexion';
+                spinner.classList.add('d-none');
+                btn.disabled = false;
+            }, 1500);
+        }
+        
+        // Écouter les changements de connexion
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+        
+        // Vérifier le statut initial
+        updateConnectionStatus();
+        
+        // Tentative de reconnexion automatique
+        setInterval(() => {
+            if (navigator.onLine) {
+                // Essayer de charger une ressource du serveur
+                fetch('/', { 
+                    method: 'HEAD',
+                    cache: 'no-cache'
+                }).then(() => {
+                    updateConnectionStatus();
+                }).catch(() => {
+                    // Toujours hors ligne
+                });
+            }
+        }, 10000); // Vérifier toutes les 10 secondes
+        
+        // Gestion du cache et des données locales
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data.type === 'CACHE_UPDATED') {
+                    console.log('Cache mis à jour');
+                }
+            });
+        }
+        
+        // Animation des icônes
+        function animateFeatures() {
+            const features = document.querySelectorAll('.feature-item');
+            features.forEach((feature, index) => {
+                setTimeout(() => {
+                    feature.style.transform = 'translateX(0)';
+                    feature.style.opacity = '1';
+                }, index * 200);
+            });
+        }
+        
+        // Initialiser les animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Définir l'état initial des features
+            const features = document.querySelectorAll('.feature-item');
+            features.forEach(feature => {
+                feature.style.transform = 'translateX(-20px)';
+                feature.style.opacity = '0';
+                feature.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            });
+            
+            // Animer après un court délai
+            setTimeout(animateFeatures, 500);
+        });
+    </script>
+</body>
+</html>
