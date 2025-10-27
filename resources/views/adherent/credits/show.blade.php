@@ -4,33 +4,170 @@
 
 @push('styles')
 <style>
+/* SURCHARGE IMPORTANTE : Le layout force les backgrounds transparents, on doit les override */
+.card, .card-header, .card-body, .card-footer {
+    background: initial !important;
+}
+/* Carte statistique avec effet hover */
 .stat-card {
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #ffffff !important;
+}
+
+.stat-card .card-body {
+    background-color: #ffffff !important;
 }
 .stat-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
 }
+
+/* Barre de progression fine */
 .progress-thin {
-    height: 4px;
+    height: 6px;
+    border-radius: 10px;
 }
+
+/* Carte d'échéance avec bordure colorée */
 .echeance-card {
-    border-left: 4px solid #dee2e6;
+    border-left: 5px solid #dee2e6;
     transition: all 0.3s ease;
+    border-radius: 8px;
+    background: #ffffff !important;
 }
 .echeance-card.paid {
-    border-left-color: #28a745;
-    background-color: #f8f9fa;
+    border-left-color: #10b981;
+    background: linear-gradient(to right, #f0fdf4 0%, #ffffff 100%) !important;
+}
+.echeance-card.paid .card-body {
+    background: linear-gradient(to right, #f0fdf4 0%, #ffffff 100%) !important;
 }
 .echeance-card.overdue {
-    border-left-color: #dc3545;
+    border-left-color: #ef4444;
+    background: linear-gradient(to right, #fef2f2 0%, #ffffff 100%) !important;
+}
+.echeance-card.overdue .card-body {
+    background: linear-gradient(to right, #fef2f2 0%, #ffffff 100%) !important;
 }
 .echeance-card.pending {
-    border-left-color: #ffc107;
+    border-left-color: #f59e0b;
+    background: linear-gradient(to right, #fffbeb 0%, #ffffff 100%) !important;
 }
+.echeance-card.pending .card-body {
+    background: linear-gradient(to right, #fffbeb 0%, #ffffff 100%) !important;
+}
+
+/* En-tête de carte avec gradient */
+.card-header-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    border-radius: 12px 12px 0 0 !important;
+    color: #ffffff !important;
+}
+
+.card-header-success-gradient {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: none !important;
+    border-radius: 12px 12px 0 0 !important;
+    color: #ffffff !important;
+}
+
+/* Cards avec border radius moderne */
+.modern-card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background-color: #ffffff !important;
+}
+
+.modern-card .card-body {
+    background-color: #ffffff !important;
+}
+
+.modern-card .card-header {
+    background: initial !important;
+}
+
+/* Badge moderne */
+.badge-modern {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #ffffff !important;
+}
+
+/* Bouton collapse toggle */
+.collapse-toggle-btn {
+    transition: all 0.3s ease;
+}
+.collapse-toggle-btn:not(.collapsed) i {
+    transform: rotate(180deg);
+}
+
+/* Table responsive améliorée */
+.table > :not(caption) > * > * {
+    padding: 1rem 0.75rem;
+}
+
+.table {
+    background-color: #ffffff !important;
+}
+
+.table tbody tr {
+    background-color: #ffffff !important;
+}
+
+/* Mobile optimizations */
 @media (max-width: 768px) {
+    .stat-card .card-body {
+        padding: 1.25rem 1rem;
+    }
+    
     .mobile-stack > * {
         margin-bottom: 0.5rem;
     }
+    
+    h1.h3 {
+        font-size: 1.5rem;
+    }
+    
+    .badge-modern {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .echeance-card .card-body {
+        padding: 1rem;
+    }
+    
+    /* Améliorer la lisibilité sur mobile */
+    .alert {
+        font-size: 0.9rem;
+    }
+}
+
+/* Desktop optimizations (écrans 15") */
+@media (min-width: 1200px) and (max-width: 1600px) {
+    .container-fluid {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .table {
+        font-size: 0.95rem;
+    }
+}
+
+/* Animation pour le collapse */
+.collapse {
+    transition: height 0.35s ease;
+}
+
+.collapsing {
+    transition: height 0.35s ease;
 }
 </style>
 @endpush
@@ -38,11 +175,11 @@
 @section('content')
 <div class="container-fluid">
     <!-- En-tête -->
-    <div class="row mb-4">
+    <div class="row mb-3 mb-md-4">
         <div class="col-12">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
-                <div class="mb-2 mb-md-0">
-                    <h1 class="h3 mb-1 text-primary">Crédit #{{ $credit->id }}</h1>
+                <div class="mb-3 mb-md-0">
+                    <h1 class="h3 mb-2 fw-bold" style="color: #667eea;">Crédit #{{ $credit->id }}</h1>
                     <div class="d-flex flex-wrap gap-2">
                         @php
                             $statutColors = [
@@ -57,16 +194,16 @@
                                 'suspendu' => 'warning'
                             ];
                         @endphp
-                        <span class="badge bg-{{ $statutColors[$credit->statut] ?? 'secondary' }} fs-6">{{ ucfirst($credit->statut) }}</span>
-                        <span class="badge bg-{{ $etatColors[$credit->etat] ?? 'info' }} fs-6">{{ ucfirst($credit->etat) }}</span>
+                        <span class="badge badge-modern bg-{{ $statutColors[$credit->statut] ?? 'secondary' }}" style="color: #ffffff !important;">{{ ucfirst($credit->statut) }}</span>
+                        <span class="badge badge-modern bg-{{ $etatColors[$credit->etat] ?? 'info' }}" style="color: #ffffff !important;">{{ ucfirst($credit->etat) }}</span>
                     </div>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
                     <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#creditDetailsModal">
-                        <i class="fas fa-info-circle"></i> Détails complets
+                        <i class="fas fa-info-circle"></i><span class="d-none d-md-inline ms-1">Détails complets</span>
                     </button>
                     <a href="{{ route('adherent.credits.index') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-arrow-left"></i> Retour
+                        <i class="fas fa-arrow-left"></i><span class="d-none d-md-inline ms-1">Retour</span>
                     </a>
                 </div>
             </div>
@@ -74,55 +211,59 @@
     </div>
 
     <!-- Statistiques rapides -->
-    <div class="row g-3 mb-4">
-        <div class="col-sm-6 col-lg-3">
-            <div class="card stat-card h-100 border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="text-primary mb-2">
+    <div class="row g-2 g-md-3 mb-3 mb-md-4">
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card h-100 modern-card" style="background-color: #ffffff !important;">
+                <div class="card-body text-center" style="background-color: #ffffff !important;">
+                    <div class="mb-2" style="color: #667eea;">
                         <i class="fas fa-money-bill-wave fa-2x"></i>
                     </div>
-                    <h5 class="text-success mb-0 fw-bold">{{ number_format((float)$credit->montant_accorde, 0, ',', ' ') }} FCFA</h5>
-                    <small class="text-dark fw-medium">Montant accordé</small>
+                    <h5 class="mb-0 fw-bold" style="color: #10b981; font-size: clamp(0.9rem, 2vw, 1.25rem);">{{ number_format((float)$credit->montant_accorde, 0, ',', ' ') }}</h5>
+                    <small class="text-secondary d-block mt-1" style="font-size: 0.7rem;">FCFA</small>
+                    <small class="text-dark fw-medium" style="font-size: 0.75rem;">Montant accordé</small>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="card stat-card h-100 border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="text-info mb-2">
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card h-100 modern-card" style="background-color: #ffffff !important;">
+                <div class="card-body text-center" style="background-color: #ffffff !important;">
+                    <div class="mb-2" style="color: #3b82f6;">
                         <i class="fas fa-percent fa-2x"></i>
                     </div>
-                    <h5 class="text-info mb-0 fw-bold">{{ (float)$credit->taux }}%</h5>
-                    <small class="text-dark fw-medium">Taux d'intérêt</small>
+                    <h5 class="mb-0 fw-bold" style="color: #3b82f6; font-size: clamp(0.9rem, 2vw, 1.25rem);">{{ (float)$credit->taux }}%</h5>
+                    <small class="text-secondary d-block mt-1" style="font-size: 0.7rem;">&nbsp;</small>
+                    <small class="text-dark fw-medium" style="font-size: 0.75rem;">Taux d'intérêt</small>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="card stat-card h-100 border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="text-warning mb-2">
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card h-100 modern-card" style="background-color: #ffffff !important;">
+                <div class="card-body text-center" style="background-color: #ffffff !important;">
+                    <div class="mb-2" style="color: #f59e0b;">
                         <i class="fas fa-calendar-alt fa-2x"></i>
                     </div>
-                    <h5 class="text-warning mb-0 fw-bold">{{ $credit->duree }}</h5>
-                    <small class="text-dark fw-medium">{{ ucfirst($credit->periodicite) }}</small>
+                    <h5 class="mb-0 fw-bold" style="color: #f59e0b; font-size: clamp(0.9rem, 2vw, 1.25rem);">{{ $credit->duree }}</h5>
+                    <small class="text-secondary d-block mt-1" style="font-size: 0.7rem;">mois</small>
+                    <small class="text-dark fw-medium" style="font-size: 0.75rem;">{{ ucfirst($credit->periodicite) }}</small>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-lg-3">
-            <div class="card stat-card h-100 border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <div class="text-secondary mb-2">
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card h-100 modern-card" style="background-color: #ffffff !important;">
+                <div class="card-body text-center" style="background-color: #ffffff !important;">
+                    <div class="mb-2" style="color: #6b7280;">
                         <i class="fas fa-list-ol fa-2x"></i>
                     </div>
                     @php
                         $totalEcheances = $credit->echeances->count();
                         $echeancesPayees = $credit->echeances->where('statut', 'payé')->count();
                     @endphp
-                    <h5 class="text-success mb-0 fw-bold">{{ $echeancesPayees }}/{{ $totalEcheances }}</h5>
-                    <small class="text-dark fw-medium">Échéances payées</small>
+                    <h5 class="mb-0 fw-bold" style="color: #10b981; font-size: clamp(0.9rem, 2vw, 1.25rem);">{{ $echeancesPayees }}/{{ $totalEcheances }}</h5>
+                    <small class="text-secondary d-block mt-1" style="font-size: 0.7rem;">&nbsp;</small>
+                    <small class="text-dark fw-medium" style="font-size: 0.75rem;">Échéances payées</small>
                     @if($totalEcheances > 0)
                         <div class="progress progress-thin mt-2">
-                            <div class="progress-bar bg-success" style="width: {{ ($echeancesPayees/$totalEcheances)*100 }}%"></div>
+                            <div class="progress-bar" style="width: {{ ($echeancesPayees/$totalEcheances)*100 }}%; background-color: #10b981;"></div>
                         </div>
                     @endif
                 </div>
@@ -131,24 +272,19 @@
     </div>
 
     <!-- Échéancier -->
-    <div class="row g-4 mb-4">
+    <div class="row g-3 g-md-4 mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
+            <div class="card modern-card" style="background-color: #ffffff !important;">
+                <div class="card-header card-header-gradient text-white d-flex justify-content-between align-items-center py-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: #ffffff !important;">
+                    <h5 class="mb-0 fw-bold">
                         <i class="fas fa-calendar-check me-2"></i>Échéancier de remboursement
                     </h5>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-light btn-sm" data-bs-toggle="collapse" data-bs-target="#echeancierDetails" aria-expanded="true">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
                 </div>
-                <div class="collapse show" id="echeancierDetails">
+                <div>
                     <!-- Version desktop/tablet -->
-                    <div class="d-none d-md-block">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
+                    <div class="d-none d-md-block" style="background-color: #ffffff !important;">
+                        <div class="table-responsive" style="background-color: #ffffff !important;">
+                            <table class="table table-hover align-middle mb-0" style="background-color: #ffffff !important;">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="text-center" style="width: 80px;">#</th>
@@ -203,27 +339,26 @@
                                             </td>
                                             <td class="text-center">
                                                 @if($isPaid)
-                                                    <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Payé</span>
+                                                    <span class="badge badge-modern" style="background-color: #10b981;"><i class="fas fa-check-circle me-1"></i>Payé</span>
                                                 @elseif($isOverdue)
-                                                    <span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>En retard</span>
+                                                    <span class="badge badge-modern" style="background-color: #ef4444;"><i class="fas fa-exclamation-triangle me-1"></i>En retard</span>
                                                 @elseif($today->diffInDays($echeanceDate, false) <= 7 && $today->diffInDays($echeanceDate, false) >= 0)
-                                                    <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>À venir</span>
+                                                    <span class="badge badge-modern" style="background-color: #f59e0b;"><i class="fas fa-clock me-1"></i>À venir</span>
                                                 @else
-                                                    <span class="badge bg-secondary"><i class="fas fa-calendar me-1"></i>En attente</span>
+                                                    <span class="badge badge-modern bg-secondary"><i class="fas fa-calendar me-1"></i>En attente</span>
                                                 @endif
                                             </td>
                                             <td class="text-center">
                                                 @if(!$isPaid)
-                                                    <button class="btn btn-outline-primary btn-sm payment-btn" 
-                                                            data-bs-toggle="tooltip" title="Effectuer un paiement"
-                                                            data-echeance-id="{{ $e->id }}"
-                                                            data-montant="{{ $e->montant_attendu }}"
-                                                            data-date="{{ $echeanceDate->format('Y-m-d') }}"
-                                                            data-penalite="{{ $e->penalite_appliquee ?? 0 }}">
+                                                    <button class="btn btn-outline-primary btn-sm" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#paymentModal"
+                                                            onclick="preparePayment('{{ $e->id }}', '{{ $e->montant_attendu }}', '{{ $e->penalite_appliquee ?? 0 }}', '{{ $echeanceDate->format('Y-m-d') }}')"
+                                                            title="Effectuer un paiement">
                                                         <i class="fas fa-credit-card"></i>
                                                     </button>
                                                 @else
-                                                    <button class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" title="Paiement effectué">
+                                                    <button class="btn btn-outline-success btn-sm" title="Paiement effectué">
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                 @endif
@@ -266,11 +401,11 @@
                                             </div>
                                             <div>
                                                 @if($isPaid)
-                                                    <span class="badge bg-success">Payé</span>
+                                                    <span class="badge badge-modern" style="background-color: #10b981;">Payé</span>
                                                 @elseif($isOverdue)
-                                                    <span class="badge bg-danger">En retard</span>
+                                                    <span class="badge badge-modern" style="background-color: #ef4444;">En retard</span>
                                                 @else
-                                                    <span class="badge bg-warning text-dark">À venir</span>
+                                                    <span class="badge badge-modern" style="background-color: #f59e0b; color: #ffffff;">À venir</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -302,11 +437,10 @@
                                         
                                         @if(!$isPaid)
                                             <div class="mt-2">
-                                                <button class="btn btn-primary btn-sm w-100 payment-btn"
-                                                        data-echeance-id="{{ $e->id }}"
-                                                        data-montant="{{ $e->montant_attendu }}"
-                                                        data-date="{{ $echeanceDate->format('Y-m-d') }}"
-                                                        data-penalite="{{ $e->penalite_appliquee ?? 0 }}">
+                                                <button class="btn btn-primary btn-sm w-100"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#paymentModal"
+                                                        onclick="preparePayment('{{ $e->id }}', '{{ $e->montant_attendu }}', '{{ $e->penalite_appliquee ?? 0 }}', '{{ $echeanceDate->format('Y-m-d') }}')">
                                                     <i class="fas fa-credit-card me-1"></i>Effectuer le paiement
                                                 </button>
                                             </div>
@@ -328,39 +462,39 @@
     </div>
 
     <!-- Historique des paiements -->
-    <div class="row g-4 mb-4">
+    <div class="row g-3 g-md-4 mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
+            <div class="card modern-card" style="background-color: #ffffff !important;">
+                <div class="card-header card-header-success-gradient text-white d-flex justify-content-between align-items-center py-3" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; color: #ffffff !important;">
+                    <h5 class="mb-0 fw-bold">
                         <i class="fas fa-credit-card me-2"></i>Historique des paiements
                     </h5>
-                    <span class="badge bg-light text-success">{{ $credit->paiements->count() }} paiement(s)</span>
+                    <span class="badge bg-light badge-modern" style="color: #10b981;">{{ $credit->paiements->count() }}</span>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="background-color: #ffffff !important;">
                     @forelse($credit->paiements as $p)
-                        <div class="d-flex align-items-center justify-content-between p-3 mb-2 bg-light rounded">
-                            <div class="d-flex align-items-center">
-                                <div class="text-success me-3">
+                        <div class="d-flex align-items-center justify-content-between p-3 mb-2 rounded" style="background: linear-gradient(to right, #f0fdf4 0%, #f9fafb 100%); border-left: 4px solid #10b981;">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="me-3" style="color: #10b981;">
                                     <i class="fas fa-check-circle fa-lg"></i>
                                 </div>
-                                <div>
-                                                <h6 class="mb-1 fw-bold text-dark">{{ number_format((float)$p->montant, 0, ',', ' ') }} FCFA</h6>
-                                                    <small class="text-secondary fw-medium">
-                                                        {{ \Carbon\Carbon::parse($p->date_paiement)->format('d/m/Y') }}
-                                                        @if($p->penalite > 0)
-                                                            • <span class="text-danger fw-semibold">Pénalité: {{ number_format((float)$p->penalite, 0, ',', ' ') }} FCFA</span>
-                                                        @endif
-                                                    </small>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold text-dark">{{ number_format((float)$p->montant, 0, ',', ' ') }} FCFA</h6>
+                                    <small class="text-secondary fw-medium" style="font-size: 0.8rem;">
+                                        {{ \Carbon\Carbon::parse($p->date_paiement)->format('d/m/Y') }}
+                                        @if($p->penalite > 0)
+                                            • <span style="color: #ef4444;" class="fw-semibold">Pénalité: {{ number_format((float)$p->penalite, 0, ',', ' ') }} FCFA</span>
+                                        @endif
+                                    </small>
                                 </div>
                             </div>
-                            <div class="d-flex gap-2">
+                            <div class="d-flex flex-column flex-md-row gap-2 align-items-end align-items-md-center">
                                 @if($p->preuves && $p->preuves->count() > 0)
                                     <button class="btn btn-outline-info btn-sm" data-bs-toggle="tooltip" title="Voir les preuves">
                                         <i class="fas fa-file-alt"></i> {{ $p->preuves->count() }}
                                     </button>
                                 @endif
-                                <span class="badge bg-success">Validé</span>
+                                <span class="badge badge-modern" style="background-color: #10b981;">Validé</span>
                             </div>
                         </div>
                     @empty
@@ -376,25 +510,25 @@
     </div>
 
     <!-- Informations et contact -->
-    <div class="row g-4 mb-4">
+    <div class="row g-2 g-md-3 mb-3 mb-md-4">
         <div class="col-md-6">
-            <div class="alert alert-info border-0 shadow-sm">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-info-circle fa-lg me-3"></i>
+            <div class="alert border-0 shadow-sm" style="background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%); border-left: 4px solid #3b82f6 !important;">
+                <div class="d-flex align-items-start">
+                    <i class="fas fa-info-circle fa-lg me-3 mt-1" style="color: #3b82f6;"></i>
                     <div>
-                        <h6 class="alert-heading mb-1">Besoin d'aide ?</h6>
-                        <p class="mb-0">Pour tout litige sur un paiement, contactez notre support client.</p>
+                        <h6 class="alert-heading mb-1 fw-bold" style="color: #1e40af;">Besoin d'aide ?</h6>
+                        <p class="mb-0" style="font-size: 0.9rem; color: #1e3a8a;">Pour tout litige sur un paiement, contactez notre support client.</p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="alert alert-warning border-0 shadow-sm">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-exclamation-triangle fa-lg me-3"></i>
+            <div class="alert border-0 shadow-sm" style="background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%); border-left: 4px solid #f59e0b !important;">
+                <div class="d-flex align-items-start">
+                    <i class="fas fa-exclamation-triangle fa-lg me-3 mt-1" style="color: #d97706;"></i>
                     <div>
-                        <h6 class="alert-heading mb-1">Rappel important</h6>
-                        <p class="mb-0">Les paiements en retard peuvent entraîner des pénalités.</p>
+                        <h6 class="alert-heading mb-1 fw-bold" style="color: #92400e;">Rappel important</h6>
+                        <p class="mb-0" style="font-size: 0.9rem; color: #78350f;">Les paiements en retard peuvent entraîner des pénalités.</p>
                     </div>
                 </div>
             </div>
@@ -583,47 +717,37 @@
 
 @push('scripts')
 <script>
-// Initialiser les tooltips
-document.addEventListener('DOMContentLoaded', function() {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+// Fonction globale pour préparer les données du paiement
+function preparePayment(echeanceId, montant, penalite, dateEcheance) {
+    montant = parseFloat(montant);
+    penalite = parseFloat(penalite);
     
-    // Gestion des boutons de paiement
-    document.querySelectorAll('.payment-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            const echeanceId = this.dataset.echeanceId;
-            const montant = parseFloat(this.dataset.montant);
-            const penalite = parseFloat(this.dataset.penalite || 0);
-            const dateEcheance = this.dataset.date;
-            
-            // Remplir le modal avec les données
-            document.getElementById('echeance_id').value = echeanceId;
-            document.getElementById('montant').value = (montant + penalite).toFixed(2);
-            
-            // Mettre à jour le résumé
-            const echeanceAmountSpan = document.getElementById('echeance-amount');
-            const penaliteAmountSpan = document.getElementById('penalite-amount');
-            const penaliteRow = document.getElementById('penalite-row');
-            const totalAmountSpan = document.getElementById('total-amount');
-            
-            echeanceAmountSpan.textContent = new Intl.NumberFormat('fr-FR').format(montant) + ' FCFA';
-            
-            if (penalite > 0) {
-                penaliteAmountSpan.textContent = new Intl.NumberFormat('fr-FR').format(penalite) + ' FCFA';
-                penaliteRow.style.display = 'flex';
-            } else {
-                penaliteRow.style.display = 'none';
-            }
-            
-            totalAmountSpan.textContent = new Intl.NumberFormat('fr-FR').format(montant + penalite) + ' FCFA';
-            
-            // Afficher le modal
-            const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
-            modal.show();
-        });
-    });
+    console.log('Préparation paiement:', { echeanceId, montant, penalite });
+    
+    // Remplir le modal avec les données
+    document.getElementById('echeance_id').value = echeanceId;
+    document.getElementById('montant').value = (montant + penalite).toFixed(2);
+    
+    // Mettre à jour le résumé
+    const echeanceAmountSpan = document.getElementById('echeance-amount');
+    const penaliteAmountSpan = document.getElementById('penalite-amount');
+    const penaliteRow = document.getElementById('penalite-row');
+    const totalAmountSpan = document.getElementById('total-amount');
+    
+    echeanceAmountSpan.textContent = new Intl.NumberFormat('fr-FR').format(montant) + ' FCFA';
+    
+    if (penalite > 0) {
+        penaliteAmountSpan.textContent = new Intl.NumberFormat('fr-FR').format(penalite) + ' FCFA';
+        penaliteRow.style.display = 'flex';
+    } else {
+        penaliteRow.style.display = 'none';
+    }
+    
+    totalAmountSpan.textContent = new Intl.NumberFormat('fr-FR').format(montant + penalite) + ' FCFA';
+}
+
+// Initialiser au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
     
     // Gestion de la soumission du formulaire
     document.getElementById('paymentForm').addEventListener('submit', function(e) {

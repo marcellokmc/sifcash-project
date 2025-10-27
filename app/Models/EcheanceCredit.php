@@ -10,6 +10,7 @@ class EcheanceCredit extends Model
 {
     protected $fillable = [
         'credit_id',
+        'numero_echeance',
         'date_echeance',
         'montant_attendu',
         'montant_paye',

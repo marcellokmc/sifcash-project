@@ -253,7 +253,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Crédit: génération d'échéancier
         Route::post('credits/{credit}/generate-schedule', [CreditController::class, 'generateSchedule'])
-            ->middleware(['throttle:10,1','can:generateSchedule,credit', AuditActions::class])
+            ->middleware(['throttle:10,1','can:generateSchedule,credit'])
             ->name('credits.generate-schedule');
 
         // Gestion des crédits en retard (AVANT les routes avec paramètres dynamiques)
@@ -310,16 +310,16 @@ Route::middleware(['auth'])->group(function () {
         // Audits admin
         Route::get('audits', [AuditController::class, 'index'])->name('audits.index');
         Route::post('credits/{credit}/approve', [CreditController::class, 'approve'])
-            ->middleware(['throttle:10,1','can:approve,credit', AuditActions::class])
+            ->middleware(['throttle:10,1','can:approve,credit'])
             ->name('credits.approve');
         Route::post('credits/{credit}/reject', [CreditController::class, 'reject'])
-            ->middleware(['throttle:10,1','can:reject,credit', AuditActions::class])
+            ->middleware(['throttle:10,1','can:reject,credit'])
             ->name('credits.reject');
         Route::post('credits/{credit}/contract', [CreditController::class, 'contract'])
-            ->middleware(['throttle:10,1','can:contract,credit', AuditActions::class])
+            ->middleware(['throttle:10,1','can:contract,credit'])
             ->name('credits.contract');
         Route::post('credits/{credit}/record-payment', [CreditController::class, 'recordPayment'])
-            ->middleware(['throttle:20,1','can:recordPayment,credit', AuditActions::class])
+            ->middleware(['throttle:20,1','can:recordPayment,credit'])
             ->name('credits.record-payment');
 
         // Routes d'export pour les crédits

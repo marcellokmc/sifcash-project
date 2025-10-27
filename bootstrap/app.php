@@ -16,7 +16,13 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register middleware aliases
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
-            'log.user.activity' => \App\Http\Middleware\LogUserActivity::class
+            'log.user.activity' => \App\Http\Middleware\LogUserActivity::class,
+            'audit' => \App\Http\Middleware\AuditActions::class
+        ]);
+        
+        // Apply audit middleware to web routes
+        $middleware->web(append: [
+            \App\Http\Middleware\AuditActions::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

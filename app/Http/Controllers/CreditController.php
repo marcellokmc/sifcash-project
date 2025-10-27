@@ -341,6 +341,7 @@ class CreditController extends Controller
 
         if ($request->filled('date_debut_remboursement')) {
             $credit->date_debut_remboursement = $request->date('date_debut_remboursement');
+            $credit->save();
         }
 
         if (!in_array($credit->etat, ['approuve','contrat','actif'])) {
@@ -348,6 +349,31 @@ class CreditController extends Controller
                 return response()->json(['message' => 'Crédit non éligible pour génération d\'échéancier.'], 422);
             }
             return redirect()->back()->with('error', 'Crédit non éligible pour génération d\'échéancier.');
+        }
+
+        // Validation supplémentaire avant génération
+        $errors = [];
+        if (!$credit->montant_accorde || $credit->montant_accorde <= 0) {
+            $errors[] = 'Le montant accordé doit être défini.';
+        }
+        if (!$credit->date_debut_remboursement) {
+            $errors[] = 'La date de début de remboursement doit être définie.';
+        }
+        if (!$credit->duree || $credit->duree <= 0) {
+            $errors[] = 'La durée doit être définie.';
+        }
+        if (!$credit->periodicite) {
+            $errors[] = 'La périodicité doit être définie.';
+        }
+
+        if (!empty($errors)) {
+            \Log::warning('Génération échéancier impossible pour crédit #' . $credit->id, ['errors' => $errors, 'credit' => $credit->toArray()]);
+            $errorMsg = 'Impossible de générer l\'échéancier : ' . implode(' ', $errors);
+            
+            if ($request->wantsJson()) {
+                return response()->json(['message' => $errorMsg, 'errors' => $errors], 422);
+            }
+            return redirect()->back()->with('error', $errorMsg);
         }
 
         try {
@@ -364,14 +390,24 @@ class CreditController extends Controller
             return redirect()->route('admin.credits.show', $credit)
                 ->with('success', 'Échéancier généré avec succès. Le crédit est maintenant actif.');
 
-        } catch (\Exception $e) {
-            \Log::error('Erreur lors de la génération de l\'échéancier: ' . $e->getMessage());
+        } catch (\InvalidArgumentException $e) {
+            \Log::warning('Validation échéancier échouée pour crédit #' . $credit->id . ': ' . $e->getMessage());
             
             if ($request->wantsJson()) {
-                return response()->json(['message' => 'Erreur lors de la génération de l\'échéancier.'], 500);
+                return response()->json(['message' => $e->getMessage()], 422);
+            }
+            return redirect()->back()->with('error', $e->getMessage());
+            
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la génération de l\'échéancier pour crédit #' . $credit->id . ': ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            if ($request->wantsJson()) {
+                return response()->json(['message' => 'Erreur lors de la génération de l\'échéancier: ' . $e->getMessage()], 500);
             }
 
-            return redirect()->back()->with('error', 'Erreur lors de la génération de l\'échéancier.');
+            return redirect()->back()->with('error', 'Erreur lors de la génération de l\'échéancier: ' . $e->getMessage());
         }
     }
 
