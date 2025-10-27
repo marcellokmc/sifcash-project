@@ -101,7 +101,11 @@
                         <div class="mt-5 p-4 bg-light rounded">
                             <h4>Contactez-nous</h4>
                             <p class="mb-2"><i class="fas fa-map-marker-alt text-primary me-2"></i>Burkina Faso</p>
-                            <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>+226 XX XX XX XX</p>
+                            <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>
+                                    <a href="tel:+22625456364" class="text-decoration-none">+226 25 45 63 64</a> /
+                                    <a href="tel:+22676182726" class="text-decoration-none">76 18 27 26</a> /
+                                    <a href="tel:+22604370203" class="text-decoration-none">04 37 02 03</a>
+                            </p>
                             <p class="mb-0"><i class="fas fa-envelope text-primary me-2"></i>contact@sifcash-burkina.bf</p>
                         </div>
                     </div>

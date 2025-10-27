@@ -69,7 +69,7 @@ class SendBirthdayNotifications extends Command
             Notification::create([
                 'user_id' => $adherent->user->id,
                 'titre' => '🎂 Joyeux Anniversaire !',
-                'message' => "Chèr(e) {$adherent->prenom},\n\n🎉 Toute l'équipe de SIF Burkina vous souhaite un très joyeux anniversaire ! \n\n🎂 Vous célébrez aujourd'hui vos {$age} ans. Que cette nouvelle année vous apporte santé, bonheur et prospérité !\n\nMerci de votre confiance et de votre fidélité.\n\nBien à vous,\nL'équipe SIF Burkina 🎁",
+                'message' => "Chèr(e) {$adherent->prenom},\n\n🎉 Toute l'équipe de SIFCash-Burkina vous souhaite un très joyeux anniversaire ! \n\n🎂 Vous célébrez aujourd'hui vos {$age} ans. Que cette nouvelle année vous apporte santé, bonheur et prospérité !\n\nMerci de votre confiance et de votre fidélité.\n\nBien à vous,\nL'équipe SIFCash-Burkina 🎁",
                 'type' => 'anniversaire',
                 'lu' => false,
             ]);

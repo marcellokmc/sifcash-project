@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mot de passe oublié - SIF Burkina</title>
+    <title>Mot de passe oublié - SIFCash-Burkina</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -32,7 +32,7 @@
                             <div class="text-center mb-4">
                                 <h3 class="card-title">
                                     <i class="fas fa-lock text-warning me-2"></i>
-                                    SIF Burkina
+                                    SIFCash-Burkina
                                 </h3>
                                 <p class="text-muted">Réinitialisation du mot de passe</p>
                             </div>

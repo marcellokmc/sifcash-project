@@ -10,7 +10,7 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-/* ===== CHARTE GRAPHIQUE SIF BURKINA ===== */
+/* ===== CHARTE GRAPHIQUE SIFCash-Burkina ===== */
 
 :root {
     /* Couleurs principales SIF - Version Dynamique */
@@ -433,7 +433,7 @@
     animation: sif-rainbow 5s ease infinite;
 }
 
-/* ===== SIF BURKINA CUSTOM STYLES ===== */
+/* ===== SIFCash-Burkina CUSTOM STYLES ===== */
 
 /* Animations globales */
 @keyframes fadeInUp {

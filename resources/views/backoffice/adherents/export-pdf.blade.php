@@ -77,7 +77,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>📊 SIF Burkina Faso</h1>
+        <h1>📊 SIFCash-Burkina Faso</h1>
         <p><strong>Liste des Adhérents</strong></p>
         <p>Généré le {{ $date }}</p>
     </div>
@@ -127,7 +127,7 @@
     </table>
 
     <div class="footer">
-        <p>© {{ date('Y') }} SIF Burkina Faso - Système d'Information Financière</p>
+        <p>© {{ date('Y') }} SIFCash-Burkina Faso - Système d'Information Financière</p>
         <p>Document confidentiel - Usage interne uniquement</p>
     </div>
 </body>

@@ -152,7 +152,7 @@ public function login(Request $request)
         ]);
 
         return redirect()->route('adherent.dashboard')
-            ->with('success', 'Compte créé avec succès ! Bienvenue sur SIF Burkina.');
+            ->with('success', 'Compte créé avec succès ! Bienvenue sur SIFCash-Burkina.');
     }
 
     /**

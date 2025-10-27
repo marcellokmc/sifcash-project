@@ -1,5 +1,5 @@
 // ***********************************************
-// Commandes personnalisées pour SIF Burkina
+// Commandes personnalisées pour SIFCash-Burkina
 // ***********************************************
 
 // Commande de connexion

@@ -248,4 +248,4 @@ tail -f storage/logs/laravel.log
 
 **Créé le :** 24 octobre 2025  
 **Version :** 1.0.0  
-**Auteur :** Système de gestion SIF Burkina
+**Auteur :** Système de gestion SIFCash-Burkina

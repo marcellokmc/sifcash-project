@@ -1,4 +1,4 @@
-# 🚀 SIF Burkina - Améliorations Complétées
+# 🚀 SIFCash-Burkina - Améliorations Complétées
 
 ## ✅ Problèmes Résolus et Améliorations
 

@@ -1,4 +1,4 @@
-# Améliorations du Dashboard Adhérent SIF Burkina
+# Améliorations du Dashboard Adhérent SIFCash-Burkina
 
 ## 🎨 Charte Graphique Appliquée
 
@@ -113,4 +113,4 @@
 - `app/Models/Adherent.php` - Accesseurs + fillable
 - `vite.config.js` - Configuration build
 
-La nouvelle interface offre une expérience utilisateur moderne et professionnelle tout en respectant l'identité visuelle de SIF Burkina.
+La nouvelle interface offre une expérience utilisateur moderne et professionnelle tout en respectant l'identité visuelle de SIFCash-Burkina.

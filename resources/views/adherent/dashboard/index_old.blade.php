@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Adhérent - SIF Burkina</title>
+    <title>Espace Adhérent - SIFCash-Burkina</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -37,7 +37,7 @@
             <nav class="col-md-3 col-lg-2 adherent-sidebar">
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
-                        <h4><i class="fas fa-hand-holding-usd me-2"></i>SIF Burkina</h4>
+                        <h4><i class="fas fa-hand-holding-usd me-2"></i>SIFCash-Burkina</h4>
                         <small>Espace Adhérent</small>
                     </div>
 

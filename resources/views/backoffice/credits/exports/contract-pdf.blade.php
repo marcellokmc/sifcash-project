@@ -95,7 +95,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>📄 SIF BURKINA FASO</h1>
+        <h1>📄 SIFCash-Burkina FASO</h1>
         <div class="subtitle">Système d'Information Financière</div>
         <div class="subtitle" style="font-weight: bold; margin-top: 10px;">CONTRAT DE CRÉDIT N° {{ $credit->id }}</div>
         <div class="subtitle">Établi le {{ $date }}</div>
@@ -206,7 +206,7 @@
                 <p>Date : ________________</p>
             </div>
             <div class="signature-cell">
-                <p><strong>Pour la SIF Burkina Faso</strong></p>
+                <p><strong>Pour la SIFCash-Burkina Faso</strong></p>
                 <p>Le Responsable des Crédits</p>
                 <div class="signature-line"></div>
                 <p>Date : ________________</p>
@@ -215,7 +215,7 @@
     </div>
 
     <div class="footer">
-        <p>© {{ date('Y') }} SIF Burkina Faso - Système d'Information Financière</p>
+        <p>© {{ date('Y') }} SIFCash-Burkina Faso - Système d'Information Financière</p>
         <p>Document contractuel confidentiel - Usage strictement interne</p>
     </div>
 </body>

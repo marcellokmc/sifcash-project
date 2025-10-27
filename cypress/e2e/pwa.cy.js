@@ -1,4 +1,4 @@
-describe('Progressive Web App - SIF Burkina', () => {
+describe('Progressive Web App - SIFCash-Burkina', () => {
   beforeEach(() => {
     cy.login();
   });
@@ -26,8 +26,8 @@ describe('Progressive Web App - SIF Burkina', () => {
     it('devrait charger le manifest correctement', () => {
       cy.request('/manifest.json').then((response) => {
         expect(response.status).to.eq(200);
-        expect(response.body).to.have.property('name', 'SIF Burkina - Système d\'Information Financière');
-        expect(response.body).to.have.property('short_name', 'SIF Burkina');
+        expect(response.body).to.have.property('name', 'SIFCash-Burkina - Système d\'Information Financière');
+        expect(response.body).to.have.property('short_name', 'SIFCash-Burkina');
         expect(response.body).to.have.property('display', 'standalone');
         expect(response.body).to.have.property('theme_color', '#667eea');
         expect(response.body.icons).to.have.length.greaterThan(0);

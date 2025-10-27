@@ -798,7 +798,7 @@ class CreditController extends Controller
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
             
             // En-tête du fichier
-            fputcsv($file, ['', '', 'ECHÉANCIER DE CRÉDIT - SIF BURKINA FASO']);
+            fputcsv($file, ['', '', 'ECHÉANCIER DE CRÉDIT - SIFCash-Burkina FASO']);
             fputcsv($file, ['Crédit N°', $credit->id]);
             fputcsv($file, ['Adhérent', $credit->adherent->nom_complet ?? 'N/A']);
             fputcsv($file, ['Montant', number_format($credit->montant_accorde, 0, ',', ' ') . ' FCFA']);
@@ -883,7 +883,7 @@ class CreditController extends Controller
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
             
             // En-tête du fichier
-            fputcsv($file, ['', '', 'HISTORIQUE DES PAIEMENTS - SIF BURKINA FASO']);
+            fputcsv($file, ['', '', 'HISTORIQUE DES PAIEMENTS - SIFCash-Burkina FASO']);
             fputcsv($file, ['Crédit N°', $credit->id]);
             fputcsv($file, ['Adhérent', $credit->adherent->nom_complet ?? 'N/A']);
             fputcsv($file, ['']);

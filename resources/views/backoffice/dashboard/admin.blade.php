@@ -1,6 +1,6 @@
 @extends('backoffice.layouts.app')
 
-@section('title', 'Dashboard Admin - SIF Burkina')
+@section('title', 'Dashboard Admin - SIFCash-Burkina')
 @section('page-title', '📈 Tableau de Bord Administrateur')
 
 @section('styles')

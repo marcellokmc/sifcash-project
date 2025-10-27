@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protection des Données - SIFcash-Burkina</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -196,8 +198,17 @@
                         <div class="mt-5 p-4 bg-light rounded">
                             <h4><i class="fas fa-phone text-primary me-2"></i>Signaler un Incident</h4>
                             <p>En cas de suspicion d'incident de sécurité, contactez-nous immédiatement :</p>
-                            <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i>security@sifcash-burkina.bf</p>
-                            <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>+226 XX XX XX XX (Ligne d'urgence 24h/24)</p>
+                            <p class="mb-2">
+                                <i class="fas fa-envelope text-primary me-2"></i>
+                                <a href="mailto:security@sifcash-burkina.bf" class="text-decoration-none">security@sifcash-burkina.bf</a>
+                            </p>
+                            <p class="mb-2">
+                                <i class="fas fa-phone text-primary me-2"></i>
+                                <a href="tel:+22625456364" class="text-decoration-none">+226 25 45 63 64</a> / 
+                                <a href="tel:+22676182726" class="text-decoration-none">76 18 27 26</a> / 
+                                <a href="tel:+22604370203" class="text-decoration-none">04 37 02 03</a>
+                                <span class="badge bg-danger ms-2">Ligne d'urgence 24h/24</span>
+                            </p>
                             <p class="mb-0"><small class="text-muted">Temps de réponse garanti : moins de 2 heures</small></p>
                         </div>
                     </div>

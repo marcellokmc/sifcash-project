@@ -189,7 +189,7 @@ class NotificationService
         self::creerNotification(
             $adherentId,
             '🎉 Compte activé !',
-            "Félicitations ! Votre compte SIF Burkina a été activé par {$agent}. Vous avez maintenant accès à tous nos services d'épargne et de crédit.",
+            "Félicitations ! Votre compte SIFCash-Burkina a été activé par {$agent}. Vous avez maintenant accès à tous nos services d'épargne et de crédit.",
             'success'
         );
     }

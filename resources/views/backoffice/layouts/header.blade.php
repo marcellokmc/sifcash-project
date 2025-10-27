@@ -37,7 +37,7 @@
                 <i class="fas fa-bell" style="color: var(--sif-primary); font-size: 1.1rem;"></i>
                 @php
                     try {
-                        $notificationCount = auth()->user()->unreadNotifications->count();
+                        $notificationCount = \DB::table('notifications')->where('user_id', auth()->id())->where('lu', false)->count();
                         $hasNotifications = true;
                     } catch (\Exception $e) {
                         $notificationCount = 0;
@@ -57,8 +57,16 @@
                         @endif
                     </div>
                 </li>
-                @if($hasNotifications)
-                    @forelse(auth()->user()->unreadNotifications->take(5) as $notification)
+                @if($hasNotifications && $notificationCount > 0)
+                    @php
+                        $notifications = \DB::table('notifications')
+                            ->where('user_id', auth()->id())
+                            ->where('lu', false)
+                            ->orderBy('created_at', 'desc')
+                            ->limit(5)
+                            ->get();
+                    @endphp
+                    @forelse($notifications as $notification)
                         <li>
                             <a class="dropdown-item py-3" href="#">
                                 <div class="d-flex">
@@ -68,8 +76,9 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1 small fw-semibold">{{ $notification->data['title'] ?? 'Notification' }}</p>
-                                        <p class="mb-0 text-muted" style="font-size: 0.75rem;">{{ $notification->created_at->diffForHumans() }}</p>
+                                        <p class="mb-1 small fw-semibold">{{ $notification->titre ?? 'Notification' }}</p>
+                                        <p class="mb-0 text-muted" style="font-size: 0.8rem;">{{ $notification->message ?? '' }}</p>
+                                        <p class="mb-0 text-muted" style="font-size: 0.7rem;">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</p>
                                     </div>
                                 </div>
                             </a>

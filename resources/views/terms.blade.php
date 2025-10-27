@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conditions d'Utilisation - SIFcash-Burkina</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -77,6 +79,12 @@
             border-radius: 15px;
             margin: 2rem 0;
         }
+        html {
+            scroll-behavior: smooth;
+        }
+        h2[id] {
+            scroll-margin-top: 100px;
+        }
     </style>
 </head>
 <body>
@@ -111,7 +119,7 @@
                         <p class="text-muted mb-4">Dernière mise à jour : {{ date('d/m/Y') }}</p>
                         
                         <!-- Section Préambule -->
-                        <h2 class="section-title mb-4">PRÉAMBULE</h2>
+                        <h2 class="section-title mb-4" id="preambule">PRÉAMBULE</h2>
                         <div class="highlight-box mb-5">
                             <p class="mb-3"><strong>SIFcash-Burkina</strong> est une institution de microfinance innovante qui révolutionne l'accès aux services financiers au Burkina Faso. En tant que système coopératif d'épargne et de crédit, nous nous engageons à offrir des solutions financières inclusives et transparentes à nos membres.</p>
                             
@@ -133,7 +141,7 @@
                         </div>
 
                         <!-- Article 1 -->
-                        <h2 class="section-title mb-4">ARTICLE 1 : DÉFINITIONS</h2>
+                        <h2 class="section-title mb-4" id="definitions">ARTICLE 1 : DÉFINITIONS</h2>
                         <div class="mb-5">
                             <div class="definition-term">
                                 <strong>SIFcash-Burkina :</strong> Société à responsabilité limitée proposant des services de microfinance et d'épargne coopérative.
@@ -153,7 +161,7 @@
                         </div>
 
                         <!-- Article 2 -->
-                        <h2 class="section-title mb-4">ARTICLE 2 : OBJET ET CHAMP D'APPLICATION</h2>
+                        <h2 class="section-title mb-4" id="objet">ARTICLE 2 : OBJET ET CHAMP D'APPLICATION</h2>
                         <div class="mb-5">
                             <p class="mb-3">Les présentes conditions générales régissent l'utilisation des services de SIFcash-Burkina et définissent les droits et obligations de chaque partie.</p>
                             
@@ -168,7 +176,7 @@
                         </div>
 
                         <!-- Article 3 -->
-                        <h2 class="section-title mb-4">ARTICLE 3 : CONDITIONS D'ADHÉSION</h2>
+                        <h2 class="section-title mb-4" id="adhesion">ARTICLE 3 : CONDITIONS D'ADHÉSION</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">Conditions requises :</h5>
                             <ul>
@@ -190,7 +198,7 @@
                         </div>
 
                         <!-- Article 4 -->
-                        <h2 class="section-title mb-4">ARTICLE 4 : CONDITIONS FINANCIÈRES</h2>
+                        <h2 class="section-title mb-4" id="finances">ARTICLE 4 : CONDITIONS FINANCIÈRES</h2>
                         <div class="mb-5">
                             <div class="highlight-box">
                                 <h5 class="mb-3"><i class="fas fa-calculator me-2"></i>Modalités de Calcul</h5>
@@ -219,7 +227,7 @@
                         </div>
 
                         <!-- Article 5 -->
-                        <h2 class="section-title mb-4">ARTICLE 5 : ENGAGEMENTS DE L'ADHÉRENT</h2>
+                        <h2 class="section-title mb-4" id="engagements">ARTICLE 5 : ENGAGEMENTS DE L'ADHÉRENT</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">L'adhérent s'engage à :</h5>
                             <ul>
@@ -237,7 +245,7 @@
                         </div>
 
                         <!-- Article 6 -->
-                        <h2 class="section-title mb-4">ARTICLE 6 : MODALITÉS DE RÉCLAMATION ET REMBOURSEMENT</h2>
+                        <h2 class="section-title mb-4" id="reclamations">ARTICLE 6 : MODALITÉS DE RÉCLAMATION ET REMBOURSEMENT</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">Procédure de Réclamation :</h5>
                             <ol>
@@ -257,7 +265,7 @@
                         </div>
 
                         <!-- Article 7 -->
-                        <h2 class="section-title mb-4">ARTICLE 7 : PROTECTION DES DONNÉES</h2>
+                        <h2 class="section-title mb-4" id="donnees">ARTICLE 7 : PROTECTION DES DONNÉES</h2>
                         <div class="mb-5">
                             <p class="mb-3">SIFcash-Burkina s'engage à protéger les données personnelles de ses membres conformément aux réglementations en vigueur.</p>
                             
@@ -272,7 +280,7 @@
                         </div>
 
                         <!-- Article 8 -->
-                        <h2 class="section-title mb-4">ARTICLE 8 : RESPONSABILITÉ ET GARANTIES</h2>
+                        <h2 class="section-title mb-4" id="responsabilite">ARTICLE 8 : RESPONSABILITÉ ET GARANTIES</h2>
                         <div class="mb-5">
                             <div class="highlight-box">
                                 <h5 class="mb-3"><i class="fas fa-shield-alt me-2"></i>Garanties SIFcash-Burkina :</h5>
@@ -293,7 +301,7 @@
                         </div>
 
                         <!-- Article 9 -->
-                        <h2 class="section-title mb-4">ARTICLE 9 : MODIFICATION ET RÉSILIATION</h2>
+                        <h2 class="section-title mb-4" id="modification">ARTICLE 9 : MODIFICATION ET RÉSILIATION</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">Modification des Conditions :</h5>
                             <ul>
@@ -311,7 +319,7 @@
                         </div>
 
                         <!-- Article 10 -->
-                        <h2 class="section-title mb-4">ARTICLE 10 : DISPOSITIONS FINALES</h2>
+                        <h2 class="section-title mb-4" id="dispositions">ARTICLE 10 : DISPOSITIONS FINALES</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">Droit Applicable :</h5>
                             <p class="mb-3">Les présentes conditions sont régies par le droit burkinabè et les réglementations de l'UMOA en matière de microfinance.</p>
@@ -422,8 +430,14 @@
                                 <a href="{{ route('contact') }}" class="btn btn-light btn-sm">
                                     <i class="fas fa-envelope me-1"></i>Nous contacter
                                 </a>
-                                <a href="tel:+22670000000" class="btn btn-outline-light btn-sm">
-                                    <i class="fas fa-phone me-1"></i>+226 70 00 00 00
+                                <a href="tel:+22625456364" class="btn btn-outline-light btn-sm">
+                                    <i class="fas fa-phone me-1"></i>+226 25 45 63 64
+                                </a>
+                                <a href="tel:+22676182726" class="btn btn-outline-light btn-sm">
+                                    <i class="fas fa-phone me-1"></i>76 18 27 26
+                                </a>
+                                <a href="tel:+22604370203" class="btn btn-outline-light btn-sm">
+                                    <i class="fas fa-phone me-1"></i>04 37 02 03
                                 </a>
                             </div>
                         </div>

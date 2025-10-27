@@ -70,14 +70,14 @@ php artisan birthdays:send-notifications
 ```
 Chèr(e) [Prénom],
 
-🎉 Toute l'équipe de SIF Burkina vous souhaite un très joyeux anniversaire ! 
+🎉 Toute l'équipe de SIFCash-Burkina vous souhaite un très joyeux anniversaire ! 
 
 🎂 Vous célébrez aujourd'hui vos [X] ans. Que cette nouvelle année vous apporte santé, bonheur et prospérité !
 
 Merci de votre confiance et de votre fidélité.
 
 Bien à vous,
-L'équipe SIF Burkina 🎁
+L'équipe SIFCash-Burkina 🎁
 ```
 
 ### Type de Notification

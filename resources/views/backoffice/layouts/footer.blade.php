@@ -3,7 +3,7 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <span class="text-muted">
-                   2025- &copy; {{ date('Y') }} SIF Burkina. Tous droits réservés.
+                   2025- &copy; {{ date('Y') }} SIFCash-Burkina. Tous droits réservés.
                 </span>
             </div>
             <div class="col-md-6 text-md-end">

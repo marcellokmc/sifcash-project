@@ -18,7 +18,7 @@
                         </h1>
                         <p class="lead mb-0 text-dark">
                             <i class="fas fa-chart-line me-2"></i>
-                            Votre tableau de bord SIF Burkina - {{ now()->format('d/m/Y') }}
+                            Votre tableau de bord SIFCash-Burkina - {{ now()->format('d/m/Y') }}
                         </p>
                         @if($adherent && $adherent->isActif())
                             <div class="mt-2">
@@ -651,10 +651,10 @@
             <div class="card border-0 shadow-sm position-relative overflow-hidden">
                 <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); opacity: 0.1;"></div>
                 <div class="card-header border-0 position-relative text-center" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
-                    <h5 class="mb-0 fw-bold text-white">
+                    <h5 class="mb-0 fw-bold text-dark">
                         <i class="fas fa-link me-2"></i>🔗 Liens Utiles
                     </h5>
-                    <small class="text-white opacity-75">Accès rapide aux informations importantes</small>
+                    <small class="text-dark opacity-75">Accès rapide aux informations importantes</small>
                 </div>
                 <div class="card-body p-4 position-relative">
                     <div class="row g-3">
@@ -689,7 +689,7 @@
                             </button>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
-                            <button class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3" onclick="alert('🌟 Merci de faire confiance à SIF Burkina !\n\n🏆 Votre partenaire financier de confiance depuis 2012\n💪 Ensemble, construisons votre avenir financier')">
+                            <button class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3" onclick="alert('🌟 Merci de faire confiance à SIFCash-Burkina !\n\n🏆 Votre partenaire financier de confiance depuis 2012\n💪 Ensemble, construisons votre avenir financier')">
                                 <i class="fas fa-heart text-pink mb-2" style="font-size: 1.5rem; color: #e91e63;"></i>
                                 <small class="fw-bold text-dark">❤️ Merci</small>
                             </button>

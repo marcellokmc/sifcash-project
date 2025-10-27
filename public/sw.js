@@ -1,5 +1,5 @@
 /**
- * Service Worker pour SIF Burkina
+ * Service Worker pour SIFCash-Burkina
  * Gestion du cache et fonctionnalités hors ligne
  */
 
@@ -306,7 +306,7 @@ self.addEventListener('push', (event) => {
     };
     
     event.waitUntil(
-        self.registration.showNotification(data.title || 'SIF Burkina', options)
+        self.registration.showNotification(data.title || 'SIFCash-Burkina', options)
     );
 });
 

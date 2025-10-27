@@ -27,7 +27,7 @@ export default defineConfig(({ command, mode }) => {
                 gzipSize: true,
                 brotliSize: true,
                 template: 'treemap', // 'treemap', 'sunburst', 'network'
-                title: 'SIF Burkina - Bundle Analysis'
+                title: 'SIFCash-Burkina - Bundle Analysis'
             })
         );
     }

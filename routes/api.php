@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes - SIF Burkina
+| API Routes - SIFCash-Burkina
 |--------------------------------------------------------------------------
 |
-| Routes API pour l'application SIF Burkina avec authentification
+| Routes API pour l'application SIFCash-Burkina avec authentification
 | et gestion des ressources
 |
 */
@@ -32,7 +32,7 @@ Route::prefix('v1')->group(function () {
     // Public info
     Route::get('/info', function () {
         return response()->json([
-            'name' => 'SIF Burkina API',
+            'name' => 'SIFCash-Burkina API',
             'version' => '1.0.0',
             'status' => 'active',
             'timestamp' => now()
@@ -263,7 +263,7 @@ Route::middleware(['auth:sanctum'])->prefix('v1/mobile')->group(function () {
     // Configuration PWA
     Route::get('/manifest', function () {
         return response()->json([
-            'name' => 'SIF Burkina',
+            'name' => 'SIFCash-Burkina',
             'short_name' => 'SIF',
             'description' => 'Système d\'Information Financière du Burkina Faso',
             'start_url' => '/',

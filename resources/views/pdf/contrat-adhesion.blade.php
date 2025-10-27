@@ -20,6 +20,12 @@
             margin-bottom: 15px;
         }
         
+        .logo-img {
+            max-height: 60px;
+            width: auto;
+            margin-bottom: 8px;
+        }
+        
         .logo {
             font-size: 18px;
             font-weight: bold;
@@ -165,7 +171,8 @@
 <body>
     <!-- En-tête -->
     <div class="header">
-        <div class="logo">SIF BURKINA</div>
+        <img src="{{ public_path('img/SIF logo .jpg') }}" alt="SIFcash-Burkina" class="logo-img">
+        <div class="logo">SIFCash-Burkina</div>
         <div class="sub-title">Société d'Investissement Financier</div>
         <div class="sub-title">Ouagadougou, Burkina Faso</div>
     </div>
@@ -227,11 +234,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="label">Agent gestionnaire :</td>
+                        <td class="label">Code agence :</td>
                         <td class="value">
-                            @if($adherent->agentGestionnaire)
-                                <strong>{{ $adherent->agentGestionnaire->name }}</strong><br>
-                                <small>{{ ucfirst(str_replace('_', ' ', $adherent->agentGestionnaire->role)) }}</small>
+                            @if($adherent->agence)
+                                <strong>{{ $adherent->agence->code ?? 'N/A' }}</strong>
                             @else
                                 <span class="badge warning">Non affecté</span>
                             @endif
@@ -384,12 +390,12 @@
         <div class="section-title">Conditions Générales d'Adhésion</div>
         
         <div class="important">
-            <strong>Article 1 - Objet du contrat :</strong> Le présent contrat définit les conditions d'adhésion de {{ $adherent->nom_complet }} à la Société d'Investissement Financier (SIF BURKINA).
+            <strong>Article 1 - Objet du contrat :</strong> Le présent contrat définit les conditions d'adhésion de {{ $adherent->nom_complet }} à la Société d'Investissement Financier (SIFCash-Burkina).
         </div>
 
-        <p><strong>Article 2 - Engagements de l'adhérent :</strong> L'adhérent s'engage à respecter le règlement intérieur de SIF BURKINA, fournir des informations exactes et à jour, signaler tout changement de situation personnelle et honorer ses engagements financiers.</p>
+        <p><strong>Article 2 - Engagements de l'adhérent :</strong> L'adhérent s'engage à respecter le règlement intérieur de SIFCash-Burkina, fournir des informations exactes et à jour, signaler tout changement de situation personnelle et honorer ses engagements financiers.</p>
 
-        <p><strong>Article 3 - Engagements de SIF BURKINA :</strong> SIF BURKINA s'engage à protéger la confidentialité des données personnelles, offrir des services financiers de qualité, respecter les termes des plans d'adhésion souscrits et informer l'adhérent de toute modification des conditions.</p>
+        <p><strong>Article 3 - Engagements de SIFCash-Burkina :</strong> SIFCash-Burkina s'engage à protéger la confidentialité des données personnelles, offrir des services financiers de qualité, respecter les termes des plans d'adhésion souscrits et informer l'adhérent de toute modification des conditions.</p>
 
         <p><strong>Article 4 - Durée du contrat :</strong> Ce contrat prend effet à la date d'activation du compte et reste valable tant que l'adhésion est active.</p>
 
@@ -405,7 +411,7 @@
             <p>Date : ________________</p>
         </div>
         <div class="signature-box">
-            <strong>SIF BURKINA</strong>
+            <strong>SIFCash-Burkina</strong>
             <div class="signature-line"></div>
             <p>Le Directeur Général</p>
             <p>Date : {{ now()->format('d/m/Y') }}</p>
@@ -414,7 +420,7 @@
 
     <!-- Pied de page -->
     <div class="footer">
-        SIF BURKINA - Société d'Investissement Financier<br>
+        SIFCash-Burkina - Société d'Investissement Financier<br>
         Contrat d'Adhésion - Membre {{ $adherent->membre_id }} - Généré le {{ now()->format('d/m/Y à H:i') }}
     </div>
 </body>

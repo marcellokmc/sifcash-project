@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.dashboard') }}">
             <i class="fas fa-hand-holding-usd me-2"></i>
-            <span>SIF Burkina</span>
+            <span>SIFCash-Burkina</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

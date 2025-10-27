@@ -1,4 +1,4 @@
-# 🎨 Dashboard SIF Burkina - Version Dynamique
+# 🎨 Dashboard SIFCash-Burkina - Version Dynamique
 
 ## ✨ TRANSFORMATION VISUELLE COMPLÈTE
 
@@ -158,4 +158,4 @@ sif-rainbow-bg → Fond arc-en-ciel animé
 5. **Theme switcher** jour/nuit
 6. **Personnalisation** couleurs par utilisateur
 
-Le dashboard SIF Burkina est maintenant une **expérience visuelle premium** qui rivalise avec les meilleures fintech modernes ! 🎉
+Le dashboard SIFCash-Burkina est maintenant une **expérience visuelle premium** qui rivalise avec les meilleures fintech modernes ! 🎉

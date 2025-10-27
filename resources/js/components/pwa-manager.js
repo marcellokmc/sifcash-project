@@ -104,10 +104,10 @@ class PWAManager {
             <div class="container-fluid">
                 <div class="row align-items-center">
                     <div class="col-auto">
-                        <img src="/images/icons/icon-72x72.png" alt="SIF Burkina" class="pwa-icon">
+                        <img src="/images/icons/icon-72x72.png" alt="SIFCash-Burkina" class="pwa-icon">
                     </div>
                     <div class="col">
-                        <h6 class="mb-1">Installer SIF Burkina</h6>
+                        <h6 class="mb-1">Installer SIFCash-Burkina</h6>
                         <p class="mb-0 small text-muted">Accès rapide et utilisation hors ligne</p>
                     </div>
                     <div class="col-auto">
@@ -235,7 +235,7 @@ class PWAManager {
                 <strong>Installation sur Chrome :</strong>
                 <ol class="mt-2 mb-0">
                     <li>Cliquez sur le menu <i class="fas fa-ellipsis-v"></i> (trois points)</li>
-                    <li>Sélectionnez "Installer SIF Burkina"</li>
+                    <li>Sélectionnez "Installer SIFCash-Burkina"</li>
                     <li>Confirmez l'installation</li>
                 </ol>
             `;

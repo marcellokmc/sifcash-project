@@ -24,7 +24,7 @@
 <body>
     <div class="header">
         <h1>📊 ÉCHÉANCIER DE CRÉDIT</h1>
-        <p>SIF Burkina Faso - Généré le {{ $date }}</p>
+        <p>SIFCash-Burkina Faso - Généré le {{ $date }}</p>
     </div>
 
     <div class="info">
@@ -80,7 +80,7 @@
     </div>
 
     <div class="footer">
-        <p>© {{ date('Y') }} SIF Burkina Faso - Document confidentiel</p>
+        <p>© {{ date('Y') }} SIFCash-Burkina Faso - Document confidentiel</p>
     </div>
 </body>
 </html>

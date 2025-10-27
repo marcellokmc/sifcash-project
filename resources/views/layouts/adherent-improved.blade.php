@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') - SIF Burkina</title>
+    <title>@yield('title') - SIFCash-Burkina</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -82,7 +82,7 @@
                         <i class="fas fa-hand-holding-usd text-primary fs-4"></i>
                     </div>
                     <div>
-                        <h5 class="text-white mb-0 fw-bold">SIF Burkina</h5>
+                        <h5 class="text-white mb-0 fw-bold">SIFCash-Burkina</h5>
                         <small class="text-light opacity-75">Espace Adhérent</small>
                     </div>
                 </div>

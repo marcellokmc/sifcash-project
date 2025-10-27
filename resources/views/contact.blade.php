@@ -50,7 +50,7 @@
                                     <div class="phone-numbers">
                                         <p class="mb-1">
                                             <a href="tel:+22625456364" class="text-decoration-none text-dark fw-bold">
-                                                <i class="fas fa-mobile-alt me-2"></i>50 77 15 97
+                                                <i class="fas fa-mobile-alt me-2"></i>+226 25 45 63 64
                                             </a>
                                         </p>
                                         <p class="mb-1">

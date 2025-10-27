@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIFcash-Burkina - Système d'Épargne et de Crédit</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -395,7 +397,7 @@
                                 <span class="badge" style="background: rgba(255, 107, 107, 0.1); color: #ff6b6b;">💬 Chat</span>
                                 <span class="badge" style="background: rgba(255, 107, 107, 0.1); color: #ff6b6b;">📧 Email</span>
                             </div>
-                            <button class="btn btn-outline-danger btn-sm rounded-pill px-4" onclick="alert('📞 Contactez-nous au : 50 77 15 97\n📧 Email : contact@sifcash-burkina.bf\n💬 Chat en ligne disponible')">
+                            <button class="btn btn-outline-danger btn-sm rounded-pill px-4" onclick="alert('📞 Contactez-nous au : +226 25 45 63 64\n📧 Email : contact@sifcash-burkina.bf\n💬 Chat en ligne disponible')">
                                 <i class="fas fa-phone me-1"></i>Contacter
                             </button>
                         </div>
@@ -756,7 +758,7 @@
                             <div>
                                 <h6 class="mb-0 fw-bold text-dark">Téléphone</h6>
                                 <p class="mb-0">
-                                    <a href="tel:+22625456364" class="text-decoration-none fw-bold" style="color: #000 !important;">50 77 15 97</a> / 
+                                    <a href="tel:+22625456364" class="text-decoration-none fw-bold" style="color: #000 !important;">+226 25 45 63 64</a> / 
                                     <a href="tel:+22676182726" class="text-decoration-none fw-bold" style="color: #000 !important;">76 18 27 26</a> / 
                                     <a href="tel:+22604370203" class="text-decoration-none fw-bold" style="color: #000 !important;">04 37 02 03</a>
                                 </p>

@@ -3,8 +3,8 @@
     <div class="container">
         <!-- Logo et nom de la marque -->
         <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
-            <div class="brand-logo me-3">
-                <i class="fas fa-hand-holding-usd fa-2x text-primary"></i>
+            <div class="brand-logo me-2">
+                <img src="{{ asset('img/SIF logo .jpg') }}" alt="SIFcash-Burkina Logo" class="logo-img" style="height: 50px; width: auto; object-fit: contain; border-radius: 8px;">
             </div>
             <div class="brand-text">
                 <h4 class="mb-0 text-white fw-bold">SIFcash-Burkina</h4>
@@ -160,8 +160,13 @@
 @endif
 
 <style>
-.navbar-brand .brand-logo i {
-    filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.5));
+.navbar-brand .brand-logo .logo-img {
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand:hover .brand-logo .logo-img {
+    transform: scale(1.05);
 }
 
 .navbar-nav .nav-link {
@@ -224,6 +229,10 @@
     
     .brand-text h4 {
         font-size: 1.1rem;
+    }
+    
+    .navbar-brand .brand-logo .logo-img {
+        height: 40px;
     }
 }
 </style>

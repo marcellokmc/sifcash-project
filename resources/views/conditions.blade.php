@@ -157,7 +157,7 @@
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Téléphones</h6>
                                 <p>
-                                    <a href="tel:+22625456364" class="text-decoration-none">50 77 15 97</a> /
+                                    <a href="tel:+22625456364" class="text-decoration-none">+226 25 45 63 64</a> /
                                     <a href="tel:+22676182726" class="text-decoration-none">76 18 27 26</a> /
                                     <a href="tel:+22604370203" class="text-decoration-none">04 37 02 03</a>
                                 </p>

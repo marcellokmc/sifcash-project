@@ -105,35 +105,37 @@
             <!-- Colonne 4: Contact et horaires -->
             <div class="col-lg-4 col-md-6">
                 <div class="footer-section">
-                    <h6 class="text-white fw-bold mb-3">Contactez-nous</h6>
+                    <h6 class="text-white fw-bold mb-2">Contactez-nous</h6>
                     
                     <!-- Informations de contact -->
-                    <div class="contact-info mb-4">
+                    <div class="contact-info mb-0">
                         <div class="contact-item d-flex align-items-start mb-2">
-                            <i class="fas fa-map-marker-alt text-primary me-3 mt-1"></i>
-                            <div>
-                                <strong class="text-white">Adresse</strong><br>
-                                <span class="text-white small">Ouagadougou, Burkina Faso</span>
+                            <i class="fas fa-map-marker-alt text-primary me-2 mt-1" style="font-size: 0.9rem;"></i>
+                            <div class="flex-grow-1">
+                                <strong class="text-white d-block mb-0" style="font-size: 0.9rem;">Adresse</strong>
+                                <span class="text-white-50 d-block" style="font-size: 0.85rem;">Ouagadougou, Burkina Faso</span>
                             </div>
                         </div>
                         
-                        <div class="contact-item d-flex align-items-center mb-2">
-                            <i class="fas fa-phone text-primary me-3"></i>
-                            <div>
-                                <strong class="text-white">Téléphone</strong><br>
-                                <div class="text-white small">
-                                    <a href="tel:+22625456364" class="text-white text-decoration-none">50 77 15 97</a> / 
-                                    <a href="tel:+22676182726" class="text-white text-decoration-none">76 18 27 26</a> / 
-                                    <a href="tel:+22604370203" class="text-white text-decoration-none">04 37 02 03</a>
+                        <div class="contact-item d-flex align-items-start mb-2">
+                            <i class="fas fa-phone text-primary me-2 mt-1" style="font-size: 0.9rem;"></i>
+                            <div class="flex-grow-1">
+                                <strong class="text-white d-block mb-0" style="font-size: 0.9rem;">Téléphone</strong>
+                                <div class="text-white-50" style="font-size: 0.85rem; line-height: 1.4;">
+                                    <a href="tel:+22625456364" class="text-white-50 text-decoration-none">+226 25 45 63 64</a>
+                                    <span class="d-none d-lg-inline"> / </span><br class="d-lg-none">
+                                    <a href="tel:+22676182726" class="text-white-50 text-decoration-none">76 18 27 26</a>
+                                    <span class="d-none d-lg-inline"> / </span><br class="d-lg-none">
+                                    <a href="tel:+22604370203" class="text-white-50 text-decoration-none">04 37 02 03</a>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="contact-item d-flex align-items-center mb-2">
-                            <i class="fas fa-envelope text-primary me-3"></i>
-                            <div>
-                                <strong class="text-white">Email</strong><br>
-                                <a href="mailto:contact@sifcash-burkina.bf" class="text-white text-decoration-none small">contact@sifcash-burkina.bf</a>
+                        <div class="contact-item d-flex align-items-start mb-2">
+                            <i class="fas fa-envelope text-primary me-2 mt-1" style="font-size: 0.9rem;"></i>
+                            <div class="flex-grow-1">
+                                <strong class="text-white d-block mb-0" style="font-size: 0.9rem;">Email</strong>
+                                <a href="mailto:contact@sifcash-burkina.bf" class="text-white-50 text-decoration-none d-block" style="font-size: 0.85rem; word-break: break-all;">contact@sifcash-burkina.bf</a>
                             </div>
                         </div>
                     </div>
@@ -247,18 +249,19 @@
 
 .contact-item {
     transition: all 0.3s ease;
+    padding: 0;
 }
 
 .contact-item:hover {
-    transform: translateX(5px);
+    transform: translateX(3px);
 }
 
 .contact-item a {
-    color: #ffffff !important;
+    transition: color 0.3s ease;
 }
 
 .contact-item a:hover {
-    color: #007bff !important;
+    color: #ffffff !important;
 }
 
 .certification-item {
@@ -318,7 +321,15 @@
     }
     
     .contact-info {
-        text-align: center;
+        text-align: left;
+    }
+    
+    .contact-item {
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .footer-section h6 {
+        font-size: 1rem;
     }
 }
 </style>

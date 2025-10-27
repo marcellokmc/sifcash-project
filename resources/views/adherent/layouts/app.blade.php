@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Espace Adhérent') - SIF Burkina</title>
+    <title>@yield('title', 'Espace Adhérent') - SIFCash-Burkina</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -155,13 +155,22 @@
     </style>
 </head>
 <body>
+    @php
+        // Comptage des notifications non lues
+        try {
+            $nbNotificationsNonLues = \DB::table('notifications')->where('user_id', auth()->id())->where('lu', false)->count();
+        } catch (\Exception $e) {
+            $nbNotificationsNonLues = 0;
+        }
+    @endphp
+    
     <div class="d-flex">
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar d-flex flex-column">
             <!-- Brand -->
             <div class="sidebar-brand text-center text-white">
                 <h4 class="mb-1">
-                    <i class="fas fa-piggy-bank me-2"></i>SIF Burkina
+                    <i class="fas fa-piggy-bank me-2"></i>SIFCash-Burkina
                 </h4>
                 <small class="text-white-50">Espace Adhérent</small>
             </div>
@@ -278,7 +287,6 @@
                        href="{{ route('adherent.notifications.index') }}">
                         <i class="fas fa-bell"></i>
                         Notifications
-                        @php($nbNotificationsNonLues = Auth::user()->unreadNotifications->count())
                         @if($nbNotificationsNonLues > 0)
                             <span class="badge bg-danger ms-auto">{{ $nbNotificationsNonLues }}</span>
                         @endif

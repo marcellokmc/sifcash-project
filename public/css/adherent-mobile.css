@@ -1,0 +1,434 @@
+/* ===================================
+   ADHERENT MOBILE-FIRST STYLES
+   Optimisé pour écrans 15 pouces
+   =================================== */
+
+/* Base Mobile (320px+) */
+:root {
+    --font-size-base: 14px;
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+}
+
+/* Cards responsive */
+.sif-card-mobile {
+    margin-bottom: var(--spacing-md);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.sif-card-mobile .card-body {
+    padding: var(--spacing-md);
+}
+
+.sif-card-mobile .card-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Tables responsive */
+.table-responsive-mobile {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-mobile {
+    font-size: 0.85rem;
+    min-width: 100%;
+}
+
+.table-mobile th,
+.table-mobile td {
+    padding: 0.5rem;
+    white-space: nowrap;
+}
+
+/* Formulaires */
+.form-mobile .form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.form-mobile .form-control,
+.form-mobile .form-select {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+}
+
+/* Buttons responsive */
+.btn-mobile {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.btn-group-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Badges */
+.badge-mobile {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Stats cards */
+.stat-card-mobile {
+    background: white;
+    border-radius: 12px;
+    padding: var(--spacing-md);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: var(--spacing-md);
+}
+
+.stat-card-mobile h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card-mobile h6 {
+    font-size: 0.85rem;
+}
+
+.stat-card-mobile small {
+    font-size: 0.75rem;
+}
+
+/* Action buttons */
+.quick-action-mobile {
+    padding: var(--spacing-md);
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    text-decoration: none;
+    display: block;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.quick-action-mobile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.quick-action-mobile i {
+    font-size: 2rem;
+}
+
+.quick-action-mobile h5 {
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0.25rem;
+}
+
+.quick-action-mobile small {
+    font-size: 0.75rem;
+}
+
+/* Timeline */
+.timeline-mobile .timeline-item {
+    padding-left: 2.5rem;
+    position: relative;
+    padding-bottom: var(--spacing-md);
+}
+
+.timeline-mobile .timeline-icon {
+    position: absolute;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-mobile .timeline-icon i {
+    font-size: 0.75rem;
+}
+
+/* List groups */
+.list-group-mobile .list-group-item {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+}
+
+/* Spacing utilities */
+.mb-mobile-1 { margin-bottom: var(--spacing-xs) !important; }
+.mb-mobile-2 { margin-bottom: var(--spacing-sm) !important; }
+.mb-mobile-3 { margin-bottom: var(--spacing-md) !important; }
+.mb-mobile-4 { margin-bottom: var(--spacing-lg) !important; }
+.mb-mobile-5 { margin-bottom: var(--spacing-xl) !important; }
+
+.p-mobile-1 { padding: var(--spacing-xs) !important; }
+.p-mobile-2 { padding: var(--spacing-sm) !important; }
+.p-mobile-3 { padding: var(--spacing-md) !important; }
+.p-mobile-4 { padding: var(--spacing-lg) !important; }
+.p-mobile-5 { padding: var(--spacing-xl) !important; }
+
+/* Hide/Show elements */
+.hide-mobile { display: none !important; }
+.show-mobile { display: block !important; }
+
+/* Text sizes */
+.text-mobile-xs { font-size: 0.7rem !important; }
+.text-mobile-sm { font-size: 0.8rem !important; }
+.text-mobile-md { font-size: 0.9rem !important; }
+.text-mobile-lg { font-size: 1rem !important; }
+
+/* ===================================
+   TABLET (>= 768px)
+   =================================== */
+@media (min-width: 768px) {
+    :root {
+        --font-size-base: 15px;
+        --spacing-md: 1.25rem;
+        --spacing-lg: 1.75rem;
+    }
+
+    .sif-card-mobile .card-body {
+        padding: var(--spacing-lg);
+    }
+
+    .table-mobile th,
+    .table-mobile td {
+        padding: 0.625rem;
+    }
+
+    .btn-mobile {
+        width: auto;
+    }
+
+    .btn-group-mobile {
+        flex-direction: row;
+        gap: 0.75rem;
+    }
+
+    .stat-card-mobile h2 {
+        font-size: 1.75rem;
+    }
+
+    .quick-action-mobile i {
+        font-size: 2.25rem;
+    }
+
+    .hide-mobile {
+        display: block !important;
+    }
+
+    .show-mobile {
+        display: none !important;
+    }
+}
+
+/* ===================================
+   DESKTOP 15 POUCES (>= 992px, < 1400px)
+   =================================== */
+@media (min-width: 992px) and (max-width: 1399px) {
+    :root {
+        --font-size-base: 15px;
+        --spacing-sm: 0.75rem;
+        --spacing-md: 1.25rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+    }
+
+    .sif-card-mobile {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .sif-card-mobile .card-body {
+        padding: var(--spacing-lg);
+    }
+
+    .sif-card-mobile .card-header {
+        padding: var(--spacing-md);
+    }
+
+    .table-mobile {
+        font-size: 0.9rem;
+    }
+
+    .table-mobile th,
+    .table-mobile td {
+        padding: 0.75rem;
+    }
+
+    .form-mobile .form-label {
+        font-size: 0.95rem;
+    }
+
+    .form-mobile .form-control,
+    .form-mobile .form-select {
+        font-size: 0.95rem;
+        padding: 0.625rem 0.875rem;
+    }
+
+    .btn-mobile {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    .stat-card-mobile {
+        padding: var(--spacing-lg);
+    }
+
+    .stat-card-mobile h2 {
+        font-size: 1.75rem;
+    }
+
+    .stat-card-mobile h6 {
+        font-size: 0.9rem;
+    }
+
+    .stat-card-mobile small {
+        font-size: 0.8rem;
+    }
+
+    .quick-action-mobile {
+        padding: var(--spacing-lg);
+    }
+
+    .quick-action-mobile i {
+        font-size: 2.5rem;
+    }
+
+    .quick-action-mobile h5 {
+        font-size: 1rem;
+    }
+
+    .quick-action-mobile small {
+        font-size: 0.85rem;
+    }
+
+    .timeline-mobile .timeline-item {
+        padding-left: 3rem;
+    }
+
+    .timeline-mobile .timeline-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .timeline-mobile .timeline-icon i {
+        font-size: 0.85rem;
+    }
+
+    .list-group-mobile .list-group-item {
+        padding: 1rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* ===================================
+   LARGE DESKTOP (>= 1400px)
+   =================================== */
+@media (min-width: 1400px) {
+    :root {
+        --font-size-base: 16px;
+        --spacing-md: 1.5rem;
+        --spacing-lg: 2rem;
+        --spacing-xl: 2.5rem;
+    }
+
+    .sif-card-mobile .card-body {
+        padding: var(--spacing-xl);
+    }
+
+    .table-mobile {
+        font-size: 1rem;
+    }
+
+    .table-mobile th,
+    .table-mobile td {
+        padding: 0.875rem;
+    }
+
+    .form-mobile .form-label {
+        font-size: 1rem;
+    }
+
+    .form-mobile .form-control,
+    .form-mobile .form-select {
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .btn-mobile {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .stat-card-mobile h2 {
+        font-size: 2rem;
+    }
+
+    .quick-action-mobile i {
+        font-size: 3rem;
+    }
+
+    .quick-action-mobile h5 {
+        font-size: 1.1rem;
+    }
+}
+
+/* ===================================
+   UTILITY CLASSES
+   =================================== */
+
+/* Responsive visibility */
+.visible-mobile { display: block !important; }
+.visible-tablet { display: none !important; }
+.visible-desktop { display: none !important; }
+
+@media (min-width: 768px) {
+    .visible-mobile { display: none !important; }
+    .visible-tablet { display: block !important; }
+}
+
+@media (min-width: 992px) {
+    .visible-tablet { display: none !important; }
+    .visible-desktop { display: block !important; }
+}
+
+/* Container max-width pour 15 pouces */
+@media (min-width: 992px) and (max-width: 1399px) {
+    .container-15inch {
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Grid responsive */
+.grid-mobile {
+    display: grid;
+    gap: var(--spacing-md);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .grid-mobile {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .grid-mobile {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1400px) {
+    .grid-mobile {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

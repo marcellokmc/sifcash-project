@@ -1,4 +1,4 @@
-describe('Authentification SIF Burkina', () => {
+describe('Authentification SIFCash-Burkina', () => {
   beforeEach(() => {
     cy.cleanTestData();
     cy.task('seedDatabase');

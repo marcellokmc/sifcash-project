@@ -4,34 +4,35 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="row">
+    <!-- Header Mobile-First -->
+    <div class="row mb-mobile-3">
         <div class="col-12">
-            <div class="page-title-box">
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="{{ route('adherent.dashboard') }}">Tableau de bord</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('adherent.paiements.index') }}">Mes Paiements</a></li>
-                        <li class="breadcrumb-item active">Nouveau Paiement</li>
-                    </ol>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="mb-1">💸 Nouveau Paiement</h4>
+                    <small class="text-muted">
+                        <a href="{{ route('adherent.dashboard') }}" class="text-decoration-none">Tableau de bord</a> / 
+                        <a href="{{ route('adherent.paiements.index') }}" class="text-decoration-none">Paiements</a> / 
+                        Nouveau
+                    </small>
                 </div>
-                <h4 class="page-title">Soumettre un Paiement</h4>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-body">
-                    <form action="{{ route('adherent.paiements.store') }}" method="POST" enctype="multipart/form-data" id="paiement-form">
+        <div class="col-12 col-lg-8">
+            <div class="card sif-card-mobile">
+                <div class="card-body p-mobile-3">
+                    <form action="{{ route('adherent.paiements.store') }}" method="POST" enctype="multipart/form-data" id="paiement-form" class="form-mobile">
                         @csrf
 
-                        <div class="row">
-                            <div class="col-md-6">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="adhesion_id" class="form-label">Adhésion <span class="text-danger">*</span></label>
                                     @if($adhesions->count() > 0)
-                                        <select class="form-select @error('adhesion_id') is-invalid @enderror" id="adhesion_id" name="adhesion_id" required>
+                                        <select class="form-control @error('adhesion_id') is-invalid @enderror" id="adhesion_id" name="adhesion_id" required>
                                             <option value="">Sélectionner une adhésion</option>
                                             @foreach($adhesions as $adhesion)
                                             <option value="{{ $adhesion->id }}"
@@ -44,11 +45,11 @@
                                         </select>
                                     @else
                                         <div class="alert alert-warning">
-                                            <i class="mdi mdi-alert"></i> 
+                                            <i class="fas fa-exclamation-triangle"></i> 
                                             Aucune adhésion active trouvée. 
                                             <a href="{{ route('adherent.adhesions.index') }}" class="alert-link">Créer une adhésion d'abord</a>.
                                         </div>
-                                        <select class="form-select" disabled>
+                                        <select class="form-control" disabled>
                                             <option>Aucune adhésion disponible</option>
                                         </select>
                                     @endif
@@ -58,10 +59,10 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="categorie" class="form-label">Catégorie <span class="text-danger">*</span></label>
-                                    <select class="form-select @error('categorie') is-invalid @enderror" id="categorie" name="categorie" required>
+                                    <select class="form-control @error('categorie') is-invalid @enderror" id="categorie" name="categorie" required>
                                         <option value="">Sélectionner une catégorie</option>
                                         <option value="ouverture" {{ old('categorie') == 'ouverture' ? 'selected' : '' }}>Frais d'ouverture</option>
                                         <option value="cotisation" {{ old('categorie') == 'cotisation' ? 'selected' : '' }}>Cotisation</option>
@@ -75,8 +76,8 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="montant" class="form-label">Montant <span class="text-danger">*</span></label>
                                     <div class="input-group">
@@ -91,10 +92,10 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="mode_paiement" class="form-label">Mode de Paiement <span class="text-danger">*</span></label>
-                                    <select class="form-select @error('mode_paiement') is-invalid @enderror" id="mode_paiement" name="mode_paiement" required>
+                                    <select class="form-control @error('mode_paiement') is-invalid @enderror" id="mode_paiement" name="mode_paiement" required>
                                         <option value="">Sélectionner un mode</option>
                                         <option value="mobile_money" {{ old('mode_paiement') == 'mobile_money' ? 'selected' : '' }}>Mobile Money</option>
                                         <option value="virement" {{ old('mode_paiement') == 'virement' ? 'selected' : '' }}>Virement Bancaire</option>
@@ -109,8 +110,8 @@
                         </div>
 
                         <!-- Champs conditionnels selon le mode de paiement -->
-                        <div id="mobile-money-fields" class="row" style="display: none;">
-                            <div class="col-md-6">
+                        <div id="mobile-money-fields" class="row g-3" style="display: none;">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="reference_paiement" class="form-label">Référence Mobile Money</label>
                                     <input type="text" class="form-control @error('reference_paiement') is-invalid @enderror"
@@ -123,8 +124,8 @@
                             </div>
                         </div>
 
-                        <div id="virement-fields" class="row" style="display: none;">
-                            <div class="col-md-6">
+                        <div id="virement-fields" class="row g-3" style="display: none;">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="numero_compte_beneficiaire" class="form-label">Numéro de Compte Bénéficiaire</label>
                                     <input type="text" class="form-control @error('numero_compte_beneficiaire') is-invalid @enderror"
@@ -135,7 +136,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="banque_emetteur" class="form-label">Banque Émettrice</label>
                                     <input type="text" class="form-control @error('banque_emetteur') is-invalid @enderror"
@@ -148,8 +149,8 @@
                             </div>
                         </div>
 
-                        <div id="cheque-fields" class="row" style="display: none;">
-                            <div class="col-md-6">
+                        <div id="cheque-fields" class="row g-3" style="display: none;">
+                            <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="reference_cheque" class="form-label">Référence du Chèque</label>
                                     <input type="text" class="form-control @error('reference_cheque') is-invalid @enderror"
@@ -182,40 +183,49 @@
                             @enderror
                         </div>
 
-                        <div class="text-end">
-                            <a href="{{ route('adherent.paiements.index') }}" class="btn btn-light me-2">
-                                <i class="mdi mdi-arrow-left"></i> Annuler
-                            </a>
-                            <button type="submit" class="btn btn-primary" {{ $adhesions->count() == 0 ? 'disabled' : '' }}>
-                                <i class="mdi mdi-content-save"></i> Soumettre le Paiement
+                        <div class="btn-group-mobile mt-4">
+                            <button type="submit" class="btn btn-primary btn-mobile" {{ $adhesions->count() == 0 ? 'disabled' : '' }}>
+                                <i class="fas fa-paper-plane me-1"></i> Soumettre le Paiement
                             </button>
+                            <a href="{{ route('adherent.paiements.index') }}" class="btn btn-outline-secondary btn-mobile">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Informations Importantes</h5>
-                    <div class="alert alert-info">
-                        <h6><i class="mdi mdi-information"></i> Instructions</h6>
-                        <ul class="mb-0">
-                            <li>Assurez-vous que le montant correspond exactement à votre paiement</li>
-                            <li>Joignez une preuve claire et lisible de votre paiement</li>
-                            <li>Votre paiement sera validé dans les 24-48h</li>
+        <div class="col-12 col-lg-4">
+            <!-- Informations Importantes -->
+            <div class="card sif-card-mobile mb-mobile-3">
+                <div class="card-body p-mobile-3">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-info-circle text-info me-2"></i>Informations Importantes
+                    </h6>
+                    <div class="alert alert-info mb-0">
+                        <h6 class="fw-bold mb-2">
+                            <i class="fas fa-clipboard-list me-1"></i> Instructions
+                        </h6>
+                        <ul class="mb-0 small">
+                            <li class="mb-2">Assurez-vous que le montant correspond exactement à votre paiement</li>
+                            <li class="mb-2">Joignez une preuve claire et lisible de votre paiement</li>
+                            <li class="mb-2">Votre paiement sera validé dans les 24-48h</li>
                             <li>Vous recevrez une notification une fois validé</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Résumé de l'Adhésion</h5>
-                    <div id="adhesion-summary" class="text-muted">
-                        <p>Sélectionnez une adhésion pour voir les détails</p>
+            <!-- Résumé Adhésion -->
+            <div class="card sif-card-mobile">
+                <div class="card-body p-mobile-3">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-receipt text-primary me-2"></i>Résumé de l'Adhésion
+                    </h6>
+                    <div id="adhesion-summary" class="text-muted text-center">
+                        <i class="fas fa-hand-pointer fa-2x mb-2 d-block"></i>
+                        <small>Sélectionnez une adhésion pour voir les détails</small>
                     </div>
                 </div>
             </div>
@@ -268,18 +278,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (plan && montant) {
                     adhesionSummary.innerHTML = `
-                        <div class="border rounded p-3 bg-light">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="mdi mdi-account-card-details text-primary me-2"></i>
-                                <h6 class="text-primary mb-0">${plan}</h6>
+                        <div class="border rounded p-3 bg-light text-start">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-file-contract text-primary me-2 fa-lg"></i>
+                                <h6 class="text-primary mb-0 fw-bold">${plan}</h6>
                             </div>
-                            <div class="row">
+                            <div class="row g-3">
                                 <div class="col-6">
-                                    <small class="text-muted">Montant souscrit</small>
+                                    <small class="text-muted d-block mb-1">Montant souscrit</small>
                                     <p class="mb-0 fw-bold text-success">${parseFloat(montant).toLocaleString('fr-FR')} FCFA</p>
                                 </div>
                                 <div class="col-6">
-                                    <small class="text-muted">Numéro d'adhésion</small>
+                                    <small class="text-muted d-block mb-1">Numéro</small>
                                     <p class="mb-0 fw-bold">${selectedOption.textContent.split(' - ')[0]}</p>
                                 </div>
                             </div>
@@ -287,16 +297,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     `;
                 } else {
                     adhesionSummary.innerHTML = `
-                        <div class="alert alert-warning">
-                            <i class="mdi mdi-alert"></i> Données d'adhésion incomplètes
+                        <div class="alert alert-warning mb-0">
+                            <i class="fas fa-exclamation-triangle"></i> Données d'adhésion incomplètes
                         </div>
                     `;
                 }
             } else {
                 adhesionSummary.innerHTML = `
                     <div class="text-center text-muted py-3">
-                        <i class="mdi mdi-account-card-details fa-2x mb-2 d-block"></i>
-                        <p class="mb-0">Sélectionnez une adhésion pour voir les détails</p>
+                        <i class="fas fa-hand-pointer fa-2x mb-2 d-block"></i>
+                        <small>Sélectionnez une adhésion pour voir les détails</small>
                     </div>
                 `;
             }

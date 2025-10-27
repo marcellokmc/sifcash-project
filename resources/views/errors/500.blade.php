@@ -233,7 +233,7 @@
             <div class="col-12 text-center">
                 <p class="text-white-50 small mb-0">
                     <i class="fas fa-shield-alt me-2"></i>
-                    SIF Burkina - Système Intégré de Finance {{ date('Y') }}
+                    SIFCash-Burkina - Système Intégré de Finance {{ date('Y') }}
                 </p>
             </div>
         </div>

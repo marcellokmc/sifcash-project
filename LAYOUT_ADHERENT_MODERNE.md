@@ -1,4 +1,4 @@
-# 🎨 Layout Adhérent Moderne - SIF Burkina
+# 🎨 Layout Adhérent Moderne - SIFCash-Burkina
 
 ## ✨ NOUVELLE ARCHITECTURE NAVIGATION
 
@@ -150,4 +150,4 @@ Pour migrer d'autres vues :
 @extends('layouts.adherent-modern')
 ```
 
-Le layout moderne SIF Burkina offre maintenant une **expérience navigation premium** avec une **organisation logique** et un **design contemporain** ! 🎉
+Le layout moderne SIFCash-Burkina offre maintenant une **expérience navigation premium** avec une **organisation logique** et un **design contemporain** ! 🎉

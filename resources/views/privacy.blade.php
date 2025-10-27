@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Politique de Confidentialité - SIFcash-Burkina</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -78,6 +80,13 @@
             background: rgba(255,255,255,0.2);
             color: white;
         }
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Ajuster le scroll pour compenser le header fixe */
+        h2[id] {
+            scroll-margin-top: 100px;
+        }
         .gdpr-badge {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
@@ -122,7 +131,7 @@
                         <p class="text-muted mb-4">Dernière mise à jour : {{ date('d/m/Y') }}</p>
 
                         <!-- Section Introduction -->
-                        <h2 class="section-title mb-4">1. ENGAGEMENT DE CONFIDENTIALITÉ</h2>
+                        <h2 class="section-title mb-4" id="engagement">1. ENGAGEMENT DE CONFIDENTIALITÉ</h2>
                         <div class="data-category mb-5">
                             <p class="mb-3">Chez <strong>SIFcash-Burkina</strong>, la protection de vos données personnelles est une priorité absolue. Cette politique de confidentialité détaille notre approche transparente et responsable de la collecte, du traitement et de la protection de vos informations personnelles.</p>
                             
@@ -133,7 +142,7 @@
                         </div>
 
                         <!-- Section 2 -->
-                        <h2 class="section-title mb-4">2. DONNÉES COLLECTÉES</h2>
+                        <h2 class="section-title mb-4" id="donnees">2. DONNÉES COLLECTÉES</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">2.1 Informations d'Identification</h5>
                             <div class="data-category">
@@ -185,7 +194,7 @@
                         </div>
 
                         <!-- Section 3 -->
-                        <h2 class="section-title mb-4">3. FINALITÉS DU TRAITEMENT</h2>
+                        <h2 class="section-title mb-4" id="finalites">3. FINALITÉS DU TRAITEMENT</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">Nous traitons vos données pour :</h5>
                             <div class="data-category">
@@ -213,7 +222,7 @@
                         </div>
 
                         <!-- Section 4 -->
-                        <h2 class="section-title mb-4">4. PARTAGE ET TRANSMISSION</h2>
+                        <h2 class="section-title mb-4" id="partage">4. PARTAGE ET TRANSMISSION</h2>
                         <div class="mb-5">
                             <div class="alert alert-success">
                                 <h6><i class="fas fa-lock me-2"></i>Principe Fondamental :</h6>
@@ -232,7 +241,7 @@
                         </div>
 
                         <!-- Section 5 -->
-                        <h2 class="section-title mb-4">5. MESURES DE SÉCURITÉ</h2>
+                        <h2 class="section-title mb-4" id="securite">5. MESURES DE SÉCURITÉ</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">Protection Technique :</h5>
                             <div class="row">
@@ -264,7 +273,7 @@
                         </div>
 
                         <!-- Section 6 -->
-                        <h2 class="section-title mb-4">6. CONSERVATION DES DONNÉES</h2>
+                        <h2 class="section-title mb-4" id="conservation">6. CONSERVATION DES DONNÉES</h2>
                         <div class="mb-5">
                             <div class="data-category">
                                 <h5 class="mb-3"><i class="fas fa-calendar-alt me-2"></i>Durées de Conservation :</h5>
@@ -295,7 +304,7 @@
                         </div>
 
                         <!-- Section 7 -->
-                        <h2 class="section-title mb-4">7. VOS DROITS</h2>
+                        <h2 class="section-title mb-4" id="droits">7. VOS DROITS</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">Droits Fondamentaux :</h5>
                             
@@ -326,7 +335,7 @@
                         </div>
 
                         <!-- Section 8 -->
-                        <h2 class="section-title mb-4">8. COOKIES ET TECHNOLOGIES</h2>
+                        <h2 class="section-title mb-4" id="cookies">8. COOKIES ET TECHNOLOGIES</h2>
                         <div class="mb-5">
                             <div class="data-category">
                                 <h5 class="mb-3"><i class="fas fa-cookie-bite me-2"></i>Types de Cookies Utilisés :</h5>
@@ -357,7 +366,7 @@
                         </div>
 
                         <!-- Section 9 -->
-                        <h2 class="section-title mb-4">9. MODIFICATIONS ET CONTACT</h2>
+                        <h2 class="section-title mb-4" id="contact">9. MODIFICATIONS ET CONTACT</h2>
                         <div class="mb-5">
                             <h5 class="text-primary mb-3">Mises à Jour de la Politique :</h5>
                             <div class="data-category">
@@ -380,12 +389,19 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6>Responsable de la Protection des Données :</h6>
-                                    <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i>dpo@sifcash-burkina.bf</p>
-                                    <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>+226 70 00 00 00</p>
+                                    <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i><a href="mailto:dpo@sifcash-burkina.bf" class="text-decoration-none">dpo@sifcash-burkina.bf</a></p>
+                                    <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>
+                                        <a href="tel:+22625456364" class="text-decoration-none">+226 25 45 63 64</a>
+                                    </p>
                                 </div>
                                 <div class="col-md-6">
                                     <h6>Service Client :</h6>
-                                    <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i>contact@sifcash-burkina.bf</p>
+                                    <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i><a href="mailto:contact@sifcash-burkina.bf" class="text-decoration-none">contact@sifcash-burkina.bf</a></p>
+                                    <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>
+                                        <a href="tel:+22625456364" class="text-decoration-none">+226 25 45 63 64</a> /
+                                        <a href="tel:+22676182726" class="text-decoration-none">76 18 27 26</a> /
+                                        <a href="tel:+22604370203" class="text-decoration-none">04 37 02 03</a>
+                                    </p>
                                     <p class="mb-2"><i class="fas fa-map-marker-alt text-primary me-2"></i>Ouagadougou, Burkina Faso</p>
                                 </div>
                             </div>

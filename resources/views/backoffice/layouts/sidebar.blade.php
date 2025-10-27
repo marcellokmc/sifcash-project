@@ -2,7 +2,7 @@
     <!-- En-tête de la barre latérale -->
     <div class="text-center mb-4">
         <h4 class="text-white mb-0">
-            <i class="fas fa-hand-holding-usr me-2"></i>SIF Burkina
+            <i class="fas fa-hand-holding-usr me-2"></i>SIFCash-Burkina
         </h4>
         <small class="text-white-50">Gestion des opérations</small>
     </div>
@@ -589,7 +589,7 @@
         <!-- Version et copyright -->
         <div class="mt-auto p-3 text-center text-white-50 small border-top border-secondary">
             <div class="mb-1">Version 1.0.0</div>
-            <div>© {{ date('Y') }} SIF Burkina</div>
+            <div>© {{ date('Y') }} SIFCash-Burkina</div>
         </div>
     </div>
 </div>

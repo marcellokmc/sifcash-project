@@ -125,7 +125,7 @@ class DashboardController extends Controller
             // Utiliser les collections chargées pour éviter des requêtes supplémentaires
             $validatedRequiredCount = $adherent->documents
             ->filter(function ($doc) {
-                return in_array($doc->statut, ['soumis', 'validé'])
+                return $doc->statut === 'validé'
                     && $doc->typeDocument
                     && $doc->typeDocument->actif
                     && $doc->typeDocument->obligatoire;
