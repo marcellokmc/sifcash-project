@@ -32,78 +32,37 @@
     <!-- Right Section: Actions & Profile -->
     <div class="d-flex align-items-center gap-3">
         <!-- Notifications -->
-        <div class="dropdown">
+        <div class="dropdown" data-notification-dropdown>
             <button class="notification-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-bell" style="color: var(--sif-primary); font-size: 1.1rem;"></i>
                 @php
                     try {
                         $notificationCount = \DB::table('notifications')->where('user_id', auth()->id())->where('lu', false)->count();
-                        $hasNotifications = true;
                     } catch (\Exception $e) {
                         $notificationCount = 0;
-                        $hasNotifications = false;
                     }
                 @endphp
                 @if($notificationCount > 0)
-                    <span class="notification-badge">{{ $notificationCount > 9 ? '9+' : $notificationCount }}</span>
+                    <span class="notification-badge" data-notification-badge>{{ $notificationCount > 9 ? '9+' : $notificationCount }}</span>
+                @else
+                    <span class="notification-badge d-none" data-notification-badge></span>
                 @endif
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 320px; max-height: 400px; overflow-y: auto;">
                 <li class="px-3 py-2 border-bottom">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="mb-0 fw-bold" style="color: var(--sif-primary);">🔔 Notifications</h6>
-                        @if($notificationCount > 0)
-                            <span class="badge bg-primary rounded-pill">{{ $notificationCount }}</span>
-                        @endif
                     </div>
                 </li>
-                @if($hasNotifications && $notificationCount > 0)
-                    @php
-                        $notifications = \DB::table('notifications')
-                            ->where('user_id', auth()->id())
-                            ->where('lu', false)
-                            ->orderBy('created_at', 'desc')
-                            ->limit(5)
-                            ->get();
-                    @endphp
-                    @forelse($notifications as $notification)
-                        <li>
-                            <a class="dropdown-item py-3" href="#">
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0">
-                                        <div class="rounded-circle bg-primary bg-opacity-10 p-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-info-circle text-primary"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <p class="mb-1 small fw-semibold">{{ $notification->titre ?? 'Notification' }}</p>
-                                        <p class="mb-0 text-muted" style="font-size: 0.8rem;">{{ $notification->message ?? '' }}</p>
-                                        <p class="mb-0 text-muted" style="font-size: 0.7rem;">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    @empty
-                        <li class="px-3 py-4 text-center text-muted">
-                            <i class="fas fa-bell-slash mb-2" style="font-size: 2rem; opacity: 0.3;"></i>
-                            <p class="mb-0 small">Aucune notification</p>
-                        </li>
-                    @endforelse
-                    @if($notificationCount > 0 && Route::has('admin.notifications.index'))
-                        <li class="border-top">
-                            <a class="dropdown-item text-center py-2 fw-semibold" href="{{ route('admin.notifications.index') }}" style="color: var(--sif-primary);">
-                                Voir toutes les notifications
-                                <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
-                        </li>
-                    @endif
-                @else
-                    <li class="px-3 py-4 text-center text-muted">
-                        <i class="fas fa-bell-slash mb-2" style="font-size: 2rem; opacity: 0.3;"></i>
-                        <p class="mb-0 small">Aucune notification</p>
-                        <p class="mb-0" style="font-size: 0.7rem; color: #cbd5e1;">Système de notifications en cours de configuration</p>
-                    </li>
-                @endif
+                <li class="p-0">
+                    <div class="notification-dropdown-content"></div>
+                </li>
+                <li class="border-top">
+                    <a class="dropdown-item text-center py-2 fw-semibold" href="{{ route('admin.notifications.index') }}" style="color: var(--sif-primary);">
+                        Voir toutes les notifications
+                        <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </li>
             </ul>
         </div>
         

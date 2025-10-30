@@ -68,6 +68,18 @@ class NotificationController extends Controller
         return response()->json(['message' => 'Suppression non autorisée'], 405);
     }
 
+    // Admin: mark any notification as read (backoffice)
+    public function adminMarkRead(Request $request, Notification $notification)
+    {
+        $notification->lu = true;
+        $notification->save();
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Notification marquée comme lue']);
+        }
+        return back()->with('success', 'Notification marquée comme lue');
+    }
+
     // Adherent: list own notifications
     public function indexForAdherent(Request $request)
     {
@@ -98,5 +110,55 @@ class NotificationController extends Controller
         
         return redirect()->route('adherent.notifications.index')
                         ->with('success', 'Notification marquée comme lue');
+    }
+
+    // API: unread count + latest notifications
+    public function unreadCount(Request $request)
+    {
+        $userId = $request->user()->id;
+        $count = Notification::where('user_id', $userId)->where('lu', false)->count();
+        $notifications = Notification::where('user_id', $userId)
+            ->latest()
+            ->limit(5)
+            ->get(['id','titre as title','message','type','lu as read_at','created_at']);
+
+        return response()->json([
+            'count' => $count,
+            'notifications' => $notifications,
+        ]);
+    }
+
+    // API: recent notifications list (latest 10)
+    public function recent(Request $request)
+    {
+        $userId = $request->user()->id;
+        $notifications = Notification::where('user_id', $userId)
+            ->latest()
+            ->limit(10)
+            ->get(['id','titre as title','message','type','lu as read_at','created_at']);
+
+        return response()->json([
+            'notifications' => $notifications,
+        ]);
+    }
+
+    // API: mark one as read
+    public function markRead(Request $request, Notification $notification)
+    {
+        $user = $request->user();
+        abort_unless($notification->user_id === $user->id, 403, 'Non autorisé');
+        if (!$notification->lu) {
+            $notification->lu = true;
+            $notification->save();
+        }
+        return response()->json(['message' => 'OK']);
+    }
+
+    // API: mark all as read for current user
+    public function markAllRead(Request $request)
+    {
+        $userId = $request->user()->id;
+        Notification::where('user_id', $userId)->where('lu', false)->update(['lu' => true]);
+        return response()->json(['message' => 'OK']);
     }
 }

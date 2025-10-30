@@ -134,7 +134,7 @@
                                     <div class="col-md-6">
                                         <p><strong>RCCM :</strong> BF.OUA.2023.B.6789</p>
                                         <p><strong>IFU :</strong> 00234567A</p>
-                                        <p><strong>Capital social :</strong> 50 000 000 FCFA</p>
+                                        <p><strong>Capital social :</strong> 1 277 500 000 FCFA</p>
                                     </div>
                                 </div>
                             </div>

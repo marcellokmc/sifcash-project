@@ -52,7 +52,10 @@ function updateNotificationBadges(count, notifications = []) {
         if (count > 0) {
             badge.textContent = count > 99 ? '99+' : count;
             badge.classList.remove('d-none');
-            badge.classList.add('badge', 'bg-danger', 'rounded-pill');
+            // N'ajoute pas de classes si badge personnalisé
+            if (!badge.classList.contains('notification-badge')) {
+                badge.classList.add('badge', 'bg-danger', 'rounded-pill');
+            }
             
             // Animation si nouveau
             if (count > lastNotificationCount) {
@@ -101,6 +104,19 @@ function handleNotificationDropdowns() {
         if (!dropdown) return;
         
         await loadNotificationDropdown(dropdown);
+        // Marquer toutes comme lues à l'ouverture de la cloche
+        try {
+            await fetch('/api/notifications/mark-all-read', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                }
+            });
+            updateNotificationBadges(0, []);
+        } catch (err) {
+            // silencieux
+        }
     });
 }
 

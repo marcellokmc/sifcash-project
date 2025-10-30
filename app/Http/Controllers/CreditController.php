@@ -46,24 +46,42 @@ class CreditController extends Controller
             'echeance_id' => ['required','integer','exists:echeance_credits,id'],
             'date_paiement' => ['required','date'],
             'montant' => ['required','numeric','min:0.01'],
-            'mode' => ['nullable','string'],
-            'reference' => ['nullable','string'],
-            'preuves.*' => ['nullable','file'],
+            'mode' => ['required','in:especes,mobile_money,virement,cheque'],
+            'reference' => ['required_unless:mode,especes','nullable','string','max:255'],
+            'preuves.*' => ['nullable','file','mimes:jpg,jpeg,png,pdf','max:5120'],
+            'apply_penalty' => ['nullable','boolean'],
         ]);
 
         $echeance = EcheanceCredit::with('credit.adherent.user')
             ->where('credit_id', $credit->id)
             ->findOrFail($data['echeance_id']);
 
-        $dueTotal = (float)$echeance->montant_attendu + max(0, (float)$echeance->penalite_appliquee);
+        // Optionally apply a flat 25% penalty on expected amount for this installment
+        if (!empty($data['apply_penalty'])) {
+            $calculatedPenalty = round(((float)$echeance->montant_attendu) * 0.25, 2);
+            $echeance->penalite_appliquee = $calculatedPenalty;
+            $echeance->save();
+        } else {
+            // If not applying penalty, ensure no penalty blocks the status
+            $echeance->penalite_appliquee = 0;
+            $echeance->save();
+        }
+
+        // Re-evaluate due with potential penalty
         $penaliteDue = max(0, (float)$echeance->penalite_appliquee);
         $amount = round((float)$data['montant'], 2);
-        $penalitePaid = min($amount, $penaliteDue);
-        $principalPaid = max(0.0, $amount - $penalitePaid);
+
+        // Allocate amount to principal first, then penalty
+        $alreadyPaidPrincipal = (float)$echeance->montant_paye;
+        $principalDueTotal = (float)$echeance->montant_attendu;
+        $principalRemaining = max(0.0, $principalDueTotal - $alreadyPaidPrincipal);
+
+        $principalPaid = min($amount, $principalRemaining);
+        $penalitePaid = min($penaliteDue, max(0.0, $amount - $principalPaid));
 
         $paiement = null;
 
-        DB::transaction(function () use ($credit, $echeance, $data, $request, $penalitePaid, $principalPaid, $amount, &$paiement) {
+        DB::transaction(function () use ($credit, $echeance, $data, $request, $penalitePaid, $principalPaid, $amount, $principalDueTotal, &$paiement) {
             // Create payment record first
             $paiement = PaiementCredit::create([
                 'credit_id' => $credit->id,
@@ -78,19 +96,19 @@ class CreditController extends Controller
                 'motif_rejet' => null,
             ]);
 
-            // Update installment amounts
-            $echeance->montant_paye = round(((float)$echeance->montant_paye) + $principalPaid, 2);
+            // Update installment amounts (principal-based status)
+            $totalPrincipal = round(((float)$echeance->montant_paye) + $principalPaid, 2);
+            $echeance->montant_paye = $totalPrincipal;
 
-            $totalPaidAgainstDue = (float)$echeance->montant_paye + (float)$penalitePaid;
-            $totalDue = (float)$echeance->montant_attendu + max(0, (float)$echeance->penalite_appliquee);
-            if ($totalPaidAgainstDue + 0.001 >= $totalDue) {
+            // Mark as paid when principal is fully covered (admin enregistrement)
+            if ($totalPrincipal + 0.001 >= $principalDueTotal) {
                 $echeance->statut = 'payé';
                 $echeance->date_paiement = $data['date_paiement'];
             }
             $echeance->save();
 
-            // Upload proofs if any
-            if ($request->hasFile('preuves')) {
+            // Upload proofs if any (not required for cash)
+            if ($request->hasFile('preuves') && $data['mode'] !== 'especes') {
                 foreach ($request->file('preuves') as $file) {
                     $path = $file->store('paiements_preuves');
                     PaiementCreditPreuve::create([
@@ -201,12 +219,11 @@ class CreditController extends Controller
 
         // Envoyer une notification à l'administrateur
         Notification::create([
+            'user_id' => 1, // Administrateur
             'titre' => 'Nouvelle demande de crédit',
-            'contenu' => "L'adhérent {$adherent->nom_complet} a soumis une demande de crédit de {$validated['montant']} FCFA.",
-            'type' => 'nouvelle_demande_credit',
-            'lien' => route('admin.credits.show', $credit->id),
-            'destinataire_id' => 1, // ID de l'administrateur
-            'statut' => 'non_lu',
+            'message' => "L'adhérent {$adherent->nom_complet} a soumis une demande de crédit de {$validated['montant']} FCFA.",
+            'lu' => false,
+            'type' => 'info',
         ]);
 
         return redirect()->route('adherent.credits.index')

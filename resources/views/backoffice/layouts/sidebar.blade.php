@@ -23,8 +23,8 @@
 
         <!-- Section Adhérents -->
         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center justify-content-between {{ request()->routeIs('admin.adherents.*') ? 'active' : '' }}" 
-               data-bs-toggle="collapse" href="#" data-bs-target="#adherentsMenu" role="button" aria-controls="adherentsMenu" aria-expanded="{{ request()->routeIs('admin.adherents.*') ? 'true' : 'false' }}">
+            <a class="nav-link d-flex align-items-center justify-content-between {{ (request()->routeIs('admin.adherents.*') || request()->routeIs('admin.validation.*')) ? 'active' : '' }}" 
+               data-bs-toggle="collapse" href="#" data-bs-target="#adherentsMenu" role="button" aria-controls="adherentsMenu" aria-expanded="{{ (request()->routeIs('admin.adherents.*') || request()->routeIs('admin.validation.*')) ? 'true' : 'false' }}">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-users me-3"></i>
                     <span>Adhérents</span>
@@ -36,9 +36,9 @@
                 @if($nbAdherentsEnAttente > 0)
                     <span class="badge bg-warning rounded-pill me-2">{{ $nbAdherentsEnAttente }}</span>
                 @endif
-                <i class="fas fa-chevron-{{ request()->routeIs('admin.adherents.*') ? 'up' : 'down' }} small"></i>
+                <i class="fas fa-chevron-{{ (request()->routeIs('admin.adherents.*') || request()->routeIs('admin.validation.*')) ? 'up' : 'down' }} small"></i>
             </a>
-            <div class="collapse {{ request()->routeIs('admin.adherents.*') ? 'show' : '' }}" id="adherentsMenu">
+            <div class="collapse {{ (request()->routeIs('admin.adherents.*') || request()->routeIs('admin.validation.*')) ? 'show' : '' }}" id="adherentsMenu">
                 <ul class="nav flex-column ms-4 py-2">
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.adherents.index') && !request()->has('affectation') ? 'active' : '' }}" 
@@ -62,6 +62,26 @@
                             @if($nbAdherentsEnAttente > 0)
                                 <span class="badge bg-warning rounded-pill ms-auto">{{ $nbAdherentsEnAttente }}</span>
                             @endif
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2 pt-2 border-top">
+                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.validation.documents') ? 'active' : '' }}" 
+                           href="{{ route('admin.validation.documents') }}">
+                            <i class="fas fa-file-alt me-2"></i>
+                            <span>Documents en attente</span>
+                            <span class="badge bg-danger rounded-pill ms-auto {{ (\App\Models\Document::where('statut','soumis')->count() > 0) ? '' : 'd-none' }}">
+                                {{ \App\Models\Document::where('statut','soumis')->count() }}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.validation.ayants-droit') ? 'active' : '' }}" 
+                           href="{{ route('admin.validation.ayants-droit') }}">
+                            <i class="fas fa-users me-2"></i>
+                            <span>Ayants droit en attente</span>
+                            <span class="badge bg-danger rounded-pill ms-auto {{ (\App\Models\AyantDroit::where('statut_validation','en_attente')->count() > 0) ? '' : 'd-none' }}">
+                                {{ \App\Models\AyantDroit::where('statut_validation','en_attente')->count() }}
+                            </span>
                         </a>
                     </li>
                 </ul>
@@ -418,51 +438,6 @@
         </li>
         @endif
 
-        <hr class="border-light opacity-25 my-2">
-
-        <!-- Section Validations -->
-        @if(auth()->user()->isAdmin() || auth()->user()->isAgent() || auth()->user()->isChefService())
-        @php /* compteurs inline pour Validations */ @endphp
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center justify-content-between {{ request()->routeIs('admin.validation.*') ? 'active' : '' }}" 
-               data-bs-toggle="collapse" href="#" data-bs-target="#validationsMenu" role="button" aria-controls="validationsMenu" aria-expanded="{{ request()->routeIs('admin.validation.*') ? 'true' : 'false' }}">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-clipboard-check me-3"></i>
-                    <span>Validations</span>
-                </div>
-                <span class="badge bg-danger rounded-pill me-2 {{ ((\App\Models\Document::where('statut','soumis')->count() + \App\Models\AyantDroit::where('statut_validation','en_attente')->count()) > 0) ? '' : 'd-none' }}">
-                    {{ (\App\Models\Document::where('statut','soumis')->count() + \App\Models\AyantDroit::where('statut_validation','en_attente')->count()) }}
-                </span>
-                <i class="fas fa-chevron-{{ request()->routeIs('admin.validation.*') ? 'up' : 'down' }} small"></i>
-            </a>
-            <div class="collapse {{ request()->routeIs('admin.validation.*') ? 'show' : '' }}" id="validationsMenu">
-                <ul class="nav flex-column ms-4 py-2">
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.validation.documents') ? 'active' : '' }}" 
-                           href="{{ route('admin.validation.documents') }}">
-                            <i class="fas fa-file-alt me-2"></i>
-                            <span>Documents en attente</span>
-                            <span class="badge bg-danger rounded-pill ms-auto {{ (\App\Models\Document::where('statut','soumis')->count() > 0) ? '' : 'd-none' }}">
-                                {{ \App\Models\Document::where('statut','soumis')->count() }}
-                            </span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.validation.ayants-droit') ? 'active' : '' }}" 
-                           href="{{ route('admin.validation.ayants-droit') }}">
-                            <i class="fas fa-users me-2"></i>
-                            <span>Ayants droit en attente</span>
-                            <span class="badge bg-danger rounded-pill ms-auto {{ (\App\Models\AyantDroit::where('statut_validation','en_attente')->count() > 0) ? '' : 'd-none' }}">
-                                {{ \App\Models\AyantDroit::where('statut_validation','en_attente')->count() }}
-                            </span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        @endif
-
-        <hr class="border-light opacity-25 my-2">
 
         <!-- Activité globale -->
         <li class="nav-item">

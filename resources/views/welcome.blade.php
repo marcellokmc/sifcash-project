@@ -587,13 +587,13 @@
                             </div>
                             <h4 class="card-title fw-bold mb-3" style="color: #f59e0b;">🏆 Excellence Certifiée</h4>
                             <p class="card-text text-muted mb-4">
-                                Institution certifiée avec des années d'expériences et plusieurs clients satisfaits.
+                                Institution certifiée avec plus de 15 ans d'expériences et plusieurs clients satisfaits.
                             </p>
                             <div class="bg-light rounded-3 p-3 mb-3">
                                 <ul class="list-unstyled mb-0 small text-dark">
                                     <li class="mb-2"><i class="fas fa-award text-warning me-2"></i><strong>Client</strong> satisfaits</li>
                                     <li class="mb-2"><i class="fas fa-award text-warning me-2"></i><strong>RGPD</strong> conforme</li>
-                                    <li class="mb-0"><i class="fas fa-award text-warning me-2"></i><strong>Des années</strong> d'expérience</li>
+                                    <li class="mb-0"><i class="fas fa-award text-warning me-2"></i><strong>15</strong> ans</li>
                                 </ul>
                             </div>
                             <a href="{{ route('about') }}" class="btn btn-warning rounded-pill px-4 text-white">
@@ -993,7 +993,7 @@
                             <i class="fas fa-handshake" style="font-size: 2.5rem;"></i>
                         </div>
                         <h4 class="fw-bold mb-3">💖 Confiance</h4>
-                        <p style="opacity: 0.9;">Des années d'expériences et plusieurs clients satisfaits. Votre confiance est notre priorité.</p>
+                        <p style="opacity: 0.9;">Des 15 ans d'expériences et plusieurs clients satisfaits. Votre confiance est notre priorité.</p>
                     </div>
                 </div>
                 

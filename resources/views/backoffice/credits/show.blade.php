@@ -229,7 +229,9 @@
                 <label class="form-label">Échéance</label>
                 <select name="echeance_id" class="form-select">
                   @foreach($credit->echeances as $e)
-                    <option value="{{ $e->id }}">{{ \Carbon\Carbon::parse($e->date_echeance)->format('d/m/Y') }} — Attendu {{ number_format((float)$e->montant_attendu, 2, ',', ' ') }}</option>
+                    <option value="{{ $e->id }}" data-attendu="{{ (float)$e->montant_attendu }}" data-penalite="{{ (float)($e->penalite_appliquee ?? 0) }}">
+                      {{ \Carbon\Carbon::parse($e->date_echeance)->format('d/m/Y') }} — Attendu {{ number_format((float)$e->montant_attendu, 2, ',', ' ') }}
+                    </option>
                   @endforeach
                 </select>
               </div>
@@ -243,18 +245,92 @@
               </div>
               <div class="mb-2">
                 <label class="form-label">Mode</label>
-                <input name="mode" type="text" class="form-control">
+                <select name="mode" id="mode" class="form-select">
+                  <option value="especes">Espèces</option>
+                  <option value="mobile_money">Mobile money</option>
+                  <option value="virement">Virement</option>
+                  <option value="cheque">Chèque</option>
+                </select>
               </div>
-              <div class="mb-2">
+
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" role="switch" id="apply_penalty" name="apply_penalty" value="1">
+                <label class="form-check-label" for="apply_penalty">Appliquer la pénalité (25% de l'échéance)</label>
+              </div>
+              <div class="mb-2 text-muted" id="penaltyPreview" style="display:none">
+                Pénalité estimée: <span id="penaltyAmount">0</span> FCFA
+              </div>
+
+              <div class="mb-2" id="referenceGroup">
                 <label class="form-label">Référence</label>
                 <input name="reference" type="text" class="form-control">
               </div>
-              <div class="mb-3">
+              <div class="mb-3" id="preuvesGroup">
                 <label class="form-label">Preuves (fichiers)</label>
                 <input type="file" name="preuves[]" class="form-control" multiple>
               </div>
+
               <button class="btn btn-outline-primary w-100">Enregistrer paiement</button>
             </form>
+
+            <script>
+              (function(){
+                const echeanceSelect = document.querySelector('select[name="echeance_id"]');
+                const modeSelect = document.getElementById('mode');
+                const refGroup = document.getElementById('referenceGroup');
+                const preuvesGroup = document.getElementById('preuvesGroup');
+                const applyPenalty = document.getElementById('apply_penalty');
+                const penaltyPreview = document.getElementById('penaltyPreview');
+                const penaltyAmount = document.getElementById('penaltyAmount');
+
+                function getSelectedExpected(){
+                  const opt = echeanceSelect.options[echeanceSelect.selectedIndex];
+                  const m = opt.getAttribute('data-attendu');
+                  return m ? parseFloat(m) : NaN;
+                }
+
+                function updatePenalty(){
+                  if (!applyPenalty.checked) { penaltyPreview.style.display = 'none'; return; }
+                  const attendu = getSelectedExpected();
+                  if (!isNaN(attendu)){
+                    const pen = Math.round(attendu * 0.25);
+                    penaltyAmount.textContent = pen.toLocaleString('fr-FR');
+                    penaltyPreview.style.display = '';
+                  } else {
+                    penaltyPreview.style.display = 'none';
+                  }
+                }
+
+                function updateMode(){
+                  const isCash = modeSelect.value === 'especes';
+                  refGroup.style.display = isCash ? 'none' : '';
+                  preuvesGroup.style.display = isCash ? 'none' : '';
+                }
+
+                // Enrich echeance options with expected amounts
+                (function enrich(){
+                  const opts = echeanceSelect.querySelectorAll('option');
+                  opts.forEach(o => {
+                    if (!o.getAttribute('data-attendu')){
+                      const txt = o.textContent || '';
+                      const m = txt.match(/Attendu\s([0-9\s,\.]+)/i);
+                      if (m){
+                        const v = parseFloat(m[1].replace(/\s/g,'').replace(',', '.'));
+                        if (!isNaN(v)) o.setAttribute('data-attendu', v);
+                      }
+                    }
+                  });
+                })();
+
+                echeanceSelect.addEventListener('change', updatePenalty);
+                applyPenalty.addEventListener('change', updatePenalty);
+                modeSelect.addEventListener('change', updateMode);
+
+                // init
+                updateMode();
+                updatePenalty();
+              })();
+            </script>
           @endif
         @endcan
       </div>

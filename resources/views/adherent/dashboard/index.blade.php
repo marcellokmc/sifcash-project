@@ -629,7 +629,7 @@
                             <div class="col-6">
                                 <div class="bg-light rounded-3 p-3">
                                     <h4 class="fw-bold text-info mb-1">12</h4>
-                                    <small class="text-muted">🏢 Années d'expérience</small>
+                                    <small class="text-muted">🏢 15 ans d'expérience</small>
                                 </div>
                             </div>
                         </div>

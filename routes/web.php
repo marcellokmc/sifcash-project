@@ -188,10 +188,18 @@ Route::middleware(['auth'])->group(function () {
             ->name('notifications.index');
         Route::post('notifications/{notification}/mark-read', [\App\Http\Controllers\NotificationController::class, 'markReadForAdherent'])
             ->name('notifications.mark-read');
-        
+
         // Téléchargement du contrat d'adhésion
         Route::get('contrat/download', [AdherentController::class, 'downloadContract'])
             ->name('contrat.download');
+    });
+
+    // API Notifications (utilisé par le front - garde web + session)
+    Route::prefix('api/notifications')->group(function () {
+        Route::get('unread-count', [\App\Http\Controllers\NotificationController::class, 'unreadCount']);
+        Route::get('recent', [\App\Http\Controllers\NotificationController::class, 'recent']);
+        Route::post('{notification}/mark-read', [\App\Http\Controllers\NotificationController::class, 'markRead']);
+        Route::post('mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllRead']);
     });
 
     // ==================== BACKOFFICE ADMINISTRATION ====================
@@ -309,6 +317,8 @@ Route::middleware(['auth'])->group(function () {
         // Notifications admin
         Route::get('notifications', [\App\Http\Controllers\NotificationController::class, 'index'])
             ->name('notifications.index');
+        Route::post('notifications/{notification}/mark-read', [\App\Http\Controllers\NotificationController::class, 'adminMarkRead'])
+            ->name('notifications.mark-read');
 
         // Audits admin
         Route::get('audits', [AuditController::class, 'index'])->name('audits.index');
