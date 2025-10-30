@@ -408,8 +408,8 @@
                                 <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
                                     <div class="text-white">
                                         <i class="fas fa-shield-alt fa-2x mb-3" style="opacity: 0.9; color: #3b82f6;"></i>
-                                        <div class="fw-bold" style="font-size: 1.4rem;">15 ans</div>
-                                        <div class="small" style="opacity: 0.9; font-weight: 500;">🛡️ Expérience</div>
+                                        <div class="fw-bold" style="font-size: 1.4rem;">plusieurs années</div>
+                                        <div class="small" style="opacity: 0.9; font-weight: 500;">🛡️ D'expérience</div>
                                     </div>
                                 </div>
                             </div>

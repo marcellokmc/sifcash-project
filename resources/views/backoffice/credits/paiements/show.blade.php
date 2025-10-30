@@ -246,6 +246,18 @@
                 <div class="card-body">
                     <h5 class="card-title">Actions</h5>
                     <div class="d-grid gap-2">
+                        @if($paiement->statut === 'en_attente')
+                        <button type="button" class="btn btn-success" onclick="validatePaiement()">
+                            <i class="mdi mdi-check-circle"></i> Valider le paiement
+                        </button>
+                        
+                        <button type="button" class="btn btn-danger" onclick="showRejectModal()">
+                            <i class="mdi mdi-close-circle"></i> Rejeter le paiement
+                        </button>
+                        
+                        <hr>
+                        @endif
+                        
                         <a href="{{ route('admin.credits.paiements.index') }}" class="btn btn-outline-secondary">
                             <i class="mdi mdi-arrow-left"></i> Retour à la liste
                         </a>
@@ -274,4 +286,109 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de rejet -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rejeter le paiement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="mdi mdi-alert"></i> Vous êtes sur le point de rejeter ce paiement. Cette action est irréversible.
+                </div>
+                <div class="mb-3">
+                    <label for="motif_rejet" class="form-label">Motif du rejet <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="motif_rejet" rows="4" placeholder="Veuillez expliquer la raison du rejet..." required></textarea>
+                    <div class="invalid-feedback" id="motif-error">
+                        Le motif du rejet est obligatoire.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" onclick="confirmReject()">
+                    <i class="mdi mdi-close-circle"></i> Confirmer le rejet
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+const paiementId = {{ $paiement->id }};
+
+function validatePaiement() {
+    if (!confirm('Êtes-vous sûr de vouloir valider ce paiement ?')) {
+        return;
+    }
+
+    fetch(`/admin/credits/paiements/${paiementId}/validate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Paiement validé avec succès');
+            location.reload();
+        } else {
+            alert('Erreur : ' + (data.message || 'Une erreur est survenue'));
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la validation du paiement');
+    });
+}
+
+function showRejectModal() {
+    const modal = new bootstrap.Modal(document.getElementById('rejectModal'));
+    modal.show();
+}
+
+function confirmReject() {
+    const motif = document.getElementById('motif_rejet').value.trim();
+    const motifError = document.getElementById('motif-error');
+    const motifInput = document.getElementById('motif_rejet');
+    
+    if (!motif) {
+        motifInput.classList.add('is-invalid');
+        motifError.style.display = 'block';
+        return;
+    }
+    
+    motifInput.classList.remove('is-invalid');
+    motifError.style.display = 'none';
+
+    fetch(`/admin/credits/paiements/${paiementId}/reject`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ motif_rejet: motif })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Paiement rejeté avec succès');
+            location.reload();
+        } else {
+            alert('Erreur : ' + (data.message || 'Une erreur est survenue'));
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors du rejet du paiement');
+    });
+}
+</script>
+@endpush

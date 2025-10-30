@@ -13,11 +13,12 @@
         /* Hero Section Améliorée */
         .hero-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            min-height: 70vh;
             display: flex;
             align-items: center;
             position: relative;
             overflow: hidden;
+            padding: 2rem 0;
         }
         
         .hero-bg {
@@ -194,16 +195,63 @@
             color: #007bff;
         }
         
+        /* Credit Planning Section - Mobile First */
+        .credit-section .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .credit-section .icon-circle {
+            width: 60px !important;
+            height: 60px !important;
+        }
+        
+        .credit-section .icon-circle i {
+            font-size: 1.5rem !important;
+        }
+        
+        .credit-section .item-icon {
+            width: 35px !important;
+            height: 35px !important;
+        }
+        
+        .credit-section h2 {
+            font-size: 1.5rem !important;
+        }
+        
+        .credit-section h3 {
+            font-size: 1.1rem !important;
+        }
+        
+        .credit-section h4 {
+            font-size: 1rem !important;
+        }
+        
+        .credit-section h5 {
+            font-size: 0.9rem !important;
+        }
+        
+        .credit-section p {
+            font-size: 0.85rem !important;
+        }
+        
         /* Desktop optimizations */
         @media (min-width: 992px) {
             .hero-section {
-                min-height: 75vh;
-                padding-top: 1rem;
+                min-height: 60vh;
+                padding: 2rem 0;
             }
             
             .hero-section h1 {
-                font-size: 2.5rem !important;
+                font-size: 2.2rem !important;
                 white-space: nowrap;
+            }
+            
+            .hero-section .lead {
+                font-size: 1rem !important;
+            }
+            
+            .hero-section .mb-5 {
+                margin-bottom: 2rem !important;
             }
             
             .container {
@@ -212,26 +260,82 @@
             }
             
             section {
-                padding-top: 3rem !important;
-                padding-bottom: 3rem !important;
+                padding-top: 2.5rem !important;
+                padding-bottom: 2.5rem !important;
+            }
+            
+            /* Credit Section Desktop */
+            .credit-section .card-body {
+                padding: 2rem !important;
+            }
+            
+            .credit-section .icon-circle {
+                width: 70px !important;
+                height: 70px !important;
+            }
+            
+            .credit-section .icon-circle i {
+                font-size: 2rem !important;
+            }
+            
+            .credit-section .item-icon {
+                width: 40px !important;
+                height: 40px !important;
+            }
+            
+            .credit-section h2 {
+                font-size: 2rem !important;
+            }
+            
+            .credit-section h3 {
+                font-size: 1.3rem !important;
+            }
+            
+            .credit-section h4 {
+                font-size: 1.1rem !important;
+            }
+            
+            .credit-section h5 {
+                font-size: 1rem !important;
+            }
+            
+            .credit-section p {
+                font-size: 0.9rem !important;
             }
         }
         
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero-section {
-                min-height: 80vh;
+                min-height: auto;
                 text-align: center;
-                padding-top: 2rem;
+                padding: 2rem 0 1rem;
             }
             
             .hero-section h1 {
-                font-size: 2rem !important;
+                font-size: 1.5rem !important;
                 white-space: normal;
+                margin-bottom: 1rem !important;
+            }
+            
+            .hero-section .lead {
+                font-size: 0.9rem !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            .hero-section p {
+                font-size: 0.85rem !important;
+                margin-bottom: 1.5rem !important;
             }
             
             .stat-item h3 {
-                font-size: 1.5rem;
+                font-size: 1rem;
+                margin-bottom: 0.25rem !important;
+            }
+            
+            .stat-item p {
+                font-size: 0.6rem;
+                margin-bottom: 0 !important;
             }
         }
         
@@ -258,14 +362,14 @@
         
         <div class="container position-relative">
             <div class="row justify-content-center">
-                <div class="col-lg-8">
+                <div class="col-lg-9">
                     <div class="hero-content">
                         <h1 class="display-3 fw-bold mb-4 text-white" data-aos="fade-up">
-                            Bienvenue chez <span class="text-white">SIFcash-Burkina</span>
+                            Bienvenue chez <span class="text-dark">SIFcash-Burkina</span>
                         </h1>
                         <p class="lead mb-4 text-white" data-aos="fade-up" data-aos-delay="200">
-                            <strong>Source Inépuisable Financière (SIFCash)</strong> vous propose une solution simple et flexible 
-                            pour atteindre vos objectifs financiers à court terme.
+                            <strong>Une solution simple et flexible 
+                            pour atteindre vos objectifs financiers à court terme(SIFCash)</strong>.
                         </p>
                         <p class="mb-5 text-white-50" data-aos="fade-up" data-aos-delay="300">
                             Grâce à notre service d'épargne personnalisée, vous avez la liberté de choisir le montant, 
@@ -273,23 +377,23 @@
                         </p>
                         
                         <!-- Statistiques rapides -->
-                        <div class="row text-center mb-5" data-aos="fade-up" data-aos-delay="400">
-                            <div class="col-md-4 mb-3">
+                        <div class="row text-center mb-3 mb-md-5" data-aos="fade-up" data-aos-delay="400">
+                            <div class="col-4 col-md-4 mb-2 mb-md-3">
                                 <div class="stat-item">
-                                    <h3 class="text-white fw-bold">10,000+</h3>
-                                    <p class="text-white-50 small">Adhérents satisfaits</p>
+                                    <h3 class="text-white fw-bold mb-1">10K+</h3>
+                                    <p class="text-white-50 small mb-0">Adhérents satisfaits</p>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-4 col-md-4 mb-2 mb-md-3">
                                 <div class="stat-item">
-                                    <h3 class="text-white fw-bold">5.2M+</h3>
-                                    <p class="text-white-50 small">FCFA d'épargne</p>
+                                    <h3 class="text-white fw-bold mb-1">5.2M+</h3>
+                                    <p class="text-white-50 small mb-0">FCFA d'épargne</p>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-4 col-md-4 mb-2 mb-md-3">
                                 <div class="stat-item">
-                                    <h3 class="text-white fw-bold">15+</h3>
-                                    <p class="text-white-50 small">Années d'expérience</p>
+                                    <h3 class="text-white fw-bold mb-1">15+</h3>
+                                    <p class="text-white-50 small mb-0">Années d'expérience</p>
                                 </div>
                             </div>
                         </div>
@@ -412,8 +516,8 @@
         <div class="container">
             <div class="row text-center mb-5">
                 <div class="col-lg-8 mx-auto" data-aos="fade-up">
-                    <h2 class="display-6 fw-bold text-white mb-3" style="text-shadow: 0 2px 10px rgba(0,0,0,0.2);">💼 Nos Services Financiers</h2>
-                    <p class="text-white" style="opacity: 0.9; font-size: 1.1rem;">Des solutions adaptées à tous vos besoins et projets</p>
+                    <h2 class="display-6 fw-bold text-dark mb-3" style="text-shadow: 0 2px 10px rgba(0,0,0,0.2);">💼 Nos Services Financiers</h2>
+                    <p class="text-dark" style="opacity: 0.9; font-size: 1.1rem;">Des solutions adaptées à tous vos besoins et projets</p>
                 </div>
             </div>
             
@@ -483,13 +587,13 @@
                             </div>
                             <h4 class="card-title fw-bold mb-3" style="color: #f59e0b;">🏆 Excellence Certifiée</h4>
                             <p class="card-text text-muted mb-4">
-                                Institution certifiée avec 15 ans d'expérience et plus de 10,000 clients satisfaits.
+                                Institution certifiée avec des années d'expériences et plusieurs clients satisfaits.
                             </p>
                             <div class="bg-light rounded-3 p-3 mb-3">
                                 <ul class="list-unstyled mb-0 small text-dark">
-                                    <li class="mb-2"><i class="fas fa-award text-warning me-2"></i><strong>ISO 27001</strong> sécurité</li>
+                                    <li class="mb-2"><i class="fas fa-award text-warning me-2"></i><strong>Client</strong> satisfaits</li>
                                     <li class="mb-2"><i class="fas fa-award text-warning me-2"></i><strong>RGPD</strong> conforme</li>
-                                    <li class="mb-0"><i class="fas fa-award text-warning me-2"></i><strong>15 ans</strong> d'expérience</li>
+                                    <li class="mb-0"><i class="fas fa-award text-warning me-2"></i><strong>Des années</strong> d'expérience</li>
                                 </ul>
                             </div>
                             <a href="{{ route('about') }}" class="btn btn-warning rounded-pill px-4 text-white">
@@ -537,6 +641,243 @@
         </div>
     </section>
     
+    <!-- Section Planning de Crédit -->
+    <section class="py-4 py-md-5 credit-section" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <div class="container">
+            <div class="row text-center mb-3 mb-md-4">
+                <div class="col-lg-10 mx-auto" data-aos="fade-up">
+                    <h2 class="fw-bold text-white mb-2" style="text-shadow: 0 4px 15px rgba(0,0,0,0.3);">💳 SOURCE INÉPUISABLE FINANCIÈRE</h2>
+                    <p class="text-white fw-bold mb-1" style="text-shadow: 0 2px 8px rgba(0,0,0,0.2); font-size: 1.1rem;">BÂTISSEZ UN AVENIR MEILLEUR !!!</p>
+                    <p class="text-white-50 mb-0">Des solutions de crédit adaptées à tous vos projets</p>
+                </div>
+            </div>
+            
+            <!-- Deux grandes catégories -->
+            <div class="row g-3 g-md-4 mb-3 mb-md-4">
+                <!-- Assistance court terme -->
+                <div class="col-lg-6 col-md-12" data-aos="fade-right" data-aos-delay="100">
+                    <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.98); overflow: hidden;">
+                        <div class="position-absolute top-0 start-0 w-100" style="height: 5px; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"></div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2 icon-circle" 
+                                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);">
+                                    <i class="fas fa-hand-holding-usd text-white"></i>
+                                </div>
+                                <h3 class="fw-bold mb-2" style="color: #667eea;">🆘 ASSISTANCE DE 1 À 30 JOURS</h3>
+                                <p class="text-muted mb-3">Solutions rapides pour vos besoins urgents du quotidien</p>
+                            </div>
+                            
+                            <div class="bg-light rounded-3 p-3">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2 d-flex align-items-start">
+                                        <div class="flex-shrink-0">
+                                            <div class="d-flex align-items-center justify-content-center rounded-circle item-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                                <i class="fas fa-home text-white" style="font-size: 0.8rem;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <h5 class="mb-0 fw-bold" style="color: #667eea;">🏠 Loyer - Facture - Aléas sanitaire</h5>
+                                            <p class="text-muted mb-0">Couvrez vos dépenses essentielles sans tracas</p>
+                                        </div>
+                                    </li>
+                                    <li class="mb-2 d-flex align-items-start">
+                                        <div class="flex-shrink-0">
+                                            <div class="d-flex align-items-center justify-content-center rounded-circle item-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                                <i class="fas fa-shopping-basket text-white" style="font-size: 0.8rem;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <h5 class="mb-0 fw-bold" style="color: #667eea;">🛒 Approvisionnement de vivres</h5>
+                                            <p class="text-muted mb-0">Assurez les besoins alimentaires de votre famille</p>
+                                        </div>
+                                    </li>
+                                    <li class="d-flex align-items-start">
+                                        <div class="flex-shrink-0">
+                                            <div class="d-flex align-items-center justify-content-center rounded-circle item-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                                <i class="fas fa-gift text-white" style="font-size: 0.8rem;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <h5 class="mb-0 fw-bold" style="color: #667eea;">🎄 Fêtes de fin d'année</h5>
+                                            <p class="text-muted mb-0">Célébrez les moments importants sereinement</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grands projets long terme -->
+                <div class="col-lg-6 col-md-12" data-aos="fade-left" data-aos-delay="200">
+                    <div class="card border-0 shadow-lg h-100" style="border-radius: 15px; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.98); overflow: hidden;">
+                        <div class="position-absolute top-0 start-0 w-100" style="height: 5px; background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);"></div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2 icon-circle" 
+                                     style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 8px 20px rgba(240, 147, 251, 0.3);">
+                                    <i class="fas fa-rocket text-white"></i>
+                                </div>
+                                <h3 class="fw-bold mb-2" style="color: #f5576c;">🚀 RÉALISATION DE GRAND PROJET DE 1 À 2 ANS</h3>
+                                <p class="text-muted mb-3">Financez vos projets d'envergure et transformez vos rêves en réalité</p>
+                            </div>
+                            
+                            <div class="bg-light rounded-3 p-3">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2 d-flex align-items-start">
+                                        <div class="flex-shrink-0">
+                                            <div class="d-flex align-items-center justify-content-center rounded-circle item-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                                <i class="fas fa-map-marked-alt text-white" style="font-size: 0.8rem;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <h5 class="mb-0 fw-bold" style="color: #f5576c;">🗺️ Terrain - Construction</h5>
+                                            <p class="text-muted mb-0">Construisez la maison de vos rêves</p>
+                                        </div>
+                                    </li>
+                                    <li class="mb-2 d-flex align-items-start">
+                                        <div class="flex-shrink-0">
+                                            <div class="d-flex align-items-center justify-content-center rounded-circle item-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                                <i class="fas fa-chart-line text-white" style="font-size: 0.8rem;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <h5 class="mb-0 fw-bold" style="color: #f5576c;">📈 Extension d'entreprise</h5>
+                                            <p class="text-muted mb-0">Développez votre activité professionnelle</p>
+                                        </div>
+                                    </li>
+                                    <li class="mb-2 d-flex align-items-start">
+                                        <div class="flex-shrink-0">
+                                            <div class="d-flex align-items-center justify-content-center rounded-circle item-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                                <i class="fas fa-plane-departure text-white" style="font-size: 0.8rem;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <h5 class="mb-0 fw-bold" style="color: #f5576c;">✈️ Préparatifs de voyage</h5>
+                                            <p class="text-muted mb-0">Réalisez vos projets de voyage et d'expatriation</p>
+                                        </div>
+                                    </li>
+                                    <li class="d-flex align-items-start">
+                                        <div class="flex-shrink-0">
+                                            <div class="d-flex align-items-center justify-content-center rounded-circle item-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                                <i class="fas fa-car text-white" style="font-size: 0.8rem;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-2">
+                                            <h5 class="mb-0 fw-bold" style="color: #f5576c;">🚗 Achat de moyen roulant</h5>
+                                            <p class="text-muted mb-0">Acquérez votre véhicule en toute simplicité</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section Conditions d'éligibilité -->
+            <div class="row">
+                <div class="col-lg-10 mx-auto" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card border-0 shadow-xl" style="border-radius: 15px; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.98); overflow: hidden;">
+                        <div class="position-absolute top-0 start-0 w-100" style="height: 5px; background: linear-gradient(90deg, #667eea 0%, #f5576c 100%);"></div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2 icon-circle" 
+                                     style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);">
+                                    <i class="fas fa-clipboard-check text-white"></i>
+                                </div>
+                                <h3 class="fw-bold mb-2" style="color: #22c55e;">📋 CONDITIONS D'ÉLIGIBILITÉ</h3>
+                                <p class="text-muted mb-0">Un service de crédit disponible selon les conditions suivantes</p>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <!-- Conditions d'éligibilité -->
+                                <div class="col-md-6">
+                                    <div class="bg-light rounded-3 p-3 h-100">
+                                        <h4 class="fw-bold mb-3" style="color: #667eea;">
+                                            <i class="fas fa-check-circle me-2"></i>Conditions
+                                        </h4>
+                                        <div class="mb-2">
+                                            <h5 class="fw-bold mb-2" style="color: #22c55e;">
+                                                <i class="fas fa-calendar-alt me-2"></i>Ancienneté requise :
+                                            </h5>
+                                            <ul class="list-unstyled ms-3">
+                                                <li class="mb-2 d-flex align-items-start">
+                                                    <div class="flex-shrink-0 me-2">
+                                                        <span class="badge rounded-pill" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 5px 10px;">6 mois</span>
+                                                    </div>
+                                                    <div>
+                                                        <p class="mb-0 text-dark">Pour la <strong>cotisation journalière/hebdomadaire</strong></p>
+                                                    </div>
+                                                </li>
+                                                <li class="d-flex align-items-start">
+                                                    <div class="flex-shrink-0 me-2">
+                                                        <span class="badge rounded-pill" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 5px 10px;">1 an</span>
+                                                    </div>
+                                                    <div>
+                                                        <p class="mb-0 text-dark">Pour la <strong>cotisation mensuelle</strong></p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Avantages -->
+                                <div class="col-md-6">
+                                    <div class="bg-light rounded-3 p-3 h-100">
+                                        <h4 class="fw-bold mb-3" style="color: #f5576c;">
+                                            <i class="fas fa-star me-2"></i>Avantages
+                                        </h4>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2 d-flex align-items-center">
+                                                <i class="fas fa-check-circle text-success me-2" style="font-size: 1rem;"></i>
+                                                <span class="text-dark"><strong>Taux compétitifs</strong> et transparents</span>
+                                            </li>
+                                            <li class="mb-2 d-flex align-items-center">
+                                                <i class="fas fa-check-circle text-success me-2" style="font-size: 1rem;"></i>
+                                                <span class="text-dark"><strong>Remboursement flexible</strong></span>
+                                            </li>
+                                            <li class="mb-2 d-flex align-items-center">
+                                                <i class="fas fa-check-circle text-success me-2" style="font-size: 1rem;"></i>
+                                                <span class="text-dark"><strong>Accompagnement</strong> personnalisé</span>
+                                            </li>
+                                            <li class="mb-2 d-flex align-items-center">
+                                                <i class="fas fa-check-circle text-success me-2" style="font-size: 1rem;"></i>
+                                                <span class="text-dark"><strong>Décision rapide</strong> 48h</span>
+                                            </li>
+                                            <li class="d-flex align-items-center">
+                                                <i class="fas fa-check-circle text-success me-2" style="font-size: 1rem;"></i>
+                                                <span class="text-dark"><strong>Sans frais cachés</strong></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Call to action -->
+                            <div class="text-center mt-3">
+                                <div class="alert alert-info border-0 shadow-sm mb-3 p-2" style="border-radius: 15px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);">
+                                    <i class="fas fa-info-circle me-1" style="color: #667eea;"></i>
+                                    <strong style="color: #667eea;">Important :</strong> <span class="text-dark">Vos épargnes servent de garantie. Plus vous épargnez, plus vous avez accès à des montants élevés !</span>
+                                </div>
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                    <a href="{{ route('register') }}" class="btn btn-md px-4 shadow" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">
+                                        <i class="fas fa-user-plus me-1"></i>Devenir Adhérent
+                                    </a>
+                                    <a href="{{ route('login') }}" class="btn btn-outline-primary btn-md px-4" style="border-radius: 20px; font-weight: 600; border-width: 2px; font-size: 0.9rem;">
+                                        <i class="fas fa-calculator me-1"></i>Simuler mon crédit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <!-- Section Témoignages et Confiance -->
     <section class="py-5" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
         <div class="container">
@@ -552,7 +893,7 @@
                     <div class="card border-0 shadow-lg h-100" style="border-radius: 20px; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.9);">
                         <div class="card-body p-4 text-center">
                             <div class="mb-3">
-                                <img src="https://via.placeholder.com/80x80/667eea/ffffff?text=AK" class="rounded-circle shadow" alt="Client" style="width: 80px; height: 80px; object-fit: cover;">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle shadow" style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 2rem; font-weight: bold; color: white;">AK</div>
                             </div>
                             <blockquote class="blockquote mb-3">
                                 <p class="mb-0" style="font-style: italic; color: #4a5568;">« Grâce à SIFcash, j'ai pu financer mon commerce. Le processus est simple et l'équipe très professionnelle. »</p>
@@ -576,7 +917,7 @@
                     <div class="card border-0 shadow-lg h-100" style="border-radius: 20px; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.9);">
                         <div class="card-body p-4 text-center">
                             <div class="mb-3">
-                                <img src="https://via.placeholder.com/80x80/22c55e/ffffff?text=IB" class="rounded-circle shadow" alt="Client" style="width: 80px; height: 80px; object-fit: cover;">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle shadow" style="width: 80px; height: 80px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); font-size: 2rem; font-weight: bold; color: white;">IB</div>
                             </div>
                             <blockquote class="blockquote mb-3">
                                 <p class="mb-0" style="font-style: italic; color: #4a5568;">« L'épargne chez SIF m'a permis de réaliser mon rêve d'avoir ma propre maison. Merci pour la confiance ! »</p>
@@ -600,7 +941,7 @@
                     <div class="card border-0 shadow-lg h-100" style="border-radius: 20px; backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.9);">
                         <div class="card-body p-4 text-center">
                             <div class="mb-3">
-                                <img src="https://via.placeholder.com/80x80/f59e0b/ffffff?text=FS" class="rounded-circle shadow" alt="Client" style="width: 80px; height: 80px; object-fit: cover;">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle shadow" style="width: 80px; height: 80px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); font-size: 2rem; font-weight: bold; color: white;">FS</div>
                             </div>
                             <blockquote class="blockquote mb-3">
                                 <p class="mb-0" style="font-style: italic; color: #4a5568;">« Service client exceptionnel et solutions adaptées. Je recommande SIF à tous mes amis ! »</p>
@@ -652,7 +993,7 @@
                             <i class="fas fa-handshake" style="font-size: 2.5rem;"></i>
                         </div>
                         <h4 class="fw-bold mb-3">💖 Confiance</h4>
-                        <p style="opacity: 0.9;">15 ans d'expérience et plus de 10,000 clients satisfaits. Votre confiance est notre priorité.</p>
+                        <p style="opacity: 0.9;">Des années d'expériences et plusieurs clients satisfaits. Votre confiance est notre priorité.</p>
                     </div>
                 </div>
                 
@@ -721,7 +1062,7 @@
                 </div>
                 
                 <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="500">
-                    <button class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onclick="alert('🌟 Merci de faire confiance à SIFcash-Burkina !\n\n🏆 Votre partenaire financier de confiance depuis 15 ans\n💪 Ensemble, construisons votre avenir financier')" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
+                    <button class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onclick="alert('🌟 Merci de faire confiance à SIFcash-Burkina !\n\n🏆 Votre partenaire financier de confiance\n💪 Ensemble, construisons votre avenir financier')" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
                         <i class="fas fa-heart mb-2" style="font-size: 1.5rem; color: #e91e63;"></i>
                         <small class="fw-bold text-dark">❤️ Merci</small>
                     </button>

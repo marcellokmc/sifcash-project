@@ -622,7 +622,7 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="paymentForm" action="{{ route('adherent.credits.submit-payment', $credit) }}" method="POST" enctype="multipart/form-data">
+            <form id="paymentForm" action="{{ route('adherent.credits.submit-payment', $credit) }}" method="POST" enctype="multipart/form-data" onsubmit="return validatePaymentForm(event)">
                 @csrf
                 <div class="modal-body">
                     <div class="alert alert-info d-flex align-items-center">
@@ -632,7 +632,7 @@
                         </div>
                     </div>
 
-                    <input type="hidden" id="echeance_id" name="echeance_id" value="">
+                    <input type="hidden" id="echeance_id" name="echeance_id" value="" required>
                     
                     <div class="row">
                         <div class="col-md-6">
@@ -717,6 +717,21 @@
 
 @push('scripts')
 <script>
+// Fonction globale pour valider le formulaire avant soumission
+function validatePaymentForm(event) {
+    const echeanceId = document.getElementById('echeance_id').value;
+    
+    console.log('Validation du formulaire - echeance_id:', echeanceId);
+    
+    if (!echeanceId || echeanceId === '') {
+        event.preventDefault();
+        alert('Erreur: Aucune échéance sélectionnée. Veuillez cliquer sur le bouton de paiement d\'une échéance spécifique.');
+        return false;
+    }
+    
+    return true;
+}
+
 // Fonction globale pour préparer les données du paiement
 function preparePayment(echeanceId, montant, penalite, dateEcheance) {
     montant = parseFloat(montant);
@@ -724,9 +739,13 @@ function preparePayment(echeanceId, montant, penalite, dateEcheance) {
     
     console.log('Préparation paiement:', { echeanceId, montant, penalite });
     
+    // Réinitialiser le formulaire
+    document.getElementById('paymentForm').reset();
+    
     // Remplir le modal avec les données
     document.getElementById('echeance_id').value = echeanceId;
     document.getElementById('montant').value = (montant + penalite).toFixed(2);
+    document.getElementById('date_paiement').value = '{{ date("Y-m-d") }}';
     
     // Mettre à jour le résumé
     const echeanceAmountSpan = document.getElementById('echeance-amount');
@@ -748,53 +767,6 @@ function preparePayment(echeanceId, montant, penalite, dateEcheance) {
 
 // Initialiser au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // Gestion de la soumission du formulaire
-    document.getElementById('paymentForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        
-        // Afficher l'état de chargement
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Envoi en cours...';
-        
-        fetch(this.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-                // Fermer le modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-                modal.hide();
-                
-                // Afficher un message de succès
-                showAlert('success', data.message);
-                
-                // Recharger la page après 2 secondes
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            showAlert('error', 'Une erreur est survenue lors de l\'envoi du paiement.');
-        })
-        .finally(() => {
-            // Restaurer le bouton
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        });
-    });
     
     // Fonction pour afficher les alertes
     function showAlert(type, message) {

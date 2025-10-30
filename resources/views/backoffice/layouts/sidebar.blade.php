@@ -257,6 +257,19 @@
                             @endif
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.credits.paiements.*') ? 'active' : '' }}" 
+                           href="{{ route('admin.credits.paiements.index') }}">
+                            <i class="fas fa-credit-card me-2"></i>
+                            <span>Paiements à valider</span>
+                            @php
+                                $nbPaiementsEnAttente = \App\Models\PaiementCredit::where('statut', 'en_attente')->count();
+                            @endphp
+                            @if($nbPaiementsEnAttente > 0)
+                                <span class="badge bg-info rounded-pill ms-auto">{{ $nbPaiementsEnAttente }}</span>
+                            @endif
+                        </a>
+                    </li>
                     @if(auth()->user()->isAdmin())
                     <li class="nav-item mt-2 pt-2 border-top">
                         <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.credits.rapports') ? 'active' : '' }}" 

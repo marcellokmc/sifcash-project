@@ -40,28 +40,18 @@
                     <h6 class="text-white fw-bold mb-3">Nos Services</h6>
                     <ul class="list-unstyled footer-links">
                         <li class="mb-2">
-                            <a href="#" class="text-decoration-none text-muted">
+                            <a href="{{ route('services') }}" class="text-decoration-none text-muted">
                                 <i class="fas fa-piggy-bank me-2"></i>Épargne
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a href="#" class="text-decoration-none text-muted">
+                            <a href="{{ route('services') }}" class="text-decoration-none text-muted">
                                 <i class="fas fa-handshake me-2"></i>Crédit
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a href="#" class="text-decoration-none text-muted">
-                                <i class="fas fa-chart-line me-2"></i>Investissement
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="#" class="text-decoration-none text-muted">
-                                <i class="fas fa-graduation-cap me-2"></i>Formation
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="#" class="text-decoration-none text-muted">
-                                <i class="fas fa-mobile-alt me-2"></i>Mobile Money
+                            <a href="{{ route('contact') }}" class="text-decoration-none text-muted">
+                                <i class="fas fa-headset me-2"></i>Support Client
                             </a>
                         </li>
                     </ul>
@@ -91,11 +81,6 @@
                         <li class="mb-2">
                             <a href="{{ route('terms') }}" class="text-decoration-none text-muted">
                                 <i class="fas fa-file-contract me-2"></i>CGU
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a href="#" class="text-decoration-none text-muted">
-                                <i class="fas fa-question-circle me-2"></i>FAQ
                             </a>
                         </li>
                     </ul>

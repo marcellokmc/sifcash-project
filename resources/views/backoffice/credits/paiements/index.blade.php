@@ -160,12 +160,20 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.credits.paiements.show', $paiement) }}" class="btn btn-sm btn-outline-primary" title="Voir">
+                                            <a href="{{ route('admin.credits.paiements.show', $paiement) }}" class="btn btn-sm btn-primary" title="Voir">
                                                 <i class="mdi mdi-eye"></i>
                                             </a>
                                             @if($paiement->preuves && $paiement->preuves->count() > 0)
-                                            <button type="button" class="btn btn-sm btn-outline-info" onclick="showPreuves({{ $paiement->id }})" title="Preuves">
+                                            <button type="button" class="btn btn-sm btn-info" onclick="showPreuves({{ $paiement->id }})" title="Preuves">
                                                 <i class="mdi mdi-file-document"></i>
+                                            </button>
+                                            @endif
+                                            @if($paiement->statut === 'en_attente')
+                                            <button type="button" class="btn btn-sm btn-success" onclick="validatePaiement({{ $paiement->id }})" title="Valider">
+                                                <i class="mdi mdi-check-circle"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="rejectPaiement({{ $paiement->id }})" title="Rejeter">
+                                                <i class="mdi mdi-close-circle"></i>
                                             </button>
                                             @endif
                                         </div>
@@ -371,6 +379,66 @@ document.getElementById('credit_id').addEventListener('change', function() {
         echeanceSelect.innerHTML = '<option value="">Sélectionner d\'abord un crédit</option>';
     }
 });
+
+// Fonction de validation d'un paiement
+function validatePaiement(paiementId) {
+    if (!confirm('Êtes-vous sûr de vouloir valider ce paiement ?')) {
+        return;
+    }
+
+    fetch(`/admin/credits/paiements/${paiementId}/validate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Paiement validé avec succès');
+            location.reload();
+        } else {
+            alert('Erreur : ' + (data.message || 'Une erreur est survenue'));
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la validation du paiement');
+    });
+}
+
+// Fonction de rejet d'un paiement
+function rejectPaiement(paiementId) {
+    const motif = prompt('Veuillez indiquer le motif du rejet :');
+    
+    if (!motif) {
+        alert('Le motif de rejet est obligatoire');
+        return;
+    }
+
+    fetch(`/admin/credits/paiements/${paiementId}/reject`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ motif_rejet: motif })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Paiement rejeté avec succès');
+            location.reload();
+        } else {
+            alert('Erreur : ' + (data.message || 'Une erreur est survenue'));
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors du rejet du paiement');
+    });
+}
 
 // Auto-refresh every 30 seconds for pending payments
 setInterval(function() {

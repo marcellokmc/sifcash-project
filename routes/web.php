@@ -266,6 +266,14 @@ Route::middleware(['auth'])->group(function () {
             ->name('credits.rapports')
             ->middleware('role:admin');
 
+        // Paiements de crédit (Backoffice admin) - AVANT les routes avec paramètres dynamiques
+        Route::get('credits/paiements', [CreditController::class, 'indexPaiements'])->middleware('can:viewAny,App\\Models\\PaiementCredit')->name('credits.paiements.index');
+        Route::get('credits/paiements/{paiement}', [CreditController::class, 'showPaiement'])->middleware('can:view,paiement')->name('credits.paiements.show');
+        Route::post('credits/paiements/{paiement}/validate', [CreditController::class, 'validatePaiement'])->middleware('can:validate,paiement')->name('credits.paiements.validate');
+        Route::post('credits/paiements/{paiement}/reject', [CreditController::class, 'rejectPaiement'])->middleware('can:reject,paiement')->name('credits.paiements.reject');
+        Route::get('credits/paiements/{paiement}/preuves', [CreditController::class, 'showPreuves'])->middleware('can:viewPreuves,paiement')->name('credits.paiements.preuves');
+        Route::get('credits/paiements/preuves/{preuve}/download', [CreditController::class, 'downloadPreuve'])->middleware('can:downloadPreuve,paiement')->name('credits.paiements.download-preuve');
+
         // Crédit: actions agent/admin
         Route::get('credits', [CreditController::class, 'index'])->name('credits.index');
         Route::get('credits/{credit}', [CreditController::class, 'show'])
@@ -296,11 +304,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('retraits/{retrait}/reject', [DemandeRetraitController::class, 'reject'])->middleware('can:reject,retrait')->name('retraits.reject');
         Route::post('retraits/{retrait}/process', [DemandeRetraitController::class, 'process'])->middleware('can:process,retrait')->name('retraits.process');
 
-        // Paiements de crédit (Backoffice admin)
-        Route::get('credits/paiements', [CreditController::class, 'indexPaiements'])->middleware('can:viewAny,App\\Models\\PaiementCredit')->name('credits.paiements.index');
-        Route::get('credits/paiements/{paiement}', [CreditController::class, 'showPaiement'])->middleware('can:view,paiement')->name('credits.paiements.show');
-        Route::get('credits/paiements/{paiement}/preuves', [CreditController::class, 'showPreuves'])->middleware('can:viewPreuves,paiement')->name('credits.paiements.preuves');
-        Route::get('credits/paiements/preuves/{preuve}/download', [CreditController::class, 'downloadPreuve'])->middleware('can:downloadPreuve,paiement')->name('credits.paiements.download-preuve');
         Route::get('credits/{credit}/echeances', [CreditController::class, 'getEcheances'])->middleware('can:view,credit')->name('credits.echeances');
 
         // Notifications admin

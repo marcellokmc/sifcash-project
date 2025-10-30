@@ -153,7 +153,10 @@
                                 <strong>Épargne :</strong> Montants déposés par le membre selon les modalités définies (mensuelle, hebdomadaire, journalière).
                             </div>
                             <div class="definition-term">
-                                <strong>Intérêts :</strong> Rémunération calculée sur la base d'un taux annuel brut de 15% sur les sommes épargnées.
+                                <strong>Intérêts sur épargne :</strong> Rémunération calculée sur la base d'un taux annuel brut de 3% sur les sommes épargnées.
+                            </div>
+                            <div class="definition-term">
+                                <strong>Intérêts sur crédit :</strong> Taux d'intérêt de 5% appliqué sur les crédits accordés.
                             </div>
                             <div class="definition-term">
                                 <strong>Capital :</strong> Montant total épargné par le membre, payable uniquement à l'échéance du contrat.
@@ -167,9 +170,9 @@
                             
                             <h5 class="text-primary mb-3">Nos Services :</h5>
                             <ul class="list-unstyled">
-                                <li><i class="fas fa-check text-success me-2"></i>Épargne coopérative avec intérêts de 15% annuel brut</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Épargne coopérative avec intérêts de 3% annuel brut</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Plans d'épargne flexibles (mensuel, hebdomadaire, journalier)</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Microcrédits adaptés aux besoins locaux</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Microcrédits adaptés aux besoins locaux avec taux de 5%</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Services financiers numériques</li>
                                 <li><i class="fas fa-check text-success me-2"></i>Accompagnement et conseil financier</li>
                             </ul>
@@ -200,16 +203,16 @@
                         <!-- Article 4 -->
                         <h2 class="section-title mb-4" id="finances">ARTICLE 4 : CONDITIONS FINANCIÈRES</h2>
                         <div class="mb-5">
-                            <div class="highlight-box">
-                                <h5 class="mb-3"><i class="fas fa-calculator me-2"></i>Modalités de Calcul</h5>
+                            <div class="highlight-box mb-4">
+                                <h5 class="mb-3"><i class="fas fa-piggy-bank me-2"></i>Épargne</h5>
                                 
                                 <div class="row">
                                     <div class="col-md-6">
                                         <h6 class="text-primary">Taux et Conditions :</h6>
                                         <ul>
-                                            <li><strong>Taux d'intérêt :</strong> 15% annuel brut</li>
+                                            <li><strong>Taux d'intérêt :</strong> 3% annuel brut</li>
                                             <li><strong>Frais de dossier :</strong> 5 000 FCFA</li>
-                                            <li><strong>Capital :</strong> Payable à l'échéance uniquement</li>
+                                            <li><strong>Capital :</strong> Garanti et payable à l'échéance uniquement</li>
                                             <li><strong>Intérêts :</strong> Calculés mensuellement</li>
                                         </ul>
                                     </div>
@@ -217,12 +220,47 @@
                                         <h6 class="text-primary">Exemple de Calcul :</h6>
                                         <p class="small">Pour un dépôt de 100 000 FCFA :</p>
                                         <ul class="small">
-                                            <li>Intérêts annuels : 15 000 FCFA</li>
-                                            <li>Intérêts mensuels : 1 250 FCFA</li>
-                                            <li>Capital restitué à l'échéance</li>
+                                            <li>Intérêts annuels : 3 000 FCFA</li>
+                                            <li>Intérêts mensuels : 250 FCFA</li>
+                                            <li>Capital garanti et restitué à l'échéance</li>
                                         </ul>
                                     </div>
                                 </div>
+                            </div>
+                            
+                            <div class="highlight-box mb-4">
+                                <h5 class="mb-3"><i class="fas fa-hand-holding-usd me-2"></i>Crédit</h5>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="text-primary">Taux et Conditions :</h6>
+                                        <ul>
+                                            <li><strong>Taux d'intérêt appliqué :</strong> 5%</li>
+                                            <li><strong>Pénalité de retard :</strong> 25% sur le montant de l'échéance impayé</li>
+                                            <li><strong>Remboursement :</strong> Selon échéancier convenu</li>
+                                            <li><strong>Garantie :</strong> Épargne constituée</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="text-primary">Exemple de Calcul :</h6>
+                                        <p class="small">Pour un crédit de 100 000 FCFA :</p>
+                                        <ul class="small">
+                                            <li>Intérêts : 5 000 FCFA (5%)</li>
+                                            <li>Montant total à rembourser : 105 000 FCFA</li>
+                                            <li>En cas de retard : Pénalité de 25% sur l'échéance impayée</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-warning mt-3 mb-0">
+                                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Important - Pénalités de retard :</h6>
+                                    <p class="mb-0">En cas de non-remboursement d'une échéance, une pénalité de <strong>25%</strong> sera appliquée sur le montant de l'échéance impayée, en plus des intérêts dus.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info mb-0">
+                                <h6><i class="fas fa-money-bill-transfer me-2"></i>Frais de transfert et de retrait :</h6>
+                                <p class="mb-0">Les frais de transfert et de retrait sont à la charge du client si applicable. Ces frais varient selon le mode de paiement et l'opérateur utilisé.</p>
                             </div>
                         </div>
 
@@ -408,16 +446,24 @@
                                 <i class="fas fa-info-circle me-2"></i>Informations Importantes
                             </h6>
                             <div class="mb-3">
-                                <small class="opacity-75">Taux d'intérêt</small>
-                                <div class="fw-bold">15% annuel brut</div>
+                                <small class="opacity-75">Taux épargne</small>
+                                <div class="fw-bold">3% annuel brut</div>
+                            </div>
+                            <div class="mb-3">
+                                <small class="opacity-75">Taux crédit</small>
+                                <div class="fw-bold">5%</div>
                             </div>
                             <div class="mb-3">
                                 <small class="opacity-75">Frais de dossier</small>
                                 <div class="fw-bold">5 000 FCFA</div>
                             </div>
                             <div class="mb-3">
-                                <small class="opacity-75">Capital</small>
-                                <div class="fw-bold">Payable à l'échéance</div>
+                                <small class="opacity-75">Pénalité retard</small>
+                                <div class="fw-bold">25%</div>
+                            </div>
+                            <div>
+                                <small class="opacity-75">Capital épargne</small>
+                                <div class="fw-bold">Garanti à l'échéance</div>
                             </div>
                         </div>
                         

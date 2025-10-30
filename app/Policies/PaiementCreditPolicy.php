@@ -15,7 +15,7 @@ class PaiementCreditPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur']);
+        return $user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur']);
     }
 
     /**
@@ -24,7 +24,7 @@ class PaiementCreditPolicy
     public function view(User $user, PaiementCredit $paiementCredit)
     {
         // Admin/Agent peuvent voir tous les paiements de crédit
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
             return true;
         }
 
@@ -51,7 +51,7 @@ class PaiementCreditPolicy
     public function update(User $user, PaiementCredit $paiementCredit)
     {
         // Admin/Agent peuvent modifier tous les paiements
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
             return true;
         }
 
@@ -70,7 +70,7 @@ class PaiementCreditPolicy
     public function delete(User $user, PaiementCredit $paiementCredit)
     {
         // Admin/Agent peuvent supprimer tous les paiements
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
             return true;
         }
 
@@ -88,8 +88,8 @@ class PaiementCreditPolicy
      */
     public function validate(User $user, PaiementCredit $paiementCredit)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])
-            && $paiementCredit->statut === 'soumis';
+        return $user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])
+            && $paiementCredit->statut === 'en_attente';
     }
 
     /**
@@ -97,8 +97,8 @@ class PaiementCreditPolicy
      */
     public function reject(User $user, PaiementCredit $paiementCredit)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])
-            && $paiementCredit->statut === 'soumis';
+        return $user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])
+            && $paiementCredit->statut === 'en_attente';
     }
 
     /**
@@ -107,7 +107,7 @@ class PaiementCreditPolicy
     public function downloadPreuve(User $user, PaiementCredit $paiementCredit)
     {
         // Admin/Agent peuvent télécharger toutes les preuves
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
             return true;
         }
 
@@ -125,7 +125,7 @@ class PaiementCreditPolicy
     public function viewPreuves(User $user, PaiementCredit $paiementCredit)
     {
         // Admin/Agent peuvent voir toutes les preuves
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
             return true;
         }
 

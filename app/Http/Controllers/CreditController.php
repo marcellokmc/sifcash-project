@@ -761,6 +761,228 @@ class CreditController extends Controller
     }
 
     /**
+     * Backoffice admin: lister tous les paiements de crédit
+     */
+    public function indexPaiements(Request $request)
+    {
+        $this->authorize('viewAny', PaiementCredit::class);
+        
+        $query = PaiementCredit::with(['credit.adherent', 'echeance', 'preuves']);
+        
+        // Filtre par statut
+        if ($request->has('statut') && $request->statut !== '') {
+            $query->where('statut', $request->statut);
+        }
+        
+        // Par défaut, afficher les paiements en attente de validation
+        if (!$request->has('statut')) {
+            $query->where('statut', 'en_attente');
+        }
+        
+        // Filtre par adhérent
+        if ($request->has('adherent_id') && $request->adherent_id !== '') {
+            $query->whereHas('credit', function($q) use ($request) {
+                $q->where('adherent_id', $request->adherent_id);
+            });
+        }
+        
+        $paiements = $query->latest('date_paiement')->paginate(20);
+        
+        // Compter les paiements en attente pour le badge
+        $paiementsEnAttente = PaiementCredit::where('statut', 'en_attente')->count();
+        
+        // Récupérer tous les crédits actifs pour le formulaire
+        $credits = Credit::with('adherent')
+            ->whereIn('statut', ['approuve', 'actif', 'en_cours'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return view('backoffice.credits.paiements.index', compact('paiements', 'paiementsEnAttente', 'credits'));
+    }
+    
+    /**
+     * Backoffice admin: afficher un paiement de crédit
+     */
+    public function showPaiement(PaiementCredit $paiement)
+    {
+        $this->authorize('view', $paiement);
+        
+        $paiement->load(['credit.adherent', 'echeance', 'preuves']);
+        
+        return view('backoffice.credits.paiements.show', compact('paiement'));
+    }
+    
+    /**
+     * Backoffice admin: afficher les preuves d'un paiement
+     */
+    public function showPreuves(PaiementCredit $paiement)
+    {
+        $this->authorize('viewPreuves', $paiement);
+        
+        $preuves = $paiement->preuves;
+        
+        if (request()->wantsJson()) {
+            $html = view('backoffice.credits.paiements.partials.preuves', compact('preuves'))->render();
+            return response()->json(['html' => $html]);
+        }
+        
+        return view('backoffice.credits.paiements.preuves', compact('paiement', 'preuves'));
+    }
+    
+    /**
+     * Backoffice admin: télécharger une preuve de paiement
+     */
+    public function downloadPreuve(PaiementCreditPreuve $preuve)
+    {
+        $this->authorize('downloadPreuve', $preuve->paiement);
+        
+        $filePath = storage_path('app/' . $preuve->path);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'Fichier non trouvé.');
+        }
+        
+        return response()->download($filePath, $preuve->original_name);
+    }
+
+    /**
+     * Backoffice admin: valider un paiement de crédit
+     */
+    public function validatePaiement(Request $request, PaiementCredit $paiement)
+    {
+        $this->authorize('validate', $paiement);
+        
+        if ($paiement->statut !== 'en_attente') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce paiement ne peut pas être validé.'
+            ], 400);
+        }
+        
+        try {
+            DB::transaction(function () use ($paiement, $request) {
+                // Charger les relations nécessaires
+                $paiement->load(['echeance', 'credit.adherent.user']);
+                
+                $echeance = $paiement->echeance;
+                $credit = $paiement->credit;
+                
+                if (!$echeance) {
+                    throw new \Exception('Échéance introuvable pour ce paiement.');
+                }
+                
+                if (!$credit) {
+                    throw new \Exception('Crédit introuvable pour ce paiement.');
+                }
+            
+            // Mettre à jour le statut du paiement
+            $paiement->statut = 'valide';
+            $paiement->received_by_agent_id = $request->user()->id;
+            $paiement->save();
+            
+            // Calculer les pénalités si nécessaire
+            $penaliteDue = max(0, (float)$echeance->penalite_appliquee);
+            $amount = (float)$paiement->montant;
+            $penalitePaid = min($amount, $penaliteDue);
+            $principalPaid = max(0.0, $amount - $penalitePaid);
+            
+            // Mettre à jour la pénalité dans le paiement
+            $paiement->penalite = round($penalitePaid, 2);
+            $paiement->save();
+            
+            // Mettre à jour l'échéance
+            $echeance->montant_paye = round(((float)$echeance->montant_paye) + $principalPaid, 2);
+            
+            $totalPaidAgainstDue = (float)$echeance->montant_paye + (float)$penalitePaid;
+            $totalDue = (float)$echeance->montant_attendu + max(0, (float)$echeance->penalite_appliquee);
+            
+            if ($totalPaidAgainstDue + 0.001 >= $totalDue) {
+                $echeance->statut = 'payé';
+                $echeance->date_paiement = $paiement->date_paiement;
+            }
+            $echeance->save();
+            
+            // Notifier l'adhérent
+            $user = $credit->adherent?->user;
+            if ($user) {
+                Notification::create([
+                    'user_id' => $user->id,
+                    'titre' => 'Paiement validé',
+                    'message' => 'Votre paiement de ' . number_format($amount, 0, ',', ' ') . ' FCFA a été validé avec succès.',
+                    'lu' => false,
+                    'type' => 'info',
+                ]);
+            }
+        });
+        
+            return response()->json([
+                'success' => true,
+                'message' => 'Paiement validé avec succès.'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la validation du paiement: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la validation: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Backoffice admin: rejeter un paiement de crédit
+     */
+    public function rejectPaiement(Request $request, PaiementCredit $paiement)
+    {
+        $this->authorize('reject', $paiement);
+        
+        if ($paiement->statut !== 'en_attente') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce paiement ne peut pas être rejeté.'
+            ], 400);
+        }
+        
+        $validated = $request->validate([
+            'motif_rejet' => ['required', 'string', 'max:500']
+        ]);
+        
+        try {
+            DB::transaction(function () use ($paiement, $validated) {
+                // Charger les relations nécessaires
+                $paiement->load(['credit.adherent.user']);
+                
+                // Mettre à jour le statut du paiement
+                $paiement->statut = 'rejete';
+                $paiement->motif_rejet = $validated['motif_rejet'];
+                $paiement->save();
+                
+                // Notifier l'adhérent
+                $user = $paiement->credit->adherent?->user;
+                if ($user) {
+                    Notification::create([
+                        'user_id' => $user->id,
+                        'titre' => 'Paiement rejeté',
+                        'message' => 'Votre paiement de ' . number_format((float)$paiement->montant, 0, ',', ' ') . ' FCFA a été rejeté. Motif : ' . $validated['motif_rejet'],
+                        'lu' => false,
+                        'type' => 'alert',
+                    ]);
+                }
+            });
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Paiement rejeté avec succès.'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors du rejet du paiement: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors du rejet: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Export du contrat de crédit en PDF
      */
     public function exportContract(Credit $credit, Request $request)
