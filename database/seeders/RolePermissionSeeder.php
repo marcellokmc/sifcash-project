@@ -50,43 +50,47 @@ class RolePermissionSeeder extends Seeder
         }
 
         $agentPermissions = Permission::whereIn('name', [
-            // Adhérents
+            // Adhérents (uniquement ceux qui lui sont affectés)
             'view_adherents',
             'create_adherents',
             'edit_adherents',
-            'validate_adherents',
             
-            // Ayants droit
+            // Ayants droit (des adhérents affectés)
             'view_ayants_droits',
             'create_ayants_droits',
             'edit_ayants_droits',
             
-            // Documents
+            // Documents (des adhérents affectés)
             'view_documents',
             'upload_documents',
-            'validate_documents',
             'download_documents',
             
             // Plans
             'view_plans',
             
-            // Adhésions
+            // Adhésions (des adhérents affectés)
             'view_adhesions',
             'create_adhesions',
-            'validate_adhesions',
             
-            // Paiements
+            // Paiements (des adhérents affectés)
             'view_payments',
             'create_payments',
-            'validate_payments',
             
-            // Crédits
+            // Crédits (des adhérents affectés)
             'view_credits',
             'create_credits',
+            
+            // Épargnes (des adhérents affectés)
+            'view_epargnes',
+            'create_epargnes',
+            'depot_epargnes',
             
             // Dashboard
             'view_dashboard',
             'view_statistics',
+            
+            // Recherche
+            'global_search',
         ])->pluck('id')->toArray();
 
         $agentRole->permissions()->sync($agentPermissions);
@@ -105,19 +109,25 @@ class RolePermissionSeeder extends Seeder
         }
 
         $chefServicePermissions = Permission::whereIn('name', [
-            // Utilisateurs
+            // Utilisateurs (de son agence uniquement)
             'view_users',
             'create_users',
             'edit_users',
             'toggle_user_status',
             'view_user_activity',
+            'view_user_logs',
+            'suspend_users',
+            'activate_users',
             
-            // Adhérents
+            // Adhérents (de son agence)
             'view_adherents',
             'create_adherents',
             'edit_adherents',
             'validate_adherents',
             'toggle_adherent_status',
+            'suspend_adherents',
+            'activate_adherents',
+            'manage_adherent_affectation',
             
             // Ayants droit
             'view_ayants_droits',
@@ -132,16 +142,23 @@ class RolePermissionSeeder extends Seeder
             'delete_documents',
             'download_documents',
             
+            // Types de documents
+            'view_type_documents',
+            'create_type_documents',
+            'edit_type_documents',
+            
             // Plans
             'view_plans',
             'create_plans',
             'edit_plans',
+            'toggle_plan_status',
             
             // Adhésions
             'view_adhesions',
             'create_adhesions',
             'edit_adhesions',
             'validate_adhesions',
+            'renew_adhesions',
             
             // Paiements
             'view_payments',
@@ -149,6 +166,7 @@ class RolePermissionSeeder extends Seeder
             'edit_payments',
             'validate_payments',
             'reject_payments',
+            'download_payment_proof',
             
             // Crédits
             'view_credits',
@@ -157,23 +175,70 @@ class RolePermissionSeeder extends Seeder
             'approve_credits',
             'reject_credits',
             'validate_credits',
+            'view_credit_schedule',
+            'record_credit_payment',
+            'export_credit_contract',
+            
+            // Paiements de crédit
+            'view_credit_payments',
+            'create_credit_payments',
+            'validate_credit_payments',
+            'view_credit_payment_proofs',
+            'download_credit_payment_proofs',
+            
+            // Échéances
+            'view_echeances',
+            'edit_echeances',
+            
+            // Conditions d'éligibilité crédit
+            'view_credit_eligibility',
+            'create_credit_eligibility',
+            'edit_credit_eligibility',
+            'toggle_credit_eligibility',
             
             // Retraits
             'view_withdrawals',
+            'create_withdrawals',
+            'edit_withdrawals',
             'validate_withdrawals',
             'reject_withdrawals',
             'process_withdrawals',
             
+            // Pénalités
+            'view_penalties',
+            'edit_penalties',
+            
+            // Épargnes
+            'view_epargnes',
+            'create_epargnes',
+            'edit_epargnes',
+            'depot_epargnes',
+            'retrait_epargnes',
+            'calculate_interests',
+            'export_epargnes',
+            
             // Agences
             'view_agences',
+            
+            // Notifications
+            'view_notifications',
+            'create_notifications',
+            'mark_notifications_read',
+            
+            // Audits & Logs
+            'view_audit',
+            'view_logs',
+            'view_connection_logs',
+            'export_connection_logs',
             
             // Rapports
             'view_reports',
             'view_statistics',
             'view_dashboard',
+            'export_reports',
             
-            // Logs
-            'view_connection_logs',
+            // Recherche
+            'global_search',
         ])->pluck('id')->toArray();
 
         $chefServiceRole->permissions()->sync($chefServicePermissions);
@@ -182,6 +247,7 @@ class RolePermissionSeeder extends Seeder
 
     /**
      * Assigner les permissions pour le rôle Superviseur
+     * (mêmes permissions que Chef de Service)
      */
     private function assignSuperviseurPermissions()
     {
@@ -191,47 +257,138 @@ class RolePermissionSeeder extends Seeder
             return;
         }
 
+        // Le superviseur a les mêmes permissions que le chef de service
         $superviseurPermissions = Permission::whereIn('name', [
-            // Adhérents
+            // Utilisateurs (de son agence uniquement)
+            'view_users',
+            'create_users',
+            'edit_users',
+            'toggle_user_status',
+            'view_user_activity',
+            'view_user_logs',
+            'suspend_users',
+            'activate_users',
+            
+            // Adhérents (de son agence)
             'view_adherents',
+            'create_adherents',
             'edit_adherents',
             'validate_adherents',
+            'toggle_adherent_status',
+            'suspend_adherents',
+            'activate_adherents',
+            'manage_adherent_affectation',
+            
+            // Ayants droit
+            'view_ayants_droits',
+            'create_ayants_droits',
+            'edit_ayants_droits',
+            'delete_ayants_droits',
             
             // Documents
             'view_documents',
+            'upload_documents',
             'validate_documents',
+            'delete_documents',
             'download_documents',
+            
+            // Types de documents
+            'view_type_documents',
+            'create_type_documents',
+            'edit_type_documents',
             
             // Plans
             'view_plans',
+            'create_plans',
+            'edit_plans',
+            'toggle_plan_status',
             
             // Adhésions
             'view_adhesions',
+            'create_adhesions',
+            'edit_adhesions',
             'validate_adhesions',
+            'renew_adhesions',
             
             // Paiements
             'view_payments',
+            'create_payments',
+            'edit_payments',
             'validate_payments',
+            'reject_payments',
+            'download_payment_proof',
             
             // Crédits
             'view_credits',
+            'create_credits',
+            'edit_credits',
             'approve_credits',
             'reject_credits',
             'validate_credits',
+            'view_credit_schedule',
+            'record_credit_payment',
+            'export_credit_contract',
+            
+            // Paiements de crédit
+            'view_credit_payments',
+            'create_credit_payments',
+            'validate_credit_payments',
+            'view_credit_payment_proofs',
+            'download_credit_payment_proofs',
+            
+            // Échéances
+            'view_echeances',
+            'edit_echeances',
+            
+            // Conditions d'éligibilité crédit
+            'view_credit_eligibility',
+            'create_credit_eligibility',
+            'edit_credit_eligibility',
+            'toggle_credit_eligibility',
             
             // Retraits
             'view_withdrawals',
+            'create_withdrawals',
+            'edit_withdrawals',
             'validate_withdrawals',
             'reject_withdrawals',
+            'process_withdrawals',
+            
+            // Pénalités
+            'view_penalties',
+            'edit_penalties',
+            
+            // Épargnes
+            'view_epargnes',
+            'create_epargnes',
+            'edit_epargnes',
+            'depot_epargnes',
+            'retrait_epargnes',
+            'calculate_interests',
+            'export_epargnes',
+            
+            // Agences
+            'view_agences',
+            
+            // Notifications
+            'view_notifications',
+            'create_notifications',
+            'mark_notifications_read',
+            
+            // Audits & Logs
+            'view_audit',
+            'view_logs',
+            'view_connection_logs',
+            'export_connection_logs',
             
             // Rapports
             'view_reports',
             'view_statistics',
             'view_dashboard',
+            'export_reports',
             
-            // Logs
-            'view_audit',
-            'view_connection_logs',
+            // Recherche
+            'global_search',
         ])->pluck('id')->toArray();
 
         $superviseurRole->permissions()->sync($superviseurPermissions);

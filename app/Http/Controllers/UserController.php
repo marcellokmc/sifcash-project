@@ -67,7 +67,7 @@ class UserController extends Controller
 
         User::create($userData);
 
-        return redirect()->route('users.index')
+        return redirect()->route('admin.users.index')
             ->with('success', 'Utilisateur créé avec succès.');
     }
 
@@ -140,7 +140,7 @@ class UserController extends Controller
 
         $user->update($userData);
 
-        return redirect()->route('users.index')
+        return redirect()->route('admin.users.index')
             ->with('success', 'Utilisateur modifié avec succès.');
     }
 
@@ -151,13 +151,13 @@ class UserController extends Controller
     {
         // Empêcher la suppression de son propre compte
         if ($user->id === auth()->id()) {
-            return redirect()->route('users.index')
+            return redirect()->route('admin.users.index')
                 ->with('error', 'Vous ne pouvez pas supprimer votre propre compte.');
         }
 
         $user->delete();
 
-        return redirect()->route('users.index')
+        return redirect()->route('admin.users.index')
             ->with('success', 'Utilisateur supprimé avec succès.');
     }
 

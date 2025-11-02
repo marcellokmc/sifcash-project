@@ -4,16 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Traits\FiltersByAgentAdherents;
 
 class NotificationController extends Controller
 {
+    use FiltersByAgentAdherents;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        // Admin: list all notifications with filters
+        // Admin/Agent: list notifications with filters
         $query = Notification::query()->with(['user', 'actionByUser']);
+        
+        // Filtrer par agent si nécessaire
+        $user = Auth::user();
+        if ($user && in_array($user->role, ['agent', 'chef_service'])) {
+            // Les agents ne voient que les notifications liées à leurs adhérents
+            $adherentIds = $this->getAgentAdherentIds();
+            if ($adherentIds !== null) {
+                $query->whereIn('user_id', function($q) use ($adherentIds) {
+                    $q->select('user_id')
+                      ->from('adherents')
+                      ->whereIn('id', $adherentIds)
+                      ->whereNotNull('user_id');
+                });
+            }
+        }
 
         // Filtres
         if ($request->filled('type')) {

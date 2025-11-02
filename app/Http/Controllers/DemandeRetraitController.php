@@ -9,17 +9,22 @@ use App\Models\HistoriqueRetrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\FiltersByAgentAdherents;
 
 class DemandeRetraitController extends Controller
 {
+    use FiltersByAgentAdherents;
     /**
      * Display a listing of the resource (Backoffice).
      */
     public function index(Request $request)
     {
-        $retraits = DemandeRetrait::with(['adherent', 'adhesion.plan', 'validatedByAgent', 'historiques'])
-            ->latest()
-            ->paginate(20);
+        $query = DemandeRetrait::with(['adherent', 'adhesion.plan', 'validatedByAgent', 'historiques']);
+        
+        // Filtrer par agent si nécessaire
+        $query = $this->applyAgentFilter($query, 'adherent');
+        
+        $retraits = $query->latest()->paginate(20);
 
         if ($request->wantsJson()) {
             return response()->json($retraits);

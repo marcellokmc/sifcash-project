@@ -9,17 +9,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\FiltersByAgentAdherents;
 
 class PaiementController extends Controller
 {
+    use FiltersByAgentAdherents;
     /**
      * Display a listing of the resource (Backoffice).
      */
     public function index(Request $request)
     {
-        $paiements = Paiement::with(['adherent', 'adhesion.plan', 'validatedByAgent'])
-            ->latest()
-            ->paginate(20);
+        $query = Paiement::with(['adherent', 'adhesion.plan', 'validatedByAgent']);
+        
+        // Filtrer par agent si nécessaire
+        $query = $this->applyAgentFilter($query, 'adherent');
+        
+        $paiements = $query->latest()->paginate(20);
 
         if ($request->wantsJson()) {
             return response()->json($paiements);

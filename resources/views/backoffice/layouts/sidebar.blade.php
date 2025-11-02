@@ -88,7 +88,8 @@
             </div>
         </li>
 
-        <!-- Section Affectations -->
+        <!-- Section Affectations (Admin et Chef de service uniquement) -->
+        @if(auth()->user()->isAdmin() || auth()->user()->isChefService())
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center justify-content-between {{ request()->routeIs('admin.affectations.*') ? 'active' : '' }}" 
                data-bs-toggle="collapse" href="#" data-bs-target="#affectationsMenu" role="button" aria-controls="affectationsMenu" aria-expanded="{{ request()->routeIs('admin.affectations.*') ? 'true' : 'false' }}">
@@ -140,6 +141,7 @@
                 </ul>
             </div>
         </li>
+        @endif
 
         <hr class="border-light opacity-25 my-2">
 
@@ -390,7 +392,8 @@
         @endif
 
 
-        <!-- Activité globale -->
+        <!-- Activité globale (Admin et Chef de service uniquement) -->
+        @if(auth()->user()->isAdmin() || auth()->user()->isChefService())
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.audits.*') ? 'active' : '' }}" 
                href="{{ route('admin.audits.index') }}">
@@ -398,6 +401,7 @@
                 <span>Activité</span>
             </a>
         </li>
+        @endif
 
         <!-- Notifications -->
         <li class="nav-item">
@@ -454,7 +458,7 @@
                         <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.types-documents.*') ? 'active' : '' }}" 
                            href="{{ route('admin.types-documents.index') }}">
                             <i class="fas fa-file-alt me-2"></i>
-                            <span>Types de documents</span>
+                            <span>Configuration documents</span>
                         </a>
                     </li>
                     

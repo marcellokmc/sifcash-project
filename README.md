@@ -1,3 +1,56 @@
+# SIF-Project - Système de Gestion
+
+## Installation
+
+```bash
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+```
+
+## Développement
+
+```bash
+php artisan serve
+npm run dev
+```
+
+## Build Production
+
+```bash
+npm run build
+```
+
+## Tests
+
+```bash
+npm run test:e2e
+```
+
+## Documentation
+
+Voir [DOCUMENTATION.md](DOCUMENTATION.md)
+
+## Stack Technique
+
+- **Backend**: Laravel
+- **Frontend**: Vite + TailwindCSS v4
+- **Tests**: Cypress
+- **Database**: MySQL/MariaDB
+
+## Performance
+
+- Build optimisé avec Vite 7
+- TailwindCSS v4 avec compilation native
+- Code splitting automatique
+- Assets versionnés avec hash
+
+---
+
+**Version**: 1.0.0
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

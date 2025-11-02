@@ -6,9 +6,11 @@ use App\Models\Credit;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use App\Traits\FiltersByAgentAdherents;
 
 class CreditController extends Controller
 {
+    use FiltersByAgentAdherents;
     public function create()
     {
         $this->authorize('create', Credit::class);
@@ -197,6 +199,10 @@ class CreditController extends Controller
     public function index(Request $request)
     {
         $query = Credit::with(['adherent']);
+        
+        // Filtrer par agent si nécessaire
+        $query = $this->applyAgentFilter($query, 'adherent');
+        
         if ($request->has('statut')) $query->where('statut',$request->statut);
         if ($request->has('etat')) $query->where('etat',$request->etat);
         if ($request->has('search')) {

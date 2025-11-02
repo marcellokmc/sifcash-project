@@ -8,15 +8,20 @@ use App\Models\Adherent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Traits\FiltersByAgentAdherents;
 
 class AdhesionController extends Controller
 {
+    use FiltersByAgentAdherents;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         $query = Adhesion::with(['adherent', 'plan', 'createdByAgent']);
+        
+        // Filtrer par agent si nécessaire
+        $query = $this->applyAgentFilter($query, 'adherent');
         
         // Recherche multicritère
         if ($request->filled('search')) {

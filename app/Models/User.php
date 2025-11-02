@@ -185,4 +185,145 @@ class User extends Authenticatable
     {
         return $this->active && is_null($this->suspended_at);
     }
+
+    /**
+     * Obtenir l'objet Role associé à cet utilisateur
+     */
+    public function roleObject()
+    {
+        return $this->belongsTo(Role::class, 'role', 'name');
+    }
+
+    /**
+     * Vérifier si l'utilisateur a une permission spécifique
+     */
+    public function hasPermissionTo($permission)
+    {
+        // Admin a toutes les permissions
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        // Récupérer le rôle de l'utilisateur
+        $role = Role::where('name', $this->role)->first();
+        
+        if (!$role) {
+            return false;
+        }
+
+        // Vérifier si le rôle a la permission
+        return $role->permissions()->where('name', $permission)->exists();
+    }
+
+    /**
+     * Vérifier si l'utilisateur a l'une des permissions
+     */
+    public function hasAnyPermission($permissions)
+    {
+        // Admin a toutes les permissions
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        foreach ((array)$permissions as $permission) {
+            if ($this->hasPermissionTo($permission)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     * Vérifier si l'utilisateur a toutes les permissions
+     */
+    public function hasAllPermissions($permissions)
+    {
+        // Admin a toutes les permissions
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        foreach ((array)$permissions as $permission) {
+            if (!$this->hasPermissionTo($permission)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * Obtenir toutes les permissions de l'utilisateur
+     */
+    public function getAllPermissions()
+    {
+        // Admin a toutes les permissions
+        if ($this->isAdmin()) {
+            return Permission::all();
+        }
+
+        $role = Role::where('name', $this->role)->first();
+        
+        if (!$role) {
+            return collect([]);
+        }
+
+        return $role->permissions;
+    }
+
+    /**
+     * Vérifier si l'utilisateur peut accéder aux données d'une agence
+     */
+    public function canAccessAgence($agenceId)
+    {
+        // Admin a accès à toutes les agences
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        // L'utilisateur a accès uniquement à son agence
+        return $this->agence_id == $agenceId;
+    }
+
+    /**
+     * Vérifier si l'utilisateur peut gérer un autre utilisateur
+     */
+    public function canManageUser($targetUser)
+    {
+        // Admin peut gérer tout le monde
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        // Chef de service et superviseur peuvent gérer les utilisateurs de leur agence
+        if ($this->isChefService() || $this->isSuperviseur()) {
+            return $this->agence_id === $targetUser->agence_id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Vérifier si l'utilisateur peut gérer un adhérent
+     */
+    public function canManageAdherent($adherent)
+    {
+        // Admin peut gérer tous les adhérents
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        // Chef de service et superviseur peuvent gérer les adhérents de leur agence
+        if ($this->isChefService() || $this->isSuperviseur()) {
+            return $this->agence_id === $adherent->agence_id;
+        }
+
+        // Agent peut gérer uniquement les adhérents qui lui sont affectés
+        if ($this->isAgent()) {
+            return $adherent->agents()->where('agent_id', $this->id)->exists();
+        }
+
+        return false;
+    }
 }

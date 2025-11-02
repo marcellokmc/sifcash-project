@@ -11,14 +11,22 @@ use App\Models\LogConnexion;
 use App\Models\Credit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Traits\FiltersByAgentAdherents;
 
 class DashboardController extends Controller
 {
+    use FiltersByAgentAdherents;
     /**
      * Dashboard Administrateur
      */
     public function adminDashboard()
     {
+        // Rediriger les agents vers leur dashboard spécifique
+        $user = auth()->user();
+        if ($user && in_array($user->role, ['agent', 'chef_service'])) {
+            return redirect()->route('agent.dashboard');
+        }
+        
         $stats = [
             'total_users' => User::count(),
             'total_agences' => Agence::count(),
@@ -56,37 +64,63 @@ class DashboardController extends Controller
         $user = auth()->user();
         $agence = $user->agence;
 
-        // Récupérer les adhérents de l'agence de l'agent avec optimisation
-        $adherentsAgence = Adherent::with('user')
-            ->whereHas('user', function($query) use ($user) {
-                $query->where('agence_id', $user->agence_id);
-            });
+        // Récupérer UNIQUEMENT les adhérents affectés à l'agent
+        $adherentsQuery = Adherent::with('user');
+        $adherentsQuery = $this->applyAgentFilter($adherentsQuery, null);
 
         $stats = [
-            'total_adherents' => $adherentsAgence->count(),
-            'adherents_actifs' => $adherentsAgence->where('statut_compte', 'actif')->count(),
-            'adherents_en_attente' => $adherentsAgence->where('statut_compte', 'en_attente_de_verification')->count(),
-            'documents_en_attente' => Document::whereHas('adherent.user', function($query) use ($user) {
-                $query->where('agence_id', $user->agence_id);
-            })->where('statut', 'soumis')->count(),
-            'ayants_droit_en_attente' => AyantDroit::whereHas('adherent.user', function($query) use ($user) {
-                $query->where('agence_id', $user->agence_id);
-            })->where('statut_validation', 'en_attente')->count(),
-            'recent_activity' => LogConnexion::where('user_id', $user->id)
-                                    ->whereDate('created_at', today())
-                                    ->count(),
+            'total_adherents' => (clone $adherentsQuery)->count(),
+            'adherents_actifs' => (clone $adherentsQuery)->where('statut_compte', 'actif')->count(),
+            'adherents_en_attente' => (clone $adherentsQuery)->where('statut_compte', 'en_attente_de_verification')->count(),
         ];
+        
+        // Documents en attente pour les adhérents affectés
+        $documentsQuery = Document::query();
+        $documentsQuery = $this->applyAgentFilter($documentsQuery, 'adherent');
+        $stats['documents_en_attente'] = (clone $documentsQuery)->where('statut', 'soumis')->count();
+        
+        // Ayants droit en attente pour les adhérents affectés
+        $ayantsDroitQuery = AyantDroit::query();
+        $ayantsDroitQuery = $this->applyAgentFilter($ayantsDroitQuery, 'adherent');
+        $stats['ayants_droit_en_attente'] = (clone $ayantsDroitQuery)->where('statut_validation', 'en_attente')->count();
+        
+        // Crédits pour les adhérents affectés
+        $creditsQuery = Credit::query();
+        $creditsQuery = $this->applyAgentFilter($creditsQuery, 'adherent');
+        $stats['credits_en_attente'] = (clone $creditsQuery)->where('statut', 'en_attente')->count();
+        $stats['credits_approuves'] = (clone $creditsQuery)->where('statut', 'approuvé')->count();
+        
+        // Activité récente de l'agent
+        $stats['recent_activity'] = LogConnexion::where('user_id', $user->id)
+                                    ->whereDate('created_at', today())
+                                    ->count();
 
-        // Activité récente pour l'agent (connexions et actions sur ses adhérents)
-        $recentActivity = LogConnexion::with('user.agence')
-            ->where('user_id', $user->id)
-            ->orWhereHas('user', function($query) use ($user) {
-                $query->where('agence_id', $user->agence_id)
-                      ->where('role', 'adherent');
-            })
-            ->latest()
-            ->take(10)
-            ->get();
+        // Récupérer les IDs des adhérents affectés pour l'activité récente
+        $adherentIds = $this->getAgentAdherentIds();
+        
+        if ($adherentIds !== null && !empty($adherentIds)) {
+            // Activité récente pour les adhérents affectés
+            $recentActivity = LogConnexion::with('user.agence')
+                ->where(function($query) use ($user, $adherentIds) {
+                    $query->where('user_id', $user->id)
+                          ->orWhereIn('user_id', function($q) use ($adherentIds) {
+                              $q->select('user_id')
+                                ->from('adherents')
+                                ->whereIn('id', $adherentIds)
+                                ->whereNotNull('user_id');
+                          });
+                })
+                ->latest()
+                ->take(10)
+                ->get();
+        } else {
+            // Si pas d'adhérents affectés, afficher uniquement l'activité de l'agent
+            $recentActivity = LogConnexion::with('user.agence')
+                ->where('user_id', $user->id)
+                ->latest()
+                ->take(10)
+                ->get();
+        }
 
         return view('backoffice.dashboard.agent', compact('stats', 'agence', 'recentActivity'));
     }
@@ -226,7 +260,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Statistiques par agence (pour les chefs de service)
+     * Statistiques par agence (pour les chefs de service) ou par agent
      */
     public function getAgenceStats(Request $request, $agenceId = null)
     {
@@ -241,34 +275,41 @@ class DashboardController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        // Pour les agents, filtrer par adhérents affectés
+        $adherentsQuery = Adherent::query();
+        $adherentsQuery = $this->applyAgentFilter($adherentsQuery, null);
+        
+        // Ajouter le filtre d'agence si nécessaire
+        if ($agenceId && !in_array($user->role, ['agent'])) {
+            $adherentsQuery->whereHas('user', function($query) use ($agenceId) {
+                $query->where('agence_id', $agenceId);
+            });
+        }
+
         $stats = [
             'adherents' => [
-                'total' => Adherent::whereHas('user', function($query) use ($agenceId) {
-                    $query->where('agence_id', $agenceId);
-                })->count(),
-                'actifs' => Adherent::whereHas('user', function($query) use ($agenceId) {
-                    $query->where('agence_id', $agenceId);
-                })->where('statut_compte', 'actif')->count(),
-                'en_attente' => Adherent::whereHas('user', function($query) use ($agenceId) {
-                    $query->where('agence_id', $agenceId);
-                })->where('statut_compte', 'en_attente_de_verification')->count(),
+                'total' => (clone $adherentsQuery)->count(),
+                'actifs' => (clone $adherentsQuery)->where('statut_compte', 'actif')->count(),
+                'en_attente' => (clone $adherentsQuery)->where('statut_compte', 'en_attente_de_verification')->count(),
             ],
-            'documents' => [
-                'en_attente' => Document::whereHas('adherent.user', function($query) use ($agenceId) {
-                    $query->where('agence_id', $agenceId);
-                })->where('statut', 'soumis')->count(),
-                'valides' => Document::whereHas('adherent.user', function($query) use ($agenceId) {
-                    $query->where('agence_id', $agenceId);
-                })->where('statut', 'validé')->count(),
-            ],
-            'ayants_droit' => [
-                'en_attente' => AyantDroit::whereHas('adherent.user', function($query) use ($agenceId) {
-                    $query->where('agence_id', $agenceId);
-                })->where('statut_validation', 'en_attente')->count(),
-                'valides' => AyantDroit::whereHas('adherent.user', function($query) use ($agenceId) {
-                    $query->where('agence_id', $agenceId);
-                })->where('statut_validation', 'validé')->count(),
-            ]
+        ];
+        
+        // Documents filtrés
+        $documentsQuery = Document::query();
+        $documentsQuery = $this->applyAgentFilter($documentsQuery, 'adherent');
+        
+        $stats['documents'] = [
+            'en_attente' => (clone $documentsQuery)->where('statut', 'soumis')->count(),
+            'valides' => (clone $documentsQuery)->where('statut', 'validé')->count(),
+        ];
+        
+        // Ayants droit filtrés
+        $ayantsDroitQuery = AyantDroit::query();
+        $ayantsDroitQuery = $this->applyAgentFilter($ayantsDroitQuery, 'adherent');
+        
+        $stats['ayants_droit'] = [
+            'en_attente' => (clone $ayantsDroitQuery)->where('statut_validation', 'en_attente')->count(),
+            'valides' => (clone $ayantsDroitQuery)->where('statut_validation', 'validé')->count(),
         ];
 
         return response()->json($stats);
@@ -286,7 +327,33 @@ class DashboardController extends Controller
                 ->latest()
                 ->take(15)
                 ->get();
-        } elseif ($user->isAgent() || $user->isChefService()) {
+        } elseif ($user->isAgent()) {
+            // Pour les agents, afficher uniquement l'activité de leurs adhérents affectés
+            $adherentIds = $this->getAgentAdherentIds();
+            
+            if ($adherentIds !== null && !empty($adherentIds)) {
+                $activity = LogConnexion::with('user')
+                    ->where(function($query) use ($user, $adherentIds) {
+                        $query->where('user_id', $user->id)
+                              ->orWhereIn('user_id', function($q) use ($adherentIds) {
+                                  $q->select('user_id')
+                                    ->from('adherents')
+                                    ->whereIn('id', $adherentIds)
+                                    ->whereNotNull('user_id');
+                              });
+                    })
+                    ->latest()
+                    ->take(15)
+                    ->get();
+            } else {
+                $activity = LogConnexion::with('user')
+                    ->where('user_id', $user->id)
+                    ->latest()
+                    ->take(15)
+                    ->get();
+            }
+        } elseif ($user->isChefService()) {
+            // Pour les chefs de service, afficher l'activité de l'agence
             $activity = LogConnexion::with('user')
                 ->where('user_id', $user->id)
                 ->orWhereHas('user', function($query) use ($user) {
@@ -374,12 +441,8 @@ class DashboardController extends Controller
                   ->orWhere('telephone', 'like', "%{$query}%");
             });
         
-        // Filtrer par agence si l'utilisateur n'est pas admin
-        if (!$user->isAdmin()) {
-            $adherentsQuery->whereHas('user', function($q) use ($user) {
-                $q->where('agence_id', $user->agence_id);
-            });
-        }
+        // Filtrer par agent pour les agents, par agence pour les autres non-admins
+        $adherentsQuery = $this->applyAgentFilter($adherentsQuery, null);
         
         $adherents = $adherentsQuery->limit(5)->get(['id', 'nom', 'prenom', 'numero_adherent']);
         
@@ -395,12 +458,8 @@ class DashboardController extends Controller
                   });
             });
         
-        // Filtrer par agence si nécessaire
-        if (!$user->isAdmin()) {
-            $creditsQuery->whereHas('adherent.user', function($q) use ($user) {
-                $q->where('agence_id', $user->agence_id);
-            });
-        }
+        // Filtrer par agent pour les agents
+        $creditsQuery = $this->applyAgentFilter($creditsQuery, 'adherent');
         
         $credits = $creditsQuery->limit(5)->get();
         

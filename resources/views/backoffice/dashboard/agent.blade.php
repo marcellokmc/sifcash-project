@@ -180,24 +180,26 @@
         </div>
     </div>
 
-    <!-- Activité Récente -->
+    <!-- Mes Connexions Récentes -->
     <div class="col-lg-4 mb-4">
         <div class="card shadow">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Activité Récente</h6>
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-sign-in-alt me-2"></i>Mes Connexions
+                </h6>
             </div>
             <div class="card-body">
                 @if(isset($recentActivity) && $recentActivity->count() > 0)
                     <div class="list-group list-group-flush">
-                        @foreach($recentActivity->take(5) as $activity)
+                        @foreach($recentActivity->where('user_id', auth()->id())->take(5) as $activity)
                         <div class="list-group-item px-0 py-2">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
-                                    <i class="fas fa-{{ $activity->action === 'login' ? 'sign-in-alt text-success' : 'user text-primary' }}"></i>
+                                    <i class="fas fa-{{ $activity->action === 'login' ? 'sign-in-alt text-success' : 'sign-out-alt text-warning' }}"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-2">
-                                    <small class="d-block text-muted">
-                                        {{ $activity->user->name }}
+                                    <small class="d-block fw-bold text-dark">
+                                        {{ $activity->action === 'login' ? 'Connexion' : 'Déconnexion' }}
                                     </small>
                                     <small class="text-muted">
                                         {{ $activity->created_at->diffForHumans() }}
@@ -207,13 +209,6 @@
                         </div>
                         @endforeach
                     </div>
-                    @if($recentActivity->count() > 5)
-                    <div class="text-center mt-2">
-                        <a href="#" class="text-decoration-none small">
-                            Voir toute l'activité
-                        </a>
-                    </div>
-                    @endif
                 @else
                     <div class="text-center text-muted py-3">
                         <i class="fas fa-info-circle me-2"></i>
@@ -261,22 +256,26 @@
     <div class="col-12">
         <div class="card shadow">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Statistiques de l'Agence</h6>
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-chart-bar me-2"></i>Mes Statistiques d'Agent
+                </h6>
             </div>
             <div class="card-body">
                 <div class="row text-center">
                     <div class="col-md-3 mb-3">
                         <div class="p-3 border rounded bg-light">
                             <i class="fas fa-users fa-2x text-primary mb-2"></i>
-                            <h6>Total Adhérents</h6>
+                            <h6>Mes Adhérents</h6>
                             <h4 class="text-primary">{{ $stats['total_adherents'] }}</h4>
+                            <small class="text-muted">Qui me sont affectés</small>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
                         <div class="p-3 border rounded bg-light">
                             <i class="fas fa-user-check fa-2x text-success mb-2"></i>
-                            <h6>Adhérents Actifs</h6>
+                            <h6>Actifs</h6>
                             <h4 class="text-success">{{ $stats['adherents_actifs'] }}</h4>
+                            <small class="text-muted">Comptes activés</small>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
@@ -284,16 +283,48 @@
                             <i class="fas fa-clock fa-2x text-warning mb-2"></i>
                             <h6>En Attente</h6>
                             <h4 class="text-warning">{{ $stats['adherents_en_attente'] }}</h4>
+                            <small class="text-muted">A vérifier</small>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
                         <div class="p-3 border rounded bg-light">
-                            <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
-                            <h6>Activité Aujourd'hui</h6>
+                            <i class="fas fa-sign-in-alt fa-2x text-info mb-2"></i>
+                            <h6>Mes Connexions</h6>
                             <h4 class="text-info">{{ $stats['recent_activity'] }}</h4>
+                            <small class="text-muted">Aujourd'hui</small>
                         </div>
                     </div>
                 </div>
+                
+                @if(isset($stats['credits_en_attente']) || isset($stats['credits_approuves']))
+                <hr class="my-4">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3">
+                        <div class="p-3 border rounded bg-light">
+                            <i class="fas fa-file-invoice-dollar fa-2x text-warning mb-2"></i>
+                            <h6>Crédits en Attente</h6>
+                            <h4 class="text-warning">{{ $stats['credits_en_attente'] ?? 0 }}</h4>
+                            <small class="text-muted">De mes adhérents</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="p-3 border rounded bg-light">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <h6>Crédits Approuvés</h6>
+                            <h4 class="text-success">{{ $stats['credits_approuves'] ?? 0 }}</h4>
+                            <small class="text-muted">De mes adhérents</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="p-3 border rounded bg-light">
+                            <i class="fas fa-file-alt fa-2x text-info mb-2"></i>
+                            <h6>Documents à Traiter</h6>
+                            <h4 class="text-info">{{ $stats['documents_en_attente'] ?? 0 }}</h4>
+                            <small class="text-muted">De mes adhérents</small>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>

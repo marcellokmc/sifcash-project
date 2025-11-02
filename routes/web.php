@@ -200,7 +200,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('search', [DashboardController::class, 'globalSearch'])->name('search');
 
         // Gestion des adhérents
-        Route::resource('adherents', AdherentController::class);
+        Route::resource('adherents', AdherentController::class)->middleware('filter.adherents.by.agent');
         Route::post('adherents/{adherent}/activate', [AdherentController::class, 'activate'])->name('adherents.activate');
         Route::post('adherents/{adherent}/deactivate', [AdherentController::class, 'deactivate'])->name('adherents.deactivate');
         Route::get('adherents/{adherent}/contrat/download', [AdherentController::class, 'downloadContractAdmin'])->name('adherents.contrat.download');
@@ -211,7 +211,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('adherents/affectation-masse', [AdherentController::class, 'affectationMasse'])->name('adherents.affectation-masse');
         
         // Liste des adhérents par agent
-        Route::get('agents/{agent}/adherents', [AdherentController::class, 'adherentsParAgent'])->name('agents.adherents');
+        Route::get('agents/{agent}/adherents', [AdherentController::class, 'adherentsParAgent'])->name('agents.adherents')->middleware('filter.adherents.by.agent');
 
         // Types de documents
         Route::resource('types-documents', TypeDocumentController::class);
@@ -364,18 +364,20 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('penalites/{penalite}/deactivate', [PenaliteRetraitAnticipeController::class, 'deactivate'])
             ->name('penalites.deactivate');
         
-        // Journal d'audit
-        Route::get('audit', [AuditController::class, 'index'])->name('audit.index');
-        Route::get('audit/stats', [AuditController::class, 'stats'])->name('audit.stats');
-        Route::get('audit/export', [AuditController::class, 'export'])->name('audit.export');
-        Route::get('audit/{audit}', [AuditController::class, 'show'])->name('audit.show');
+        // Journal d'audit (Admin et Chef de service seulement)
+        Route::middleware(['role:admin,chef_service'])->group(function () {
+            Route::get('audit', [AuditController::class, 'index'])->name('audit.index');
+            Route::get('audit/stats', [AuditController::class, 'stats'])->name('audit.stats');
+            Route::get('audit/export', [AuditController::class, 'export'])->name('audit.export');
+            Route::get('audit/{audit}', [AuditController::class, 'show'])->name('audit.show');
 
-        // Logs de connexion
-        Route::get('logs/connexions', [LogConnexionController::class, 'index'])->name('logs.connexions');
-        Route::get('logs/connexions/export', [LogConnexionController::class, 'export'])->name('logs.connexions.export');
+            // Logs de connexion
+            Route::get('logs/connexions', [LogConnexionController::class, 'index'])->name('logs.connexions');
+            Route::get('logs/connexions/export', [LogConnexionController::class, 'export'])->name('logs.connexions.export');
+        });
         
-        // Gestion des affectations
-        Route::prefix('affectations')->name('affectations.')->group(function () {
+        // Gestion des affectations (Admin et Chef de service seulement)
+        Route::middleware(['role:admin,chef_service'])->prefix('affectations')->name('affectations.')->group(function () {
             Route::get('/', [\App\Http\Controllers\AffectationController::class, 'index'])->name('index');
             Route::post('/affecter-masse', [\App\Http\Controllers\AffectationController::class, 'affecterMasse'])->name('affecter-masse');
             Route::post('/retirer-agent', [\App\Http\Controllers\AffectationController::class, 'retirerAgent'])->name('retirer-agent');

@@ -26,5 +26,27 @@ class AuthServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
             return method_exists($user, 'isAdmin') && $user->isAdmin() ? true : null;
         });
+
+        // Définir les gates pour toutes les permissions
+        $this->registerPermissionGates();
+    }
+
+    /**
+     * Enregistrer les gates pour toutes les permissions
+     */
+    protected function registerPermissionGates()
+    {
+        try {
+            $permissions = \App\Models\Permission::all();
+            
+            foreach ($permissions as $permission) {
+                Gate::define($permission->name, function ($user) use ($permission) {
+                    return $user->hasPermissionTo($permission->name);
+                });
+            }
+        } catch (\Exception $e) {
+            // Si la table permissions n'existe pas encore (migrations), on ignore
+            report($e);
+        }
     }
 }

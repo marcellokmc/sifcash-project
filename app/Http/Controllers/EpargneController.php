@@ -7,15 +7,20 @@ use App\Models\Adherent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Traits\FiltersByAgentAdherents;
 
 class EpargneController extends Controller
 {
+    use FiltersByAgentAdherents;
     /**
      * Afficher la liste des épargnes
      */
     public function index(Request $request)
     {
         $query = Epargne::with('adherent')->latest();
+        
+        // Filtrer par agent si nécessaire
+        $query = $this->applyAgentFilter($query, 'adherent');
         
         // Filtrage par adhérent
         if ($request->has('adherent_id')) {
@@ -38,8 +43,10 @@ class EpargneController extends Controller
             return response()->json($epargnes);
         }
         
-        // Récupérer la liste des adhérents pour le filtre
-        $adherents = Adherent::orderBy('nom')->get();
+        // Récupérer la liste des adhérents pour le filtre (filtrés par agent)
+        $adherents = Adherent::query();
+        $adherents = $this->applyAgentFilter($adherents, null); // Utiliser le scope forAgent sur Adherent
+        $adherents = $adherents->orderBy('nom')->get();
         
         return view('backoffice.epargnes.index', [
             'epargnes' => $epargnes,
