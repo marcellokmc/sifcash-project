@@ -22,8 +22,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
 
-        // Send birthday notifications daily at 06:00
-        $schedule->command('birthdays:send-notifications')->dailyAt('06:00');
+        // Send birthday notifications daily (heure configurable)
+        $schedule->command('birthdays:send-notifications')
+            ->dailyAt(config('birthday.send_time', '06:00'));
     }
 
     /**

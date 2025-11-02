@@ -1,0 +1,92 @@
+services:
+  web:
+    image: nginx:1.25-alpine
+    container_name: sif_web
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+    volumes:
+      - type: bind
+        source: ../../
+        target: /var/www/html
+        read_only: true
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+    networks: [sif]
+
+  app:
+    build:
+      context: ../../
+      dockerfile: deploy/docker/Dockerfile.app
+    container_name: sif_app
+    env_file:
+      - ../../.env
+    volumes:
+      - type: bind
+        source: ../../
+        target: /var/www/html
+      - sif_storage:/var/www/html/storage
+      - sif_cache:/var/www/html/bootstrap/cache
+    networks: [sif]
+
+  db:
+    image: mysql:8.0
+    container_name: sif_db
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-sif}
+      MYSQL_USER: ${DB_USERNAME:-sif}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-sifpass}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
+    volumes:
+      - sif_db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks: [sif]
+
+  redis:
+    image: redis:7-alpine
+    container_name: sif_redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - sif_redis:/data
+    ports:
+      - "6379:6379"
+    networks: [sif]
+
+  queue:
+    depends_on: [app, redis]
+    image: ${COMPOSE_PROJECT_NAME:-sif}_app
+    container_name: sif_queue
+    env_file:
+      - ../../.env
+    working_dir: /var/www/html
+    command: php artisan queue:work redis --sleep=3 --tries=3 --timeout=120
+    volumes:
+      - sif_storage:/var/www/html/storage
+      - sif_cache:/var/www/html/bootstrap/cache
+    networks: [sif]
+
+  scheduler:
+    depends_on: [app]
+    image: ${COMPOSE_PROJECT_NAME:-sif}_app
+    container_name: sif_scheduler
+    env_file:
+      - ../../.env
+    working_dir: /var/www/html
+    command: sh -c "while :; do php artisan schedule:run; sleep 60; done"
+    volumes:
+      - sif_storage:/var/www/html/storage
+      - sif_cache:/var/www/html/bootstrap/cache
+    networks: [sif]
+
+volumes:
+  sif_db:
+  sif_redis:
+  sif_storage:
+  sif_cache:
+
+networks:
+  sif:
+    driver: bridge

@@ -327,6 +327,9 @@
                                             <div class="form-text">
                                                 <small>Le mot de passe doit contenir au moins 8 caractères</small>
                                             </div>
+                                            <div class="form-text text-warning">
+                                                <small><i class="fas fa-info-circle me-1"></i>En cas d’oubli de mot de passe, veuillez contacter l’administrateur/chef de service pour une réinitialisation.</small>
+                                            </div>
                                         </div>
                                     </div>
                                     

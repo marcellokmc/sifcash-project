@@ -37,31 +37,15 @@
                                 <p class="text-muted">Réinitialisation du mot de passe</p>
                             </div>
 
-                            <form method="POST" action="#">
-                                @csrf
-                                
-                                <div class="mb-4">
-                                    <p class="text-muted">
-                                        Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
-                                    </p>
+                            <div class="alert alert-warning d-flex" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2 mt-1"></i>
+                                <div>
+                                    La réinitialisation automatique du mot de passe est désactivée. Veuillez contacter l’administrateur ou le chef de service de votre agence pour réinitialiser votre mot de passe.
                                 </div>
-
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                        <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                               id="email" name="email" value="{{ old('email') }}" required>
-                                    </div>
-                                    @error('email')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <button type="submit" class="btn btn-warning w-100 py-2">
-                                    <i class="fas fa-paper-plane me-2"></i>Envoyer le lien
-                                </button>
-                            </form>
+                            </div>
+                            <div class="text-muted small mb-3">
+                                Pour accélérer le traitement, préparez votre numéro d’adhérent et vos informations d’identité.
+                            </div>
 
                             <div class="text-center mt-3">
                                 <a href="{{ route('login') }}" class="text-decoration-none">

@@ -27,6 +27,9 @@ return new class extends Migration
             $table->text('motif_suspension')->nullable();
             $table->timestamp('date_activation')->nullable();
             $table->timestamp('date_cloture')->nullable();
+            // Ajout: type de clôture
+            $table->enum('type_cloture', ['retrait_anticipé', 'arrivee_terme'])->nullable();
+
             $table->foreignId('created_by_agent_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
             
@@ -35,6 +38,7 @@ return new class extends Migration
             $table->index(['plan_id', 'statut']);
             $table->index('date_debut');
             $table->index('date_fin');
+            $table->index('type_cloture');
         });
     }
 

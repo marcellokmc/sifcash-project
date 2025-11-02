@@ -349,10 +349,11 @@
                                     <i class="fas fa-sign-in-alt me-2"></i>🚀 Connexion Adhérent
                                 </button>
 
-                                <div class="text-center">
-                                    <a href="{{ route('password.request') }}" class="text-decoration-none small fw-bold" style="color: #667eea; font-size: 0.95rem;">
-                                        <i class="fas fa-key me-1"></i>🔑 Mot de passe oublié ?
-                                    </a>
+                                <div class="text-center mt-2">
+                                    <div class="small fw-bold" style="color: #64748b; font-size: 0.95rem;">
+                                        <i class="fas fa-info-circle me-1" style="color:#fb923c"></i>
+                                        Mot de passe oublié ? Veuillez contacter l’administrateur ou le chef de service pour réinitialiser votre mot de passe.
+                                    </div>
                                 </div>
                             </form>
 

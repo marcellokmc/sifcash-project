@@ -17,19 +17,25 @@ php artisan birthdays:send-notifications
 ### Caractéristiques
 
 ✅ **Détection automatique** : Vérifie les dates de naissance (jour et mois)
+✅ **Cas 29/02** : Si année non bissextile, souhaite le 28/02 aux nés le 29/02
 ✅ **Filtrage** : Ne notifie que les adhérents avec un compte actif
 ✅ **Prévention des doublons** : Ne renvoie pas de notification si déjà envoyée le même jour
 ✅ **Message personnalisé** : Inclut le prénom de l'adhérent et son âge
-✅ **Emoji et mise en forme** : Message chaleureux avec emojis 🎉🎂🎁
+✅ **Canaux** : Notification in‑app + email optionnel (configurable)
+✅ **Mode simulation** : `--dry-run` pour vérifier sans écrire
 
 ### Planification
 
-La commande s'exécute automatiquement **tous les jours à 6h00** via le scheduler Laravel.
+La commande s'exécute automatiquement tous les jours à l'heure configurée (par défaut 06:00) via le scheduler Laravel.
 
 Configuration dans `app/Console/Kernel.php` :
 ```php
-$schedule->command('birthdays:send-notifications')->dailyAt('06:00');
+$schedule->command('birthdays:send-notifications')->dailyAt(config('birthday.send_time', '06:00'));
 ```
+
+Paramètres `config/birthday.php` (surchargés par .env):
+- BIRTHDAY_EMAIL_ENABLED=true|false
+- BIRTHDAY_SEND_TIME=06:00
 
 ### Activation du Scheduler
 
@@ -55,9 +61,14 @@ php artisan tinker
 >>> exit
 ```
 
-2. Exécuter la commande :
+2. Exécuter en mode simulation (aucune écriture) :
 ```bash
-php artisan birthdays:send-notifications
+php artisan birthdays:send-notifications --dry-run
+```
+
+3. Exécuter réellement (limiter à N envois) :
+```bash
+php artisan birthdays:send-notifications --limit=5
 ```
 
 3. Vérifier les notifications dans l'interface adhérent

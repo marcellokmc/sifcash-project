@@ -5,7 +5,10 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Adherent;
 use App\Models\Notification;
+use App\Services\NotificationService;
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use Throwable;
 
 class SendBirthdayNotifications extends Command
 {
@@ -14,14 +17,14 @@ class SendBirthdayNotifications extends Command
      *
      * @var string
      */
-    protected $signature = 'birthdays:send-notifications';
+    protected $signature = 'birthdays:send-notifications {--dry-run : Affiche ce qui serait envoyé sans créer de notifications} {--limit=0 : Limite le nombre de notifications envoyées}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Envoyer des notifications de joyeux anniversaire aux adhérents';
+    protected $description = "Envoyer des notifications de joyeux anniversaire aux adhérents (prévention des doublons, email optionnel)";
 
     /**
      * Execute the console command.
@@ -29,58 +32,93 @@ class SendBirthdayNotifications extends Command
     public function handle()
     {
         $this->info('🎉 Recherche des anniversaires du jour...');
-        
+
         $today = Carbon::today();
-        
-        // Récupérer tous les adhérents dont c'est l'anniversaire aujourd'hui
-        $adherents = Adherent::with('user')
-            ->whereMonth('date_naissance', $today->month)
-            ->whereDay('date_naissance', $today->day)
+        $dryRun = (bool) $this->option('dry-run');
+        $limit = (int) $this->option('limit');
+
+        // Sélectionne les adhérents dont c'est l'anniversaire aujourd'hui
+        // Cas particulier 29/02: on souhaite le 28/02 les années non bissextiles
+        $query = Adherent::with('user')
+            ->whereNotNull('date_naissance')
             ->where('statut_compte', 'actif')
-            ->get();
-        
-        if ($adherents->isEmpty()) {
-            $this->info('ℹ️ Aucun anniversaire aujourd\'hui.');
-            return 0;
-        }
-        
+            ->where(function ($q) use ($today) {
+                $q->whereMonth('date_naissance', $today->month)
+                  ->whereDay('date_naissance', $today->day);
+
+                if (!$today->isLeapYear() && $today->month === 2 && $today->day === 28) {
+                    $q->orWhere(function ($qq) {
+                        $qq->whereMonth('date_naissance', 2)->whereDay('date_naissance', 29);
+                    });
+                }
+            })
+            ->orderBy('id');
+
         $count = 0;
-        
-        foreach ($adherents as $adherent) {
-            if (!$adherent->user) {
-                continue;
+        $processed = 0;
+
+        $query->chunkById(200, function ($adherents) use (&$count, &$processed, $today, $dryRun, $limit) {
+            foreach ($adherents as $adherent) {
+                if ($limit && $processed >= $limit) {
+                    return false; // stop chunking
+                }
+                $processed++;
+
+                if (!$adherent->user) {
+                    continue;
+                }
+
+                // Calcul de l'âge
+                $age = $today->diffInYears($adherent->date_naissance);
+
+                // Déduplication: une seule notification anniversaire par jour et par user
+                $alreadySent = Notification::where('user_id', $adherent->user->id)
+                    ->where('type', 'anniversaire')
+                    ->whereDate('created_at', $today)
+                    ->exists();
+                if ($alreadySent) {
+                    $this->warn("⚠️  Déjà envoyé: {$adherent->nom_complet}");
+                    continue;
+                }
+
+                $title = '🎂 Joyeux Anniversaire !';
+                $message = "Chèr(e) {$adherent->prenom},\n\n" .
+                    "🎉 Toute l'équipe de SIFCash-Burkina vous souhaite un très joyeux anniversaire !\n\n" .
+                    "🎂 Vous célébrez aujourd'hui vos {$age} ans. Que cette nouvelle année vous apporte santé, bonheur et prospérité !\n\n" .
+                    "Merci de votre confiance et de votre fidélité.\n\n" .
+                    "Bien à vous,\nL'équipe SIFCash-Burkina 🎁";
+
+                if ($dryRun) {
+                    $this->line("[DRY-RUN] {$adherent->nom_complet} ({$age} ans) – notification + email=" . (config('birthday.email') ? 'on' : 'off'));
+                    $count++;
+                    continue;
+                }
+
+                try {
+                    // Notification in‑app
+                    NotificationService::creerNotification(
+                        $adherent->user->id,
+                        $title,
+                        $message,
+                        'anniversaire'
+                    );
+
+                    // Email optionnel
+                    if (config('birthday.email') && filter_var($adherent->email, FILTER_VALIDATE_EMAIL)) {
+                        Mail::to($adherent->email)->send(new \App\Mail\AdherentBirthdayMail($adherent, $age));
+                    }
+
+                    $count++;
+                    $this->info("✅ Envoyé à {$adherent->nom_complet} ({$age} ans)");
+                } catch (Throwable $e) {
+                    $this->error("❌ Échec pour {$adherent->nom_complet}: " . $e->getMessage());
+                }
             }
-            
-            // Calculer l'âge
-            $age = $today->diffInYears($adherent->date_naissance);
-            
-            // Vérifier si une notification d'anniversaire a déjà été envoyée aujourd'hui
-            $alreadySent = Notification::where('user_id', $adherent->user->id)
-                ->where('type', 'anniversaire')
-                ->whereDate('created_at', $today)
-                ->exists();
-            
-            if ($alreadySent) {
-                $this->warn("⚠️  Notification déjà envoyée pour {$adherent->nom_complet}");
-                continue;
-            }
-            
-            // Créer la notification d'anniversaire
-            Notification::create([
-                'user_id' => $adherent->user->id,
-                'titre' => '🎂 Joyeux Anniversaire !',
-                'message' => "Chèr(e) {$adherent->prenom},\n\n🎉 Toute l'équipe de SIFCash-Burkina vous souhaite un très joyeux anniversaire ! \n\n🎂 Vous célébrez aujourd'hui vos {$age} ans. Que cette nouvelle année vous apporte santé, bonheur et prospérité !\n\nMerci de votre confiance et de votre fidélité.\n\nBien à vous,\nL'équipe SIFCash-Burkina 🎁",
-                'type' => 'anniversaire',
-                'lu' => false,
-            ]);
-            
-            $count++;
-            $this->info("✅ Notification envoyée à {$adherent->nom_complet} ({$age} ans)");
-        }
-        
+        });
+
         $this->info("");
-        $this->info("✨ {$count} notification(s) d'anniversaire envoyée(s) avec succès !");
-        
+        $this->info("✨ {$count} notification(s) d'anniversaire traitée(s) avec succès !");
+
         return 0;
     }
 }

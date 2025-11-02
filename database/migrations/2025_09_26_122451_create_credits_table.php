@@ -28,9 +28,13 @@
                 $table->enum('etat', ['brouillon','soumis','en_examen','approuve','rejete','contrat','actif','termine','defaut','annule'])->default('brouillon');
                 $table->text('motif_rejet')->nullable();
                 $table->date('date_demande');
+                // Champs ajoutés
+                $table->text('motif')->nullable();
+                $table->text('garanties')->nullable();
                 $table->date('date_validation')->nullable();
                 $table->date('date_debut_remboursement')->nullable();
                 $table->foreignId('validated_by_agent_id')->nullable()->constrained('users')->onDelete('set null');
+                $table->string('contract_path')->nullable();
                 $table->timestamps();
 
                 $table->index(['adherent_id', 'statut']);
