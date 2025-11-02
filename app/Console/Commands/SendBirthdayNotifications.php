@@ -7,6 +7,7 @@ use App\Models\Adherent;
 use App\Models\Notification;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 use Throwable;
 
@@ -38,21 +39,36 @@ class SendBirthdayNotifications extends Command
         $limit = (int) $this->option('limit');
 
         // Sélectionne les adhérents dont c'est l'anniversaire aujourd'hui
-        // Cas particulier 29/02: on souhaite le 28/02 les années non bissextiles
         $query = Adherent::with('user')
             ->whereNotNull('date_naissance')
-            ->where('statut_compte', 'actif')
-            ->where(function ($q) use ($today) {
+            ->where('statut_compte', 'actif');
+
+        // Utilise les colonnes générées si disponibles pour profiter des index
+        if (Schema::hasColumn('adherents', 'birth_month') && Schema::hasColumn('adherents', 'birth_day')) {
+            $query->where(function ($q) use ($today) {
+                $q->where('birth_month', $today->month)
+                  ->where('birth_day', $today->day);
+                // Cas 29/02 traité le 28/02 en année non bissextile
+                if (!$today->isLeapYear() && $today->month === 2 && $today->day === 28) {
+                    $q->orWhere(function ($qq) {
+                        $qq->where('birth_month', 2)->where('birth_day', 29);
+                    });
+                }
+            });
+        } else {
+            // Fallback sans colonnes générées
+            $query->where(function ($q) use ($today) {
                 $q->whereMonth('date_naissance', $today->month)
                   ->whereDay('date_naissance', $today->day);
-
                 if (!$today->isLeapYear() && $today->month === 2 && $today->day === 28) {
                     $q->orWhere(function ($qq) {
                         $qq->whereMonth('date_naissance', 2)->whereDay('date_naissance', 29);
                     });
                 }
-            })
-            ->orderBy('id');
+            });
+        }
+
+        $query->orderBy('id');
 
         $count = 0;
         $processed = 0;
@@ -105,7 +121,7 @@ class SendBirthdayNotifications extends Command
 
                     // Email optionnel
                     if (config('birthday.email') && filter_var($adherent->email, FILTER_VALIDATE_EMAIL)) {
-                        Mail::to($adherent->email)->send(new \App\Mail\AdherentBirthdayMail($adherent, $age));
+Mail::to($adherent->email)->queue(new \App\Mail\AdherentBirthdayMail($adherent, $age));
                     }
 
                     $count++;

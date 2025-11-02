@@ -37,7 +37,7 @@ class PerformanceOptimizationService
                 'plans_actifs' => Plan::where('actif', true)->count(),
                 'adhesions_actives' => Adhesion::where('statut', 'active')->count(),
                 'credits_en_attente' => Credit::where('statut', 'en_attente')->count(),
-                'total_epargne' => Epargne::where('statut', 'actif')->sum('montant_total'),
+'total_epargne' => Epargne::where('statut', 'actif')->sum('solde_actuel'),
                 'today_logins' => \App\Models\LogConnexion::where('action', 'login')
                     ->whereDate('created_at', today())
                     ->count(),
@@ -67,7 +67,7 @@ class PerformanceOptimizationService
 
             return [
                 'adhesions_actives' => $adherent->adhesions->where('statut', 'active')->count(),
-                'solde_total_epargne' => $adherent->epargnes->sum('montant_total'),
+'solde_total_epargne' => $adherent->epargnes->sum('solde_actuel'),
                 'credits_en_cours' => $adherent->credits->whereIn('statut', ['approuve', 'en_cours'])->count(),
                 'prochaine_echeance' => $this->getProchainePaiement($adherentId),
                 'completion_profil' => $this->calculateProfilCompletion($adherent),
@@ -96,9 +96,9 @@ class PerformanceOptimizationService
     {
         return Cache::remember('statistiques_financieres', self::CACHE_MEDIUM, function () {
             return [
-                'total_epargne' => Epargne::where('statut', 'actif')->sum('montant_total'),
+'total_epargne' => Epargne::where('statut', 'actif')->sum('solde_actuel'),
                 'total_credits_actifs' => Credit::whereIn('statut', ['approuve', 'en_cours'])->sum('montant'),
-                'total_interets_verses' => Epargne::sum('interets_accumules'),
+'total_interets_verses' => Epargne::sum('interet_cumule'),
                 'total_frais_percus' => $this->calculateTotalFrais(),
                 'evolution_epargne' => $this->getEvolutionEpargne(),
                 'evolution_credits' => $this->getEvolutionCredits(),
@@ -171,9 +171,79 @@ class PerformanceOptimizationService
     {
         $keys = [
             "user_data_{$userId}",
-            "adherent_dashboard_stats_{$userId}",
+            // adherent_dashboard_stats_* est par adherent, non user, géré ailleurs
         ];
 
+        foreach ($keys as $key) {
+            Cache::forget($key);
+        }
+    }
+
+    /**
+     * Clés de cache liées à un agent spécifique (dashboard agent, widgets)
+     */
+    public function getAgentCacheKeys(int $agentUserId): array
+    {
+        return [
+            "agent_dashboard_stats_{$agentUserId}",
+            "agent_docs_pending_{$agentUserId}",
+            "agent_ayants_pending_{$agentUserId}",
+            "agent_credits_pending_{$agentUserId}",
+            "agent_credits_approved_{$agentUserId}",
+            "agent_recent_activity_{$agentUserId}",
+            "agent_recent_activity_list_{$agentUserId}",
+        ];
+    }
+
+    /**
+     * Clés de cache liées à une agence (prévision pour dashboard chef de service)
+     */
+    public function getAgenceCacheKeys(int $agenceId): array
+    {
+        return [
+            "chef_dashboard_stats_{$agenceId}",
+            "chef_recent_activity_{$agenceId}",
+        ];
+    }
+
+    /**
+     * Clés liées à un adhérent et son écosystème
+     */
+    public function getAdherentCacheKeys(int $adherentId, ?int $adherentUserId = null, array $agentUserIds = [], ?int $agenceId = null): array
+    {
+        $keys = [
+            "adherent_dashboard_stats_{$adherentId}",
+            "prochaine_echeance_{$adherentId}",
+        ];
+        if ($adherentUserId) {
+            $keys[] = "user_data_{$adherentUserId}";
+        }
+        foreach ($agentUserIds as $uid) {
+            $keys = array_merge($keys, $this->getAgentCacheKeys((int)$uid));
+        }
+        if ($agenceId) {
+            $keys = array_merge($keys, $this->getAgenceCacheKeys((int)$agenceId));
+        }
+        return array_values(array_unique($keys));
+    }
+
+    /**
+     * Invalider caches pour un agent
+     */
+    public function invalidateForAgent(int $agentUserId): void
+    {
+        foreach ($this->getAgentCacheKeys($agentUserId) as $key) {
+            Cache::forget($key);
+        }
+    }
+
+    /**
+     * Invalider caches pour un adhérent (et ses agents/agence)
+     */
+    public function invalidateForAdherent(\App\Models\Adherent $adherent): void
+    {
+        $agentIds = method_exists($adherent, 'agents') ? $adherent->agents()->pluck('users.id')->toArray() : [];
+        $keys = $this->getAdherentCacheKeys($adherent->id, $adherent->user_id, $agentIds, $adherent->agence_id);
         foreach ($keys as $key) {
             Cache::forget($key);
         }
@@ -269,7 +339,7 @@ class PerformanceOptimizationService
             ->select(
                 DB::raw('YEAR(created_at) as annee'),
                 DB::raw('MONTH(created_at) as mois'),
-                DB::raw('SUM(montant_total) as total')
+DB::raw('SUM(solde_actuel) as total')
             )
             ->where('statut', 'actif')
             ->where('created_at', '>=', Carbon::now()->subMonths(12))
