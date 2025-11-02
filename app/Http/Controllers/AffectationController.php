@@ -16,8 +16,14 @@ class AffectationController extends Controller
      */
     public function index(Request $request)
     {
+        $auth = auth()->user();
         $query = Adherent::with(['agence', 'agents', 'agentGestionnaire'])
             ->withCount('agents');
+
+        // Chef de service: restreindre à son agence
+        if ($auth && $auth->isChefService()) {
+            $query->where('agence_id', $auth->agence_id);
+        }
 
         // Filtres
         if ($request->filled('search')) {
@@ -60,13 +66,28 @@ class AffectationController extends Controller
             'sans_agence' => Adherent::whereNull('agence_id')->count(),
         ];
 
-        $agences = Agence::where('active', true)->orderBy('nom')->get();
-        $agents = User::whereIn('role', ['agent', 'chef_service'])
-            ->where('active', true)
-            ->with('agence')
-            ->withCount('adherentsGeres')
-            ->orderBy('name')
-            ->get();
+        // Limiter la liste des agences/agents au périmètre
+        if ($auth && $auth->isChefService()) {
+            $agences = Agence::where('active', true)
+                ->where('id', $auth->agence_id)
+                ->orderBy('nom')
+                ->get();
+            $agents = User::whereIn('role', ['agent', 'chef_service'])
+                ->where('active', true)
+                ->where('agence_id', $auth->agence_id)
+                ->with('agence')
+                ->withCount('adherentsGeres')
+                ->orderBy('name')
+                ->get();
+        } else {
+            $agences = Agence::where('active', true)->orderBy('nom')->get();
+            $agents = User::whereIn('role', ['agent', 'chef_service'])
+                ->where('active', true)
+                ->with('agence')
+                ->withCount('adherentsGeres')
+                ->orderBy('name')
+                ->get();
+        }
 
         return view('backoffice.affectations.index', compact('adherents', 'stats', 'agences', 'agents'));
     }
@@ -239,8 +260,13 @@ class AffectationController extends Controller
      */
     public function nonAffectes(Request $request)
     {
+        $auth = auth()->user();
         $query = Adherent::nonAffectes()
             ->with(['agence', 'agentGestionnaire']);
+
+        if ($auth && $auth->isChefService()) {
+            $query->where('agence_id', $auth->agence_id);
+        }
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -253,12 +279,24 @@ class AffectationController extends Controller
 
         $adherents = $query->latest()->paginate(50);
 
-        $agences = Agence::where('active', true)->orderBy('nom')->get();
-        $agents = User::whereIn('role', ['agent', 'chef_service'])
-            ->where('active', true)
-            ->with('agence')
-            ->orderBy('name')
-            ->get();
+        if ($auth && $auth->isChefService()) {
+            $agences = Agence::where('active', true)
+                ->where('id', $auth->agence_id)
+                ->orderBy('nom')->get();
+            $agents = User::whereIn('role', ['agent', 'chef_service'])
+                ->where('active', true)
+                ->where('agence_id', $auth->agence_id)
+                ->with('agence')
+                ->orderBy('name')
+                ->get();
+        } else {
+            $agences = Agence::where('active', true)->orderBy('nom')->get();
+            $agents = User::whereIn('role', ['agent', 'chef_service'])
+                ->where('active', true)
+                ->with('agence')
+                ->orderBy('name')
+                ->get();
+        }
 
         return view('backoffice.affectations.non-affectes', compact('adherents', 'agences', 'agents'));
     }

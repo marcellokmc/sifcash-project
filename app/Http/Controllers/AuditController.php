@@ -14,6 +14,19 @@ class AuditController extends Controller
     {
         $q = Audit::with(['user', 'targetUser']);
 
+        // Périmètre Chef de service: restreindre aux utilisateurs de son agence
+        $auth = $request->user();
+        if ($auth && $auth->isChefService()) {
+            $q->where(function($sub) use ($auth) {
+                $sub->whereHas('user', function($u) use ($auth) {
+                        $u->where('agence_id', $auth->agence_id);
+                    })
+                    ->orWhereHas('targetUser', function($tu) use ($auth) {
+                        $tu->where('agence_id', $auth->agence_id);
+                    });
+            });
+        }
+
         // Filtrage par utilisateur (qui a fait l'action)
         if ($request->filled('user_id')) {
             $q->where('user_id', $request->integer('user_id'));

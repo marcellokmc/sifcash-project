@@ -32,13 +32,6 @@ class TypeDocumentSeeder extends Seeder
                 'actif' => true
             ],
             [
-                'nom' => 'Carte consulaire',
-                'description' => 'Carte consulaire pour les burkinabè de l\'étranger',
-                'recto_requis' => true,
-                'verso_requis' => true,
-                'actif' => true
-            ],
-            [
                 'nom' => 'Attestation d\'identité',
                 'description' => 'Attestation d\'identité délivrée par l\'autorité compétente',
                 'recto_requis' => true,

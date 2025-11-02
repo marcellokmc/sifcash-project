@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
         ], [
             'name' => 'Agent Ouaga',
             'phone' => '+226 70 12 34 56',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('12345678'),
             'role' => 'agent',
             'matricule' => 'AGT001',
             'date_embauche' => '2024-01-15',
@@ -47,7 +47,7 @@ class UserSeeder extends Seeder
         ], [
             'name' => 'Agent Koudougou',
             'phone' => '+226 70 11 22 33',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('12345678'),
             'role' => 'agent',
             'matricule' => 'AGT002',
             'date_embauche' => '2024-02-10',
@@ -59,24 +59,13 @@ class UserSeeder extends Seeder
         ], [
             'name' => 'Chef Service Ouahigouya',
             'phone' => '+226 70 22 33 44',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('12345678'),
             'role' => 'chef_service',
             'matricule' => 'CS001',
             'date_embauche' => '2023-11-01',
             'agence_id' => optional($agenceOhg)->id
         ]);
 
-        User::updateOrCreate([
-            'email' => 'comptable.fada@sif.bf'
-        ], [
-            'name' => 'Comptable Fada',
-            'phone' => '+226 70 33 44 55',
-            'password' => Hash::make('password123'),
-            'role' => 'comptable',
-            'matricule' => 'CPT001',
-            'date_embauche' => '2024-03-20',
-            'agence_id' => optional($agenceFada)->id
-        ]);
 
         // Utilisateur adhérent de test
         $adherentUser = User::updateOrCreate([
@@ -84,7 +73,7 @@ class UserSeeder extends Seeder
         ], [
             'name' => 'Adhérent Test',
             'phone' => '+226 70 55 66 77',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('12345678'),
             'role' => 'adherent',
             'agence_id' => $agence->id
         ]);

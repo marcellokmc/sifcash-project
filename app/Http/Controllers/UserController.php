@@ -17,7 +17,16 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with(['agence', 'suspendedByUser'])->latest()->paginate(20);
+        $auth = auth()->user();
+        $usersQuery = User::with(['agence', 'suspendedByUser'])->latest();
+
+        if ($auth->isChefService()) {
+            // Chef de service: uniquement les utilisateurs de son agence (agents et adhérents)
+            $usersQuery->where('agence_id', $auth->agence_id)
+                ->whereIn('role', ['agent', 'adherent']);
+        }
+
+        $users = $usersQuery->paginate(20);
         return view('backoffice.users.index', compact('users'));
     }
 
@@ -76,6 +85,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $auth = auth()->user();
+        if (!$auth->isAdmin() && !$auth->canManageUser($user)) {
+            abort(403);
+        }
+
         $user->load(['agence', 'logsConnexions' => function($query) {
             $query->latest()->take(10);
         }]);
@@ -88,6 +102,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $auth = auth()->user();
+        if (!$auth->isAdmin() && !$auth->canManageUser($user)) {
+            abort(403);
+        }
+
         $agences = Agence::where('active', true)->get();
         $roles = Role::all();
         
@@ -102,6 +121,11 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        $auth = auth()->user();
+        if (!$auth->isAdmin() && !$auth->canManageUser($user)) {
+            abort(403);
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
@@ -149,6 +173,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $auth = auth()->user();
+        if (!$auth->isAdmin() && !$auth->canManageUser($user)) {
+            abort(403);
+        }
+
         // Empêcher la suppression de son propre compte
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.index')
@@ -166,6 +195,11 @@ class UserController extends Controller
      */
     public function toggleStatus(User $user)
     {
+        $auth = auth()->user();
+        if (!$auth->isAdmin() && !$auth->canManageUser($user)) {
+            abort(403);
+        }
+
         // Ne pas permettre de se désactiver soi-même
         if ($user->id === auth()->id()) {
             return redirect()->back()
@@ -184,6 +218,11 @@ class UserController extends Controller
      */
     public function logs(User $user)
     {
+        $auth = auth()->user();
+        if (!$auth->isAdmin() && !$auth->canManageUser($user)) {
+            abort(403);
+        }
+
         $logs = $user->logsConnexions()->latest()->paginate(20);
         return view('backoffice.users.logs', compact('user', 'logs'));
     }

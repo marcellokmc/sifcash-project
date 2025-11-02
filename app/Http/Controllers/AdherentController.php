@@ -33,6 +33,25 @@ class AdherentController extends Controller
         if ($request->filled('agent_filter')) {
             $query->forAgent($request->agent_filter);
         }
+        // Filtre par agence si chef de service (périmètre agence)
+        if ($request->filled('agence_filter')) {
+            $agenceId = (int) $request->integer('agence_filter');
+            $query->where(function($q) use ($agenceId) {
+                $q->where('agence_id', $agenceId)
+                  ->orWhereHas('user', function($sub) use ($agenceId) {
+                      $sub->where('agence_id', $agenceId);
+                  });
+            });
+        } elseif (auth()->user() && auth()->user()->isChefService() && auth()->user()->agence_id) {
+            // Fallback automatique si le middleware n'a pas injecté le filtre
+            $agenceId = (int) auth()->user()->agence_id;
+            $query->where(function($q) use ($agenceId) {
+                $q->where('agence_id', $agenceId)
+                  ->orWhereHas('user', function($sub) use ($agenceId) {
+                      $sub->where('agence_id', $agenceId);
+                  });
+            });
+        }
 
         // Recherche par nom/prénom
         if ($request->filled('search')) {
@@ -76,10 +95,14 @@ class AdherentController extends Controller
             $query->where('profession', 'LIKE', '%' . $request->get('profession') . '%');
         }
 
-        // Filtre par agence
+        // Filtre par agence (filtre explicite)
         if ($request->filled('agence')) {
-            $query->whereHas('user.agence', function($q) use ($request) {
-                $q->where('id', $request->get('agence'));
+            $agenceId = (int) $request->get('agence');
+            $query->where(function($q) use ($agenceId) {
+                $q->where('agence_id', $agenceId)
+                  ->orWhereHas('user', function($sub) use ($agenceId) {
+                      $sub->where('agence_id', $agenceId);
+                  });
             });
         }
 
@@ -99,22 +122,49 @@ class AdherentController extends Controller
 
         $adherents = $query->latest()->paginate(15)->withQueryString();
 
-        // Statistiques pour les badges
+        // Statistiques pour les badges (scopées au périmètre agent/agence)
+        $scope = Adherent::query();
+        if ($request->filled('agent_filter')) {
+            $scope->forAgent((int) $request->agent_filter);
+        }
+        if ($request->filled('agence_filter')) {
+            $agenceId = (int) $request->integer('agence_filter');
+            $scope->where(function($q) use ($agenceId) {
+                $q->where('agence_id', $agenceId)
+                  ->orWhereHas('user', function($sub) use ($agenceId) {
+                      $sub->where('agence_id', $agenceId);
+                  });
+            });
+        } elseif (auth()->user() && auth()->user()->isChefService() && auth()->user()->agence_id) {
+            $agenceId = (int) auth()->user()->agence_id;
+            $scope->where(function($q) use ($agenceId) {
+                $q->where('agence_id', $agenceId)
+                  ->orWhereHas('user', function($sub) use ($agenceId) {
+                      $sub->where('agence_id', $agenceId);
+                  });
+            });
+        }
         $stats = [
-            'total' => Adherent::count(),
-            'actifs' => Adherent::where('statut_compte', 'actif')->count(),
-            'en_attente' => Adherent::where('statut_compte', 'en_attente')->count(),
-            'inactifs' => Adherent::where('statut_compte', 'inactif')->count(),
-            'documents_attente' => Adherent::whereHas('documents', function($q) {
+            'total' => (clone $scope)->count(),
+            'actifs' => (clone $scope)->where('statut_compte', 'actif')->count(),
+            'en_attente' => (clone $scope)->where('statut_compte', 'en_attente')->count(),
+            'inactifs' => (clone $scope)->where('statut_compte', 'inactif')->count(),
+            'documents_attente' => (clone $scope)->whereHas('documents', function($q) {
                 $q->where('statut', 'soumis');
             })->count(),
-            'ayants_droit_attente' => Adherent::whereHas('ayantsDroit', function($q) {
+            'ayants_droit_attente' => (clone $scope)->whereHas('ayantsDroit', function($q) {
                 $q->where('statut_validation', 'en_attente');
             })->count()
         ];
 
         // Liste des agences pour le filtre
-        $agences = \App\Models\Agence::where('active', true)->orderBy('nom')->get();
+        if (auth()->user()->isChefService()) {
+            $agences = \App\Models\Agence::where('active', true)
+                ->where('id', auth()->user()->agence_id)
+                ->orderBy('nom')->get();
+        } else {
+            $agences = \App\Models\Agence::where('active', true)->orderBy('nom')->get();
+        }
 
         // Liste des professions pour le filtre
         $professions = Adherent::select('profession')
@@ -138,6 +188,28 @@ class AdherentController extends Controller
     public function export(Request $request)
     {
         $query = Adherent::with(['user.agence', 'ayantsDroit', 'documents', 'adhesions']);
+
+        // Périmètre agent/agence
+        if ($request->filled('agent_filter')) {
+            $query->forAgent((int) $request->agent_filter);
+        }
+        if ($request->filled('agence_filter')) {
+            $agenceId = (int) $request->integer('agence_filter');
+            $query->where(function($q) use ($agenceId) {
+                $q->where('agence_id', $agenceId)
+                  ->orWhereHas('user', function($sub) use ($agenceId) {
+                      $sub->where('agence_id', $agenceId);
+                  });
+            });
+        } elseif (auth()->user() && auth()->user()->isChefService() && auth()->user()->agence_id) {
+            $agenceId = (int) auth()->user()->agence_id;
+            $query->where(function($q) use ($agenceId) {
+                $q->where('agence_id', $agenceId)
+                  ->orWhereHas('user', function($sub) use ($agenceId) {
+                      $sub->where('agence_id', $agenceId);
+                  });
+            });
+        }
 
         // Appliquer les mêmes filtres que l'index
         if ($request->filled('search')) {
@@ -443,6 +515,11 @@ class AdherentController extends Controller
      */
     public function destroy(Adherent $adherent)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->canManageAdherent($adherent)) {
+            abort(403);
+        }
+
         // Vérifier s'il y a des relations avant suppression
         if ($adherent->ayantsDroit()->count() > 0 || $adherent->documents()->count() > 0) {
             return redirect()->route('admin.adherents.index')
@@ -460,6 +537,11 @@ class AdherentController extends Controller
      */
     public function activate(Adherent $adherent)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->canManageAdherent($adherent)) {
+            abort(403);
+        }
+
         $adherent->update([
             'statut_compte' => 'actif',
             'date_activation' => now()
@@ -474,6 +556,11 @@ class AdherentController extends Controller
      */
     public function deactivate(Adherent $adherent)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->canManageAdherent($adherent)) {
+            abort(403);
+        }
+
         $adherent->update([
             'statut_compte' => 'inactif'
         ]);
@@ -645,14 +732,31 @@ class AdherentController extends Controller
      */
     public function showAffectationForm(Adherent $adherent)
     {
-        $agences = Agence::where('active', true)->orderBy('nom')->get();
-        
-        // Récupérer les agents (utilisateurs avec rôle agent ou chef_service)
-        $agents = User::whereIn('role', ['agent', 'chef_service'])
-            ->where('active', true)
-            ->with('agence')
-            ->orderBy('name')
-            ->get();
+        $auth = auth()->user();
+        if ($auth->isChefService() && $adherent->agence_id && $adherent->agence_id !== $auth->agence_id) {
+            abort(403);
+        }
+
+        if ($auth->isChefService()) {
+            $agences = Agence::where('active', true)
+                ->where('id', $auth->agence_id)
+                ->orderBy('nom')->get();
+            $agents = User::whereIn('role', ['agent', 'chef_service'])
+                ->where('active', true)
+                ->where('agence_id', $auth->agence_id)
+                ->with('agence')
+                ->orderBy('name')
+                ->get();
+        } else {
+            $agences = Agence::where('active', true)->orderBy('nom')->get();
+            
+            // Récupérer les agents (utilisateurs avec rôle agent ou chef_service)
+            $agents = User::whereIn('role', ['agent', 'chef_service'])
+                ->where('active', true)
+                ->with('agence')
+                ->orderBy('name')
+                ->get();
+        }
         
         $adherent->load('agence', 'agentGestionnaire.agence');
         

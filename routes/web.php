@@ -103,6 +103,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('agent.dashboard')
         ->middleware('role:agent,chef_service,superviseur');
 
+    // Dashboard Chef de service
+    Route::get('/chef-service/dashboard', [DashboardController::class, 'chefServiceDashboard'])
+        ->name('chef-service.dashboard')
+        ->middleware('role:chef_service');
+
     Route::get('/adherent/dashboard', [DashboardController::class, 'adherentDashboard'])
         ->name('adherent.dashboard')
         ->middleware('role:adherent');
@@ -388,8 +393,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/non-affectes', [\App\Http\Controllers\AffectationController::class, 'nonAffectes'])->name('non-affectes');
         });
 
-        // Gestion des comptes utilisateurs (Admin seulement)
-        Route::middleware(['role:admin'])->prefix('account-management')->name('account.')->group(function () {
+        // Gestion des comptes utilisateurs (Admin et Chef de service pour leur agence)
+        Route::middleware(['role:admin,chef_service'])->prefix('account-management')->name('account.')->group(function () {
             // Utilisateurs
             Route::post('users/{user}/reset-password', [\App\Http\Controllers\Admin\AccountManagementController::class, 'resetUserPassword'])
                 ->name('users.reset-password');

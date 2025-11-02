@@ -18,6 +18,12 @@ class AccountManagementController extends Controller
      */
     public function resetUserPassword(Request $request, User $user)
     {
+        // Autorisation: admin, ou chef de service pour les utilisateurs de son agence
+        $auth = $request->user();
+        if (!$auth->isAdmin() && !$auth->canManageUser($user)) {
+            abort(403);
+        }
+
         $request->validate([
             'send_email' => 'boolean',
         ]);
@@ -51,6 +57,12 @@ class AccountManagementController extends Controller
      */
     public function resetAdherentPassword(Request $request, Adherent $adherent)
     {
+        // Autorisation: admin, ou chef de service pour les adhérents de son agence
+        $auth = $request->user();
+        if (!$auth->isAdmin() && !$auth->canManageAdherent($adherent)) {
+            abort(403);
+        }
+
         if (!$adherent->user) {
             return redirect()->back()->with('error', 'Cet adhérent n\'a pas de compte utilisateur.');
         }

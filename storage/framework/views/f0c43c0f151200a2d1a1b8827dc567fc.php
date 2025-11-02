@@ -12,8 +12,14 @@
     <ul class="nav flex-column">
         <!-- Tableau de bord -->
         <li class="nav-item mb-2">
-            <a class="nav-link d-flex align-items-center <?php echo e(request()->routeIs('admin.dashboard') ? 'active' : ''); ?>" 
-               href="<?php echo e(route('admin.dashboard')); ?>">
+            <?php
+                $me = Auth::user();
+                $dashboardRoute = ($me && $me->isAdmin()) ? 'admin.dashboard'
+                    : (($me && $me->isChefService()) ? 'chef-service.dashboard'
+                    : (($me && $me->isAgent()) ? 'agent.dashboard' : 'admin.dashboard'));
+            ?>
+            <a class="nav-link d-flex align-items-center <?php echo e(request()->routeIs($dashboardRoute) ? 'active' : ''); ?>" 
+               href="<?php echo e(route($dashboardRoute)); ?>">
                 <i class="fas fa-tachometer-alt me-3"></i>
                 <span>Tableau de bord</span>
             </a>
@@ -30,10 +36,24 @@
                     <span>Adhérents</span>
                 </div>
                 <?php
-                    $nbAdherentsEnAttente = \App\Models\Adherent::where('statut_compte','en_attente_de_verification')->count();
-                    $nbAdherentsSansAgence = \App\Models\Adherent::whereNull('agence_id')->count();
+                    $user = Auth::user();
+                    $nbAdherentsEnAttente = 0;
+                    $nbAdherentsSansAgence = 0;
+                    if ($user) {
+                        if ($user->isAdmin()) {
+                            $nbAdherentsEnAttente = \App\Models\Adherent::where('statut_compte','en_attente_de_verification')->count();
+                            $nbAdherentsSansAgence = \App\Models\Adherent::whereNull('agence_id')->count();
+                        } elseif ($user->isChefService()) {
+                            $nbAdherentsEnAttente = \App\Models\Adherent::where('agence_id', $user->agence_id)->where('statut_compte','en_attente_de_verification')->count();
+                            $nbAdherentsSansAgence = \App\Models\Adherent::where('agence_id', $user->agence_id)->whereNull('agent_gestionnaire_id')->count();
+                        } elseif ($user->isAgent()) {
+                            $nbAdherentsEnAttente = \App\Models\Adherent::where('statut_compte','en_attente_de_verification')
+                                ->whereHas('agents', fn($q)=>$q->where('agent_id', $user->id))->count();
+                            $nbAdherentsSansAgence = 0;
+                        }
+                    }
                 ?>
-                <?php if($nbAdherentsEnAttente > 0): ?>
+                <?php if(($nbAdherentsEnAttente ?? 0) > 0): ?>
                     <span class="badge bg-warning rounded-pill me-2"><?php echo e($nbAdherentsEnAttente); ?></span>
                 <?php endif; ?>
                 <i class="fas fa-chevron-<?php echo e((request()->routeIs('admin.adherents.*') || request()->routeIs('admin.validation.*')) ? 'up' : 'down'); ?> small"></i>
@@ -59,7 +79,7 @@
                            href="<?php echo e(route('admin.adherents.index', ['status' => 'en_attente'])); ?>">
                             <i class="fas fa-clock me-2"></i>
                             <span>En attente</span>
-                            <?php if($nbAdherentsEnAttente > 0): ?>
+                            <?php if(($nbAdherentsEnAttente ?? 0) > 0): ?>
                                 <span class="badge bg-warning rounded-pill ms-auto"><?php echo e($nbAdherentsEnAttente); ?></span>
                             <?php endif; ?>
                         </a>
@@ -69,8 +89,18 @@
                            href="<?php echo e(route('admin.validation.documents')); ?>">
                             <i class="fas fa-file-alt me-2"></i>
                             <span>Documents en attente</span>
-                            <span class="badge bg-danger rounded-pill ms-auto <?php echo e((\App\Models\Document::where('statut','soumis')->count() > 0) ? '' : 'd-none'); ?>">
-                                <?php echo e(\App\Models\Document::where('statut','soumis')->count()); ?>
+                            <?php
+                                $u = Auth::user();
+                                if ($u && $u->isAdmin()) {
+                                    $nbDocsPending = \App\Models\Document::where('statut','soumis')->count();
+                                } elseif ($u && $u->isChefService()) {
+                                    $nbDocsPending = \App\Models\Document::where('statut','soumis')->whereHas('adherent', fn($q)=>$q->where('agence_id', $u->agence_id))->count();
+                                } elseif ($u && $u->isAgent()) {
+                                    $nbDocsPending = \App\Models\Document::where('statut','soumis')->whereHas('adherent.agents', fn($q)=>$q->where('agent_id', $u->id))->count();
+                                } else { $nbDocsPending = 0; }
+                            ?>
+                            <span class="badge bg-danger rounded-pill ms-auto <?php echo e(($nbDocsPending > 0) ? '' : 'd-none'); ?>">
+                                <?php echo e($nbDocsPending); ?>
 
                             </span>
                         </a>
@@ -80,8 +110,18 @@
                            href="<?php echo e(route('admin.validation.ayants-droit')); ?>">
                             <i class="fas fa-users me-2"></i>
                             <span>Ayants droit en attente</span>
-                            <span class="badge bg-danger rounded-pill ms-auto <?php echo e((\App\Models\AyantDroit::where('statut_validation','en_attente')->count() > 0) ? '' : 'd-none'); ?>">
-                                <?php echo e(\App\Models\AyantDroit::where('statut_validation','en_attente')->count()); ?>
+                            <?php
+                                $u = Auth::user();
+                                if ($u && $u->isAdmin()) {
+                                    $nbAyantsPending = \App\Models\AyantDroit::where('statut_validation','en_attente')->count();
+                                } elseif ($u && $u->isChefService()) {
+                                    $nbAyantsPending = \App\Models\AyantDroit::where('statut_validation','en_attente')->whereHas('adherent', fn($q)=>$q->where('agence_id', $u->agence_id))->count();
+                                } elseif ($u && $u->isAgent()) {
+                                    $nbAyantsPending = \App\Models\AyantDroit::where('statut_validation','en_attente')->whereHas('adherent.agents', fn($q)=>$q->where('agent_id', $u->id))->count();
+                                } else { $nbAyantsPending = 0; }
+                            ?>
+                            <span class="badge bg-danger rounded-pill ms-auto <?php echo e(($nbAyantsPending > 0) ? '' : 'd-none'); ?>">
+                                <?php echo e($nbAyantsPending); ?>
 
                             </span>
                         </a>
@@ -91,7 +131,7 @@
         </li>
 
         <!-- Section Affectations (Admin et Chef de service uniquement) -->
-        <?php if(auth()->user()->isAdmin() || auth()->user()->isChefService()): ?>
+        <?php if(Auth::user() && (Auth::user()->isAdmin() || Auth::user()->isChefService())): ?>
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center justify-content-between <?php echo e(request()->routeIs('admin.affectations.*') ? 'active' : ''); ?>" 
                data-bs-toggle="collapse" href="#" data-bs-target="#affectationsMenu" role="button" aria-controls="affectationsMenu" aria-expanded="<?php echo e(request()->routeIs('admin.affectations.*') ? 'true' : 'false'); ?>">
@@ -147,6 +187,17 @@
 
         <hr class="border-light opacity-25 my-2">
 
+        <!-- Section Utilisateurs (Chef de service) -->
+        <?php if(Auth::user() && Auth::user()->isChefService()): ?>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center <?php echo e(request()->routeIs('admin.users.*') ? 'active' : ''); ?>" 
+               href="<?php echo e(route('admin.users.index')); ?>">
+                <i class="fas fa-user-friends me-3"></i>
+                <span>Utilisateurs de mon agence</span>
+            </a>
+        </li>
+        <?php endif; ?>
+
         <!-- Section Épargne -->
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center justify-content-between <?php echo e(request()->routeIs('admin.epargnes.*') ? 'active' : ''); ?>" 
@@ -155,8 +206,18 @@
                     <i class="fas fa-piggy-bank me-3"></i>
                     <span>Épargne</span>
                 </div>
-                <span class="badge bg-warning rounded-pill me-2 <?php echo e((\App\Models\Epargne::where('statut','en_attente')->count() > 0) ? '' : 'd-none'); ?>">
-                    <?php echo e(\App\Models\Epargne::where('statut','en_attente')->count()); ?>
+                <?php
+                    $u = Auth::user();
+                    if ($u && $u->isAdmin()) {
+                        $nbEpargnesPending = \App\Models\Epargne::where('statut','en_attente')->count();
+                    } elseif ($u && $u->isChefService()) {
+                        $nbEpargnesPending = \App\Models\Epargne::where('statut','en_attente')->whereHas('adherent', fn($q)=>$q->where('agence_id', $u->agence_id))->count();
+                    } elseif ($u && $u->isAgent()) {
+                        $nbEpargnesPending = \App\Models\Epargne::where('statut','en_attente')->whereHas('adherent.agents', fn($q)=>$q->where('agent_id', $u->id))->count();
+                    } else { $nbEpargnesPending = 0; }
+                ?>
+                <span class="badge bg-warning rounded-pill me-2 <?php echo e(($nbEpargnesPending > 0) ? '' : 'd-none'); ?>">
+                    <?php echo e($nbEpargnesPending); ?>
 
                 </span>
                 <i class="fas fa-chevron-<?php echo e(request()->routeIs('admin.epargnes.*') ? 'up' : 'down'); ?> small"></i>
@@ -224,8 +285,18 @@
                     <i class="fas fa-file-invoice-dollar me-3"></i>
                     <span>Crédits</span>
                 </div>
-                <span class="badge bg-warning rounded-pill me-2 <?php echo e((\App\Models\Credit::where('statut','en_attente')->count() > 0) ? '' : 'd-none'); ?>">
-                    <?php echo e(\App\Models\Credit::where('statut','en_attente')->count()); ?>
+                <?php
+                    $u = Auth::user();
+                    if ($u && $u->isAdmin()) {
+                        $nbCreditsPending = \App\Models\Credit::where('statut','en_attente')->count();
+                    } elseif ($u && $u->isChefService()) {
+                        $nbCreditsPending = \App\Models\Credit::where('statut','en_attente')->whereHas('adherent', fn($q)=>$q->where('agence_id', $u->agence_id))->count();
+                    } elseif ($u && $u->isAgent()) {
+                        $nbCreditsPending = \App\Models\Credit::where('statut','en_attente')->whereHas('adherent.agents', fn($q)=>$q->where('agent_id', $u->id))->count();
+                    } else { $nbCreditsPending = 0; }
+                ?>
+                <span class="badge bg-warning rounded-pill me-2 <?php echo e(($nbCreditsPending > 0) ? '' : 'd-none'); ?>">
+                    <?php echo e($nbCreditsPending); ?>
 
                 </span>
                 <i class="fas fa-chevron-<?php echo e(request()->routeIs('admin.credits.*') ? 'up' : 'down'); ?> small"></i>
@@ -288,8 +359,18 @@
                     <i class="fas fa-handshake me-3"></i>
                     <span>Adhésions</span>
                 </div>
-                <span class="badge bg-warning rounded-pill me-2 <?php echo e((\App\Models\Adhesion::where('statut','en_attente_activation')->count() > 0) ? '' : 'd-none'); ?>">
-                    <?php echo e(\App\Models\Adhesion::where('statut','en_attente_activation')->count()); ?>
+                <?php
+                    $u = Auth::user();
+                    if ($u && $u->isAdmin()) {
+                        $nbAdhesionsPending = \App\Models\Adhesion::where('statut','en_attente_activation')->count();
+                    } elseif ($u && $u->isChefService()) {
+                        $nbAdhesionsPending = \App\Models\Adhesion::where('statut','en_attente_activation')->whereHas('adherent', fn($q)=>$q->where('agence_id', $u->agence_id))->count();
+                    } elseif ($u && $u->isAgent()) {
+                        $nbAdhesionsPending = \App\Models\Adhesion::where('statut','en_attente_activation')->whereHas('adherent.agents', fn($q)=>$q->where('agent_id', $u->id))->count();
+                    } else { $nbAdhesionsPending = 0; }
+                ?>
+                <span class="badge bg-warning rounded-pill me-2 <?php echo e(($nbAdhesionsPending > 0) ? '' : 'd-none'); ?>">
+                    <?php echo e($nbAdhesionsPending); ?>
 
                 </span>
                 <i class="fas fa-chevron-<?php echo e(request()->routeIs('admin.plans.*', 'admin.adhesions.*') ? 'up' : 'down'); ?> small"></i>
@@ -315,7 +396,14 @@
                             <i class="fas fa-clock me-2"></i>
                             <span>En attente</span>
                             <?php
-                                $nbAdhesionsEnAttente = \App\Models\Adhesion::where('statut', 'en_attente_activation')->count();
+                                $u = Auth::user();
+                                if ($u && $u->isAdmin()) {
+                                    $nbAdhesionsEnAttente = \App\Models\Adhesion::where('statut', 'en_attente_activation')->count();
+                                } elseif ($u && $u->isChefService()) {
+                                    $nbAdhesionsEnAttente = \App\Models\Adhesion::where('statut', 'en_attente_activation')->whereHas('adherent', fn($q)=>$q->where('agence_id', $u->agence_id))->count();
+                                } elseif ($u && $u->isAgent()) {
+                                    $nbAdhesionsEnAttente = \App\Models\Adhesion::where('statut', 'en_attente_activation')->whereHas('adherent.agents', fn($q)=>$q->where('agent_id', $u->id))->count();
+                                } else { $nbAdhesionsEnAttente = 0; }
                             ?>
                             <?php if($nbAdhesionsEnAttente > 0): ?>
                                 <span class="badge bg-warning rounded-pill ms-auto"><?php echo e($nbAdhesionsEnAttente); ?></span>
@@ -357,8 +445,18 @@
                     <i class="fas fa-money-bill-wave me-3"></i>
                     <span>Gestion des retraits</span>
                 </div>
-                <span class="badge bg-warning rounded-pill me-2 <?php echo e((\App\Models\DemandeRetrait::where('statut','en_attente')->count() > 0) ? '' : 'd-none'); ?>">
-                    <?php echo e(\App\Models\DemandeRetrait::where('statut','en_attente')->count()); ?>
+                <?php
+                    $u = Auth::user();
+                    if ($u && $u->isAdmin()) {
+                        $nbRetraitsPending = \App\Models\DemandeRetrait::where('statut','en_attente')->count();
+                    } elseif ($u && $u->isChefService()) {
+                        $nbRetraitsPending = \App\Models\DemandeRetrait::where('statut','en_attente')->whereHas('adherent', fn($q)=>$q->where('agence_id', $u->agence_id))->count();
+                    } elseif ($u && $u->isAgent()) {
+                        $nbRetraitsPending = \App\Models\DemandeRetrait::where('statut','en_attente')->whereHas('adherent.agents', fn($q)=>$q->where('agent_id', $u->id))->count();
+                    } else { $nbRetraitsPending = 0; }
+                ?>
+                <span class="badge bg-warning rounded-pill me-2 <?php echo e(($nbRetraitsPending > 0) ? '' : 'd-none'); ?>">
+                    <?php echo e($nbRetraitsPending); ?>
 
                 </span>
                 <i class="fas fa-chevron-<?php echo e(request()->routeIs('admin.retraits.*') ? 'up' : 'down'); ?> small"></i>

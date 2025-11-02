@@ -9,6 +9,8 @@ use App\Models\AyantDroit;
 use App\Models\Document;
 use App\Models\LogConnexion;
 use App\Models\Credit;
+use App\Models\Epargne;
+use App\Models\Adhesion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Traits\FiltersByAgentAdherents;
@@ -21,10 +23,15 @@ class DashboardController extends Controller
      */
     public function adminDashboard()
     {
-        // Rediriger les agents vers leur dashboard spécifique
+        // Rediriger vers les dashboards spécifiques
         $user = auth()->user();
-        if ($user && in_array($user->role, ['agent', 'chef_service'])) {
-            return redirect()->route('agent.dashboard');
+        if ($user) {
+            if ($user->isAgent()) {
+                return redirect()->route('agent.dashboard');
+            }
+            if ($user->isChefService()) {
+                return redirect()->route('chef-service.dashboard');
+            }
         }
         
         $stats = [
@@ -353,12 +360,14 @@ class DashboardController extends Controller
                     ->get();
             }
         } elseif ($user->isChefService()) {
-            // Pour les chefs de service, afficher l'activité de l'agence
+            // Pour les chefs de service, afficher l'activité de tous les utilisateurs de l'agence (agents + adhérents)
             $activity = LogConnexion::with('user')
-                ->where('user_id', $user->id)
-                ->orWhereHas('user', function($query) use ($user) {
-                    $query->where('agence_id', $user->agence_id)
-                          ->where('role', 'adherent');
+                ->where(function($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                      ->orWhereHas('user', function($query) use ($user) {
+                          $query->where('agence_id', $user->agence_id)
+                                ->whereIn('role', ['agent','adherent','chef_service']);
+                      });
                 })
                 ->latest()
                 ->take(15)
@@ -501,5 +510,64 @@ class DashboardController extends Controller
                 ];
             }),
         ]);
+    }
+    /**
+     * Dashboard Chef de service
+     */
+    public function chefServiceDashboard()
+    {
+        $user = auth()->user();
+        $agence = $user->agence;
+
+        // Adhérents de l'agence
+        $adherentsQuery = Adherent::where('agence_id', $user->agence_id);
+        $stats = [
+            'total_adherents' => (clone $adherentsQuery)->count(),
+            'adherents_actifs' => (clone $adherentsQuery)->where('statut_compte', 'actif')->count(),
+            'adherents_en_attente' => (clone $adherentsQuery)->where('statut_compte', 'en_attente_de_verification')->count(),
+            // Agents de l'agence
+            'agents_actifs' => User::where('agence_id', $user->agence_id)->whereIn('role',['agent','chef_service'])->where('active', true)->count(),
+        ];
+
+        // Épargnes de l'agence
+        $epargnesQuery = Epargne::whereHas('adherent', function($q) use ($user) {
+            $q->where('agence_id', $user->agence_id);
+        });
+        $stats['epargnes_actives'] = (clone $epargnesQuery)->where('statut','actif')->count();
+        $stats['epargnes_solde_total'] = (clone $epargnesQuery)->where('statut','actif')->sum('solde_actuel');
+
+        // Documents/Ayants droit/Crédits de l'agence
+        $stats['documents_en_attente'] = \App\Models\Document::whereHas('adherent', function($q) use ($user) {
+            $q->where('agence_id', $user->agence_id);
+        })->where('statut', 'soumis')->count();
+
+        $stats['ayants_droit_en_attente'] = \App\Models\AyantDroit::whereHas('adherent', function($q) use ($user) {
+            $q->where('agence_id', $user->agence_id);
+        })->where('statut_validation', 'en_attente')->count();
+
+        $creditsQuery = Credit::whereHas('adherent', function($q) use ($user) {
+            $q->where('agence_id', $user->agence_id);
+        });
+        $stats['credits_en_attente'] = (clone $creditsQuery)->where('statut', 'en_attente')->count();
+        $stats['credits_approuves'] = (clone $creditsQuery)->whereIn('statut', ['approuvé','en_cours','approuve'])->count();
+
+        // Adhésions de l'agence
+        $adhesionsQuery = Adhesion::whereHas('adherent', function($q) use ($user) {
+            $q->where('agence_id', $user->agence_id);
+        });
+        $stats['adhesions_actives'] = (clone $adhesionsQuery)->where('statut','actif')->count();
+        $stats['adhesions_attente'] = (clone $adhesionsQuery)->where('statut','en_attente_activation')->count();
+
+        // Activité récente de l'agence
+        $recentActivity = LogConnexion::with('user.agence')
+            ->whereHas('user', function($q) use ($user) {
+                $q->where('agence_id', $user->agence_id)
+                  ->whereIn('role', ['agent','adherent','chef_service']);
+            })
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('backoffice.dashboard.chef_service', compact('stats', 'agence', 'recentActivity'));
     }
 }
