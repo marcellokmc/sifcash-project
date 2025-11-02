@@ -117,7 +117,7 @@
                                             id="operateur_mobile" name="informations_retrait[operateur_mobile]">
                                         <option value="">Sélectionner un opérateur</option>
                                         <option value="orange" {{ old('informations_retrait.operateur_mobile') == 'orange' ? 'selected' : '' }}>Orange Money</option>
-                                        <option value="mtn" {{ old('informations_retrait.operateur_mobile') == 'mtn' ? 'selected' : '' }}>MTN Mobile Money</option>
+                                        <option value="mtn" {{ old('informations_retrait.operateur_mobile') == 'mtn' ? 'selected' : '' }}>Telecel Money</option>
                                         <option value="moov" {{ old('informations_retrait.operateur_mobile') == 'moov' ? 'selected' : '' }}>Moov Money</option>
                                     </select>
                                     @error('informations_retrait.operateur_mobile')

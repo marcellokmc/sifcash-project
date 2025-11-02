@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Auditable;
 
 class Adherent extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'user_id', 'agence_id', 'agent_gestionnaire_id', 'membre_id', 'nom', 'prenom', 'date_naissance', 'lieu_naissance',

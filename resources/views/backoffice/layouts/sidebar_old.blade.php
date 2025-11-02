@@ -393,13 +393,7 @@
                             <span>Agences</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.credits.eligibilites.*') ? 'active' : '' }}" 
-                           href="{{ route('admin.credits.eligibilites.index') }}">
-                            <i class="fas fa-clipboard-check me-2"></i>
-                            <span>Conditions d'éligibilité</span>
-                        </a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.types-documents.*') ? 'active' : '' }}" 
                            href="{{ route('admin.types-documents.index') }}">

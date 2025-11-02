@@ -264,41 +264,6 @@
                             <span>Remboursés</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.credits.retard') ? 'active' : '' }}" 
-                           href="{{ route('admin.credits.retard') }}">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            <span>En retard</span>
-                            @if($nbCreditsEnRetard = \App\Models\EcheanceCredit::where('date_echeance', '<', now())
-                                ->where('statut', '!=', 'paye')
-                                ->distinct('credit_id')
-                                ->count('credit_id'))
-                                <span class="badge bg-danger rounded-pill ms-auto">{{ $nbCreditsEnRetard }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.credits.paiements.*') ? 'active' : '' }}" 
-                           href="{{ route('admin.credits.paiements.index') }}">
-                            <i class="fas fa-credit-card me-2"></i>
-                            <span>Paiements à valider</span>
-                            @php
-                                $nbPaiementsEnAttente = \App\Models\PaiementCredit::where('statut', 'en_attente')->count();
-                            @endphp
-                            @if($nbPaiementsEnAttente > 0)
-                                <span class="badge bg-info rounded-pill ms-auto">{{ $nbPaiementsEnAttente }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    @if(auth()->user()->isAdmin())
-                    <li class="nav-item mt-2 pt-2 border-top">
-                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.credits.rapports') ? 'active' : '' }}" 
-                           href="{{ route('admin.credits.rapports') }}">
-                            <i class="fas fa-chart-bar me-2"></i>
-                            <span>Rapports</span>
-                        </a>
-                    </li>
-                    @endif
                 </ul>
             </div>
         </li>
@@ -483,13 +448,7 @@
                             <span>Agences</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.credits.eligibilites.*') ? 'active' : '' }}" 
-                           href="{{ route('admin.credits.eligibilites.index') }}">
-                            <i class="fas fa-clipboard-check me-2"></i>
-                            <span>Conditions d'éligibilité</span>
-                        </a>
-                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.types-documents.*') ? 'active' : '' }}" 
                            href="{{ route('admin.types-documents.index') }}">
@@ -497,13 +456,7 @@
                             <span>Types de documents</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.penalites.*') ? 'active' : '' }}" 
-                           href="{{ route('admin.penalites.index') }}">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            <span>Pénalités de retrait</span>
-                        </a>
-                    </li>
+                    
                 </ul>
             </div>
         </li>
@@ -557,14 +510,6 @@
         @endif
 
         <!-- Section Rapports -->
-        @if(auth()->user()->isAdmin() || auth()->user()->isChefService())
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" href="{{ route('admin.credits.rapports') }}">
-                <i class="fas fa-chart-bar me-3"></i>
-                <span>Rapports Crédits</span>
-            </a>
-        </li>
-        @endif
     </ul>
 
     <!-- Conteneur principal avec flexbox -->

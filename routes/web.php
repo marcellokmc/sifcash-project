@@ -151,21 +151,12 @@ Route::middleware(['auth'])->group(function () {
             ->middleware(['throttle:5,1','can:create,App\\Models\\Credit'])
             ->name('credits.store');
 
-        // Paiements de crédit (Espace adhérent) - AVANT les routes credits/{credit} pour éviter les conflits
-        Route::get('credits/paiements', [CreditController::class, 'indexPaiementsForAdherent'])->name('credits.paiements.index');
-        Route::get('credits/paiements/{paiement}', [CreditController::class, 'showPaiementForAdherent'])->middleware('can:view,paiement')->name('credits.paiements.show');
-        Route::get('credits/paiements/{paiement}/preuves', [CreditController::class, 'showPreuvesForAdherent'])->middleware('can:viewPreuves,paiement')->name('credits.paiements.preuves');
-        Route::get('credits/paiements/preuves/{preuve}/download', [CreditController::class, 'downloadPreuveForAdherent'])->middleware('can:downloadPreuve,paiement')->name('credits.paiements.download-preuve');
-
         // Crédits (lecture par l'adhérent)
         Route::get('credits', [CreditController::class, 'indexForAdherent'])
             ->name('credits.index');
         Route::get('credits/{credit}', [CreditController::class, 'showForAdherent'])
             ->middleware('can:view,credit')
             ->name('credits.show');
-        Route::post('credits/{credit}/submit-payment', [CreditController::class, 'submitPaymentForAdherent'])
-            ->middleware('can:view,credit')
-            ->name('credits.submit-payment');
 
         // Paiements (Espace adhérent)
         Route::get('paiements', [PaiementController::class, 'indexForAdherent'])->name('paiements.index');
@@ -252,6 +243,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('adhesions/{adhesion}/suspend', [AdhesionController::class, 'suspend'])->name('adhesions.suspend');
         Route::post('adhesions/{adhesion}/resume', [AdhesionController::class, 'resume'])->name('adhesions.resume');
         Route::post('adhesions/{adhesion}/renew', [AdhesionController::class, 'renew'])->name('adhesions.renew');
+        Route::get('adhesions/{adhesion}/download', [AdhesionController::class, 'download'])->name('adhesions.download');
+        Route::get('adhesions/{adhesion}/download-with-payments', [AdhesionController::class, 'downloadWithPayments'])->name('adhesions.download-with-payments');
 
         // Renouvellements
         Route::resource('renouvellements', RenouvellementPlanController::class)->only(['index', 'show']);
@@ -259,37 +252,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('renouvellements/{renouvellementPlan}/complete', [RenouvellementPlanController::class, 'markAsCompleted'])->name('renouvellements.complete');
         Route::post('renouvellements/{renouvellementPlan}/cancel', [RenouvellementPlanController::class, 'cancel'])->name('renouvellements.cancel');
 
-        // Crédit: génération d'échéancier
-        Route::post('credits/{credit}/generate-schedule', [CreditController::class, 'generateSchedule'])
-            ->middleware(['throttle:10,1','can:generateSchedule,credit'])
-            ->name('credits.generate-schedule');
 
-        // Gestion des crédits en retard (AVANT les routes avec paramètres dynamiques)
-        Route::get('credits/en-retard', [CreditController::class, 'creditsEnRetard'])
-            ->name('credits.retard')
-            ->middleware('can:viewAny,App\\Models\\Credit');
 
-        // Rapports de crédits (Admin uniquement)
-        Route::get('credits/rapports', [CreditController::class, 'rapports'])
-            ->name('credits.rapports')
-            ->middleware('role:admin');
 
-        // Paiements de crédit (Backoffice admin) - AVANT les routes avec paramètres dynamiques
-        Route::get('credits/paiements', [CreditController::class, 'indexPaiements'])->middleware('can:viewAny,App\\Models\\PaiementCredit')->name('credits.paiements.index');
-        Route::get('credits/paiements/{paiement}', [CreditController::class, 'showPaiement'])->middleware('can:view,paiement')->name('credits.paiements.show');
-        Route::post('credits/paiements/{paiement}/validate', [CreditController::class, 'validatePaiement'])->middleware('can:validate,paiement')->name('credits.paiements.validate');
-        Route::post('credits/paiements/{paiement}/reject', [CreditController::class, 'rejectPaiement'])->middleware('can:reject,paiement')->name('credits.paiements.reject');
-        Route::get('credits/paiements/{paiement}/preuves', [CreditController::class, 'showPreuves'])->middleware('can:viewPreuves,paiement')->name('credits.paiements.preuves');
-        Route::get('credits/paiements/preuves/{preuve}/download', [CreditController::class, 'downloadPreuve'])->middleware('can:downloadPreuve,paiement')->name('credits.paiements.download-preuve');
 
         // Crédit: actions agent/admin
         Route::get('credits', [CreditController::class, 'index'])->name('credits.index');
         Route::get('credits/{credit}', [CreditController::class, 'show'])
             ->middleware('can:view,credit')
             ->name('credits.show');
-        Route::get('credits/{credit}/paiements', [CreditController::class, 'payments'])
-            ->middleware('can:view,credit')
-            ->name('credits.paiements');
 
         // Paiements (Backoffice admin)
         Route::get('paiements', [PaiementController::class, 'index'])->middleware('can:viewAny,App\\Models\\Paiement')->name('paiements.index');
@@ -312,11 +283,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('retraits/{retrait}/reject', [DemandeRetraitController::class, 'reject'])->middleware('can:reject,retrait')->name('retraits.reject');
         Route::post('retraits/{retrait}/process', [DemandeRetraitController::class, 'process'])->middleware('can:process,retrait')->name('retraits.process');
 
-        Route::get('credits/{credit}/echeances', [CreditController::class, 'getEcheances'])->middleware('can:view,credit')->name('credits.echeances');
 
         // Notifications admin
         Route::get('notifications', [\App\Http\Controllers\NotificationController::class, 'index'])
             ->name('notifications.index');
+        Route::post('notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllReadAdmin'])
+            ->name('notifications.mark-all-read');
         Route::post('notifications/{notification}/mark-read', [\App\Http\Controllers\NotificationController::class, 'adminMarkRead'])
             ->name('notifications.mark-read');
 
@@ -328,34 +300,20 @@ Route::middleware(['auth'])->group(function () {
         Route::post('credits/{credit}/reject', [CreditController::class, 'reject'])
             ->middleware(['throttle:10,1','can:reject,credit'])
             ->name('credits.reject');
-        Route::post('credits/{credit}/contract', [CreditController::class, 'contract'])
-            ->middleware(['throttle:10,1','can:contract,credit'])
-            ->name('credits.contract');
-        Route::post('credits/{credit}/record-payment', [CreditController::class, 'recordPayment'])
-            ->middleware(['throttle:20,1','can:recordPayment,credit'])
-            ->name('credits.record-payment');
 
         // Routes d'export pour les crédits
         Route::get('credits/{credit}/export/contract', [CreditController::class, 'exportContract'])
             ->middleware('can:view,credit')
             ->name('credits.export-contract');
-        Route::get('credits/{credit}/export/schedule', [CreditController::class, 'exportSchedule'])
+        Route::get('credits/{credit}/contract/download', [CreditController::class, 'downloadStoredContract'])
             ->middleware('can:view,credit')
-            ->name('credits.export-schedule');
-        Route::get('credits/{credit}/export/payments', [CreditController::class, 'exportPayments'])
-            ->middleware('can:view,credit')
-            ->name('credits.export-payments');
+            ->name('credits.contract.download');
 
-        // Échéances de crédit
-        Route::get('credits/{credit}/echeances', [\App\Http\Controllers\EcheanceCreditController::class, 'indexByCredit'])
-            ->middleware('can:view,credit')
-            ->name('credits.echeances.index');
-        Route::get('echeances/{echeanceCredit}', [\App\Http\Controllers\EcheanceCreditController::class, 'show'])
-            ->middleware('can:view,echeanceCredit')
-            ->name('echeances.show');
-        Route::patch('echeances/{echeanceCredit}', [\App\Http\Controllers\EcheanceCreditController::class, 'update'])
-            ->middleware('can:update,echeanceCredit')
-            ->name('echeances.update');
+        // Marquer un crédit comme remboursé (clôture)
+        Route::post('credits/{credit}/mark-repaid', [CreditController::class, 'markRepaid'])
+            ->middleware(['throttle:10,1','can:approve,credit'])
+            ->name('credits.mark-repaid');
+
 
         // Conditions d'éligibilité crédit
         Route::get('credits/eligibilites', [\App\Http\Controllers\ConditionEligibiliteCreditController::class, 'index'])
@@ -408,6 +366,9 @@ Route::middleware(['auth'])->group(function () {
         
         // Journal d'audit
         Route::get('audit', [AuditController::class, 'index'])->name('audit.index');
+        Route::get('audit/stats', [AuditController::class, 'stats'])->name('audit.stats');
+        Route::get('audit/export', [AuditController::class, 'export'])->name('audit.export');
+        Route::get('audit/{audit}', [AuditController::class, 'show'])->name('audit.show');
 
         // Logs de connexion
         Route::get('logs/connexions', [LogConnexionController::class, 'index'])->name('logs.connexions');

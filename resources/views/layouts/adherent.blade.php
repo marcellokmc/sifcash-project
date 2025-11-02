@@ -386,12 +386,6 @@
                                 @endif
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('adherent.credits.paiements*') ? 'active' : '' }}" href="{{ route('adherent.credits.paiements.index') }}">
-                                <i class="fas fa-receipt"></i>
-                                <span>Paiements Crédit</span>
-                            </a>
-                        </li>
                         
                         <!-- Separator -->
                         <li class="nav-item mt-3">

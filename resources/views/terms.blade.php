@@ -193,8 +193,8 @@
                             <div class="alert alert-info mt-4">
                                 <h6><i class="fas fa-info-circle me-2"></i>Montants Minimums par Option :</h6>
                                 <ul class="mb-0">
-                                    <li><strong>Option Mensuelle :</strong> 25 000 FCFA minimum</li>
-                                    <li><strong>Option Hebdomadaire :</strong> 6 000 FCFA minimum</li>
+                                    <li><strong>Option Mensuelle :</strong> 5 000 FCFA minimum</li>
+                                    <li><strong>Option Hebdomadaire :</strong> 7 500 FCFA minimum</li>
                                     <li><strong>Option Journalière :</strong> 1 000 FCFA minimum</li>
                                 </ul>
                             </div>

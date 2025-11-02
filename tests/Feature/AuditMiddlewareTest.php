@@ -35,7 +35,7 @@ class AuditMiddlewareTest extends TestCase
             ->post("/admin/credits/{$credit->id}/approve", [
                 'montant_accorde' => 100000,
                 'taux' => 12.00,
-            ])->assertOk();
+            ])->assertRedirect();
 
         // Assert: one audit created
         $this->assertTrue(Audit::count() >= 1);

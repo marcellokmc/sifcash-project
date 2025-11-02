@@ -105,27 +105,7 @@
                                 @endif
                             </a>
                         </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('admin.credits.retard') }}">
-                                En retard
-                                @php($nbCreditsEnRetard = \App\Models\EcheanceCredit::where('date_echeance', '<', now())
-                                    ->where('statut', '!=', 'paye')
-                                    ->distinct('credit_id')
-                                    ->count('credit_id'))
-                                @if($nbCreditsEnRetard > 0)
-                                    <span class="badge bg-danger rounded-pill ms-2">{{ $nbCreditsEnRetard }}</span>
-                                @endif
-                            </a>
-                        </li>
-                        @if(auth()->user()->isAdmin())
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item {{ request()->routeIs('admin.credits.rapports') ? 'active' : '' }}" 
-                               href="{{ route('admin.credits.rapports') }}">
-                                <i class="fas fa-chart-bar me-1"></i> Rapports
-                            </a>
-                        </li>
-                        @endif
+                        
                     </ul>
                 </li>
                 @endif

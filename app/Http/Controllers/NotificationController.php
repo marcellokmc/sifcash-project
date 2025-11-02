@@ -12,12 +12,51 @@ class NotificationController extends Controller
      */
     public function index(Request $request)
     {
-        // Admin: list all notifications
-        $items = Notification::query()->with('user')->latest()->paginate(20);
+        // Admin: list all notifications with filters
+        $query = Notification::query()->with(['user', 'actionByUser']);
+
+        // Filtres
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('lu')) {
+            $query->where('lu', $request->lu === '1');
+        }
+
+        if ($request->filled('action')) {
+            $query->where('action', $request->action);
+        }
+
+        if ($request->filled('entity_type')) {
+            $query->where('entity_type', $request->entity_type);
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('titre', 'like', "%{$search}%")
+                  ->orWhere('message', 'like', "%{$search}%");
+            });
+        }
+
+        $items = $query->latest()->paginate(20)->appends($request->query());
+        
+        // Stats pour la vue
+        $stats = [
+            'total' => Notification::count(),
+            'non_lues' => Notification::where('lu', false)->count(),
+            'par_type' => Notification::selectRaw('type, COUNT(*) as count')->groupBy('type')->pluck('count', 'type'),
+        ];
+
         if ($request->wantsJson()) {
             return response()->json($items);
         }
-        return view('backoffice.notifications.index', compact('items'));
+        return view('backoffice.notifications.index', compact('items', 'stats'));
     }
 
     /**
@@ -160,5 +199,17 @@ class NotificationController extends Controller
         $userId = $request->user()->id;
         Notification::where('user_id', $userId)->where('lu', false)->update(['lu' => true]);
         return response()->json(['message' => 'OK']);
+    }
+
+    // Admin: mark all notifications as read (toutes les notifications du système)
+    public function markAllReadAdmin(Request $request)
+    {
+        Notification::where('lu', false)->update(['lu' => true]);
+        
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Toutes les notifications ont été marquées comme lues']);
+        }
+        
+        return redirect()->back()->with('success', 'Toutes les notifications ont été marquées comme lues');
     }
 }

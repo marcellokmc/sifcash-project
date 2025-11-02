@@ -15,7 +15,7 @@ class PaiementPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur']);
+        return $user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur']);
     }
 
     /**
@@ -24,7 +24,7 @@ class PaiementPolicy
     public function view(User $user, Paiement $paiement)
     {
         // Admin/Agent peuvent voir tous les paiements
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
             return true;
         }
 
@@ -51,7 +51,7 @@ class PaiementPolicy
     public function update(User $user, Paiement $paiement)
     {
         // Admin/Agent peuvent modifier tous les paiements
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
             return true;
         }
 
@@ -69,7 +69,7 @@ class PaiementPolicy
     public function delete(User $user, Paiement $paiement)
     {
         // Admin/Agent peuvent supprimer tous les paiements
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
             return true;
         }
 
@@ -86,8 +86,8 @@ class PaiementPolicy
      */
     public function validate(User $user, Paiement $paiement)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])
-            && $paiement->statut === 'soumis';
+        return $user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])
+            && in_array($paiement->statut, ['soumis', 'en_attente']);
     }
 
     /**
@@ -95,8 +95,8 @@ class PaiementPolicy
      */
     public function reject(User $user, Paiement $paiement)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])
-            && $paiement->statut === 'soumis';
+        return $user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])
+            && in_array($paiement->statut, ['soumis', 'en_attente']);
     }
 
     /**
@@ -105,7 +105,7 @@ class PaiementPolicy
     public function download(User $user, Paiement $paiement)
     {
         // Admin/Agent peuvent télécharger toutes les preuves
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
             return true;
         }
 

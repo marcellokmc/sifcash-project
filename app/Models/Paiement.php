@@ -4,10 +4,11 @@
     
     use Illuminate\Database\Eloquent\Factories\HasFactory;
     use Illuminate\Database\Eloquent\Model;
+    use App\Traits\Auditable;
     
     class Paiement extends Model
     {
-        use HasFactory;
+        use HasFactory, Auditable;
 
         protected $fillable = [
             'adhesion_id',

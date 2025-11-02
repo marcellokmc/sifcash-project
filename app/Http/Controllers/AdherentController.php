@@ -358,8 +358,8 @@ class AdherentController extends Controller
             'documents.typeDocument', 
             'adhesions.plan',
             'adhesions.renouvellements',
-            'credits' => function($query) {
-                $query->with('echeances')->latest();
+'credits' => function($query) {
+                $query->latest();
             }
         ]);
 

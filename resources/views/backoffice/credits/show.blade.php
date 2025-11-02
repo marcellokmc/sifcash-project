@@ -24,12 +24,6 @@
           <li class="nav-item" role="presentation">
             <button class="nav-link active" id="tab-details" data-bs-toggle="tab" data-bs-target="#pane-details" type="button" role="tab">Détails</button>
           </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-echeances" data-bs-toggle="tab" data-bs-target="#pane-echeances" type="button" role="tab">Échéancier</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-paiements" data-bs-toggle="tab" data-bs-target="#pane-paiements" type="button" role="tab">Paiements</button>
-          </li>
         </ul>
       </div>
       <div class="card-body">
@@ -54,76 +48,7 @@
             </div>
           </div>
 
-          <div class="tab-pane fade" id="pane-echeances" role="tabpanel">
-            <div class="table-responsive">
-              <table class="table table-sm table-striped align-middle">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Date</th>
-                    <th>Attendu</th>
-                    <th>Payé</th>
-                    <th>Pénalité</th>
-                    <th>Statut</th>
-                  </tr>
-                </thead>
-                <tbody>
-                @forelse($credit->echeances as $i => $e)
-                  <tr>
-                    <td>{{ $i+1 }}</td>
-                    <td>{{ \Carbon\Carbon::parse($e->date_echeance)->format('d/m/Y') }}</td>
-                    <td>{{ number_format((float)$e->montant_attendu, 2, ',', ' ') }}</td>
-                    <td>{{ number_format((float)$e->montant_paye, 2, ',', ' ') }}</td>
-                    <td>{{ number_format((float)$e->penalite_appliquee, 2, ',', ' ') }}</td>
-                    <td>
-                      @php $badge = $e->statut === 'payé' ? 'bg-success' : ($e->statut === 'en_retard' ? 'bg-danger' : 'bg-secondary'); @endphp
-                      <span class="badge {{ $badge }}">{{ $e->statut }}</span>
-                    </td>
-                  </tr>
-                @empty
-                  <tr><td colspan="6" class="text-center py-3">Aucune échéance</td></tr>
-                @endforelse
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <div class="tab-pane fade" id="pane-paiements" role="tabpanel">
-            <div class="table-responsive">
-              <table class="table table-sm table-striped align-middle">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Montant</th>
-                    <th>Pénalité</th>
-                    <th>Mode</th>
-                    <th>Référence</th>
-                    <th>Preuves</th>
-                  </tr>
-                </thead>
-                <tbody>
-                @forelse($credit->paiements as $p)
-                  <tr>
-                    <td>{{ $p->date_paiement }}</td>
-                    <td>{{ number_format((float)$p->montant, 2, ',', ' ') }}</td>
-                    <td>{{ number_format((float)$p->penalite, 2, ',', ' ') }}</td>
-                    <td>{{ $p->mode ?? '—' }}</td>
-                    <td>{{ $p->reference ?? '—' }}</td>
-                    <td>
-                      @forelse($p->preuves as $pr)
-                        <a href="{{ Storage::url($pr->path) }}" target="_blank" class="btn btn-link btn-sm">{{ $pr->original_name }}</a>
-                      @empty
-                        —
-                      @endforelse
-                    </td>
-                  </tr>
-                @empty
-                  <tr><td colspan="6" class="text-center py-3">Aucun paiement</td></tr>
-                @endforelse
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -138,34 +63,18 @@
       <div class="card-body">
         <div class="d-grid gap-2">
           <!-- Export Contrat -->
-          <a href="{{ route('admin.credits.export-contract', ['credit' => $credit->id, 'format' => 'pdf']) }}" 
-             class="btn btn-outline-danger btn-sm">
-            <i class="fas fa-file-pdf me-2"></i>Contrat PDF
-          </a>
+          @if(!empty($credit->contract_path))
+            <a href="{{ route('admin.credits.contract.download', $credit) }}" 
+               class="btn btn-outline-danger btn-sm">
+              <i class="fas fa-file-pdf me-2"></i>Télécharger le contrat
+            </a>
+          @else
+            <a href="{{ route('admin.credits.export-contract', ['credit' => $credit->id, 'format' => 'pdf']) }}" 
+               class="btn btn-outline-danger btn-sm">
+              <i class="fas fa-file-pdf me-2"></i>Générer le contrat
+            </a>
+          @endif
           
-          <!-- Export Échéancier -->
-          <div class="btn-group btn-group-sm" role="group">
-            <a href="{{ route('admin.credits.export-schedule', ['credit' => $credit->id, 'format' => 'pdf']) }}" 
-               class="btn btn-outline-danger">
-              <i class="fas fa-file-pdf me-1"></i>Échéancier PDF
-            </a>
-            <a href="{{ route('admin.credits.export-schedule', ['credit' => $credit->id, 'format' => 'excel']) }}" 
-               class="btn btn-outline-success">
-              <i class="fas fa-file-excel me-1"></i>Excel
-            </a>
-          </div>
-          
-          <!-- Export Paiements -->
-          <div class="btn-group btn-group-sm" role="group">
-            <a href="{{ route('admin.credits.export-payments', ['credit' => $credit->id, 'format' => 'pdf']) }}" 
-               class="btn btn-outline-danger">
-              <i class="fas fa-file-pdf me-1"></i>Paiements PDF
-            </a>
-            <a href="{{ route('admin.credits.export-payments', ['credit' => $credit->id, 'format' => 'excel']) }}" 
-               class="btn btn-outline-success">
-              <i class="fas fa-file-excel me-1"></i>Excel
-            </a>
-          </div>
         </div>
       </div>
     </div>
@@ -197,140 +106,12 @@
               <button class="btn btn-outline-danger w-100">Rejeter</button>
             </form>
           @endif
-        @endcan
 
-        @can('contract', $credit)
-          @if($credit->etat === 'approuve')
-            <form method="post" action="{{ route('admin.credits.contract', $credit) }}" class="mb-2">
+          @if($credit->etat !== 'cloture' && $credit->statut === 'approuvé')
+            <form method="post" action="{{ route('admin.credits.mark-repaid', $credit) }}" onsubmit="return confirm('Confirmer le marquage comme remboursé ?');">
               @csrf
-              <div class="mb-2">
-                <label class="form-label">Date de début remboursement</label>
-                <input name="date_debut_remboursement" type="date" class="form-control" value="{{ $credit->date_debut_remboursement ?? now()->toDateString() }}">
-              </div>
-              <button class="btn btn-primary w-100">Valider le contrat</button>
+              <button class="btn btn-outline-secondary w-100">Marquer comme remboursé</button>
             </form>
-          @endif
-        @endcan
-
-        @can('generateSchedule', $credit)
-          @if(in_array($credit->etat, ['approuve','contrat']))
-            <form method="post" action="{{ route('admin.credits.generate-schedule', $credit) }}" class="mb-2">
-              @csrf
-              <button class="btn btn-warning w-100">Générer l'échéancier</button>
-            </form>
-          @endif
-        @endcan
-
-        @can('recordPayment', $credit)
-          @if($credit->etat === 'actif')
-            <form method="post" action="{{ route('admin.credits.record-payment', $credit) }}" enctype="multipart/form-data">
-              @csrf
-              <div class="mb-2">
-                <label class="form-label">Échéance</label>
-                <select name="echeance_id" class="form-select">
-                  @foreach($credit->echeances as $e)
-                    <option value="{{ $e->id }}" data-attendu="{{ (float)$e->montant_attendu }}" data-penalite="{{ (float)($e->penalite_appliquee ?? 0) }}">
-                      {{ \Carbon\Carbon::parse($e->date_echeance)->format('d/m/Y') }} — Attendu {{ number_format((float)$e->montant_attendu, 2, ',', ' ') }}
-                    </option>
-                  @endforeach
-                </select>
-              </div>
-              <div class="mb-2">
-                <label class="form-label">Date paiement</label>
-                <input name="date_paiement" type="date" class="form-control" value="{{ now()->toDateString() }}">
-              </div>
-              <div class="mb-2">
-                <label class="form-label">Montant</label>
-                <input name="montant" type="number" step="0.01" class="form-control" required>
-              </div>
-              <div class="mb-2">
-                <label class="form-label">Mode</label>
-                <select name="mode" id="mode" class="form-select">
-                  <option value="especes">Espèces</option>
-                  <option value="mobile_money">Mobile money</option>
-                  <option value="virement">Virement</option>
-                  <option value="cheque">Chèque</option>
-                </select>
-              </div>
-
-              <div class="form-check form-switch mb-2">
-                <input class="form-check-input" type="checkbox" role="switch" id="apply_penalty" name="apply_penalty" value="1">
-                <label class="form-check-label" for="apply_penalty">Appliquer la pénalité (25% de l'échéance)</label>
-              </div>
-              <div class="mb-2 text-muted" id="penaltyPreview" style="display:none">
-                Pénalité estimée: <span id="penaltyAmount">0</span> FCFA
-              </div>
-
-              <div class="mb-2" id="referenceGroup">
-                <label class="form-label">Référence</label>
-                <input name="reference" type="text" class="form-control">
-              </div>
-              <div class="mb-3" id="preuvesGroup">
-                <label class="form-label">Preuves (fichiers)</label>
-                <input type="file" name="preuves[]" class="form-control" multiple>
-              </div>
-
-              <button class="btn btn-outline-primary w-100">Enregistrer paiement</button>
-            </form>
-
-            <script>
-              (function(){
-                const echeanceSelect = document.querySelector('select[name="echeance_id"]');
-                const modeSelect = document.getElementById('mode');
-                const refGroup = document.getElementById('referenceGroup');
-                const preuvesGroup = document.getElementById('preuvesGroup');
-                const applyPenalty = document.getElementById('apply_penalty');
-                const penaltyPreview = document.getElementById('penaltyPreview');
-                const penaltyAmount = document.getElementById('penaltyAmount');
-
-                function getSelectedExpected(){
-                  const opt = echeanceSelect.options[echeanceSelect.selectedIndex];
-                  const m = opt.getAttribute('data-attendu');
-                  return m ? parseFloat(m) : NaN;
-                }
-
-                function updatePenalty(){
-                  if (!applyPenalty.checked) { penaltyPreview.style.display = 'none'; return; }
-                  const attendu = getSelectedExpected();
-                  if (!isNaN(attendu)){
-                    const pen = Math.round(attendu * 0.25);
-                    penaltyAmount.textContent = pen.toLocaleString('fr-FR');
-                    penaltyPreview.style.display = '';
-                  } else {
-                    penaltyPreview.style.display = 'none';
-                  }
-                }
-
-                function updateMode(){
-                  const isCash = modeSelect.value === 'especes';
-                  refGroup.style.display = isCash ? 'none' : '';
-                  preuvesGroup.style.display = isCash ? 'none' : '';
-                }
-
-                // Enrich echeance options with expected amounts
-                (function enrich(){
-                  const opts = echeanceSelect.querySelectorAll('option');
-                  opts.forEach(o => {
-                    if (!o.getAttribute('data-attendu')){
-                      const txt = o.textContent || '';
-                      const m = txt.match(/Attendu\s([0-9\s,\.]+)/i);
-                      if (m){
-                        const v = parseFloat(m[1].replace(/\s/g,'').replace(',', '.'));
-                        if (!isNaN(v)) o.setAttribute('data-attendu', v);
-                      }
-                    }
-                  });
-                })();
-
-                echeanceSelect.addEventListener('change', updatePenalty);
-                applyPenalty.addEventListener('change', updatePenalty);
-                modeSelect.addEventListener('change', updateMode);
-
-                // init
-                updateMode();
-                updatePenalty();
-              })();
-            </script>
           @endif
         @endcan
       </div>

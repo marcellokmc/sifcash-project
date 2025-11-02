@@ -15,7 +15,7 @@
 .credit-card.en_attente { border-left-color: #ffc107; }
 .credit-card.approuve { border-left-color: #28a745; }
 .credit-card.rejete { border-left-color: #dc3545; }
-.credit-card.actif { border-left-color: #17a2b8; }
+.credit-card.cloture { border-left-color: #6c757d; }
 
 .stats-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -59,9 +59,6 @@
                     <p class="text-secondary mb-0 fw-medium">Gestion et suivi de vos demandes de crédit</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('adherent.credits.paiements.index') }}" class="btn btn-outline-info">
-                        <i class="mdi mdi-history me-2"></i>Historique des paiements
-                    </a>
                     <a href="{{ route('adherent.credits.create') }}" class="btn btn-primary">
                         <i class="mdi mdi-plus me-2"></i>Nouvelle demande
                     </a>
@@ -109,11 +106,26 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div>
-                            <h3 class="mb-0">{{ $credits->where('etat', 'actif')->count() }}</h3>
-                            <p class="mb-0 small">Actifs</p>
+                            <h3 class="mb-0">{{ $credits->where('statut', 'approuvé')->count() }}</h3>
+                            <p class="mb-0 small">Approuvés</p>
                         </div>
                         <div class="ms-auto">
                             <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card text-white" style="background: #dc3545;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ $credits->where('statut', 'rejeté')->count() }}</h3>
+                            <p class="mb-0 small">Rejetés</p>
+                        </div>
+                        <div class="ms-auto">
+                            <i class="fas fa-times-circle fa-2x opacity-75"></i>
                         </div>
                     </div>
                 </div>
@@ -124,7 +136,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div>
-                            <h3 class="mb-0">{{ number_format($credits->where('etat', 'actif')->sum('montant_accorde'), 0, ',', ' ') }}</h3>
+                            <h3 class="mb-0">{{ number_format($credits->whereIn('statut', ['approuvé','remboursé'])->sum('montant_accorde'), 0, ',', ' ') }}</h3>
                             <p class="mb-0 small">Total accordé (FCFA)</p>
                         </div>
                         <div class="ms-auto">
@@ -151,8 +163,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="filterCredits('actif')">
-                        <i class="mdi mdi-check-circle"></i> Actifs
+                    <a class="nav-link" href="#" onclick="filterCredits('approuve')">
+                        <i class="mdi mdi-check-circle"></i> Approuvés
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="filterCredits('rejete')">
+                        <i class="mdi mdi-close-circle"></i> Rejetés
                     </a>
                 </li>
                 <li class="nav-item">
@@ -168,8 +185,12 @@
     @if($credits->count() > 0)
     <div class="row" id="credits-container">
         @foreach($credits as $credit)
-        <div class="col-lg-6 col-xl-4 mb-4 credit-item" data-status="{{ $credit->etat ?? $credit->statut }}">
-            <div class="credit-card card h-100 {{ $credit->etat ?? $credit->statut }}">
+        @php
+            $statusKey = \Illuminate\Support\Str::slug($credit->statut ?? 'en_attente', '_');
+            if ($credit->etat === 'cloture') { $statusKey = 'cloture'; }
+        @endphp
+        <div class="col-lg-6 col-xl-4 mb-4 credit-item" data-status="{{ $statusKey }}">
+            <div class="credit-card card h-100 {{ $statusKey }}">
                 <div class="card-body">
                     <!-- En-tête de la carte -->
                     <div class="d-flex justify-content-between align-items-start mb-3">
@@ -179,15 +200,15 @@
                         </div>
                         <div>
                             @php
-                                $status = $credit->etat ?? $credit->statut;
+                                $status = \Illuminate\Support\Str::slug($credit->statut ?? 'en_attente','_');
+                                if ($credit->etat === 'cloture') { $status = 'cloture'; }
                                 $statusConfig = [
                                     'en_attente' => ['class' => 'warning', 'icon' => 'fas fa-clock', 'text' => 'En attente'],
                                     'approuve' => ['class' => 'success', 'icon' => 'fas fa-check-circle', 'text' => 'Approuvé'],
                                     'rejete' => ['class' => 'danger', 'icon' => 'fas fa-times-circle', 'text' => 'Rejeté'],
-                                    'actif' => ['class' => 'info', 'icon' => 'fas fa-play-circle', 'text' => 'Actif'],
                                     'cloture' => ['class' => 'secondary', 'icon' => 'fas fa-archive', 'text' => 'Clôturé'],
                                 ];
-                                $config = $statusConfig[$status] ?? ['class' => 'secondary', 'icon' => 'fas fa-question-circle', 'text' => ucfirst($status)];
+                                $config = $statusConfig[$status] ?? ['class' => 'secondary', 'icon' => 'fas fa-question-circle', 'text' => ucfirst($credit->statut ?? '—')];
                             @endphp
                             <span class="badge bg-{{ $config['class'] }}">
                                 <i class="{{ $config['icon'] }} me-1"></i>
@@ -235,36 +256,9 @@
                                 <small class="text-secondary fw-medium">Mois</small>
                             </div>
                         </div>
-                        <div class="col-4">
-                            <div class="text-center">
-                                <i class="fas fa-list text-success mb-1 fs-5"></i>
-                                <div class="fw-bold text-dark">{{ $credit->echeances->count() }}</div>
-                                <small class="text-secondary fw-medium">Échéances</small>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Barre de progression pour les crédits actifs -->
-                    @if($credit->etat === 'actif' && $credit->echeances->count() > 0)
-                    @php
-                        $totalEcheances = $credit->echeances->count();
-                        $echeancesPayees = $credit->echeances->where('statut', 'payé')->count();
-                        $progressPct = $totalEcheances > 0 ? ($echeancesPayees / $totalEcheances) * 100 : 0;
-                    @endphp
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <small class="text-secondary fw-semibold">Progression du remboursement</small>
-                            <small class="fw-bold text-dark">{{ number_format($progressPct, 1) }}%</small>
-                        </div>
-                        <div class="progress" style="height: 10px;">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progressPct }}%"></div>
-                        </div>
-                        <div class="d-flex justify-content-between mt-1">
-                            <small class="text-dark">{{ $echeancesPayees }}/{{ $totalEcheances }} échéances</small>
-                            <small class="text-dark">Restant: {{ $totalEcheances - $echeancesPayees }}</small>
-                        </div>
-                    </div>
-                    @endif
 
                     <!-- Actions -->
                     <div class="d-flex gap-2 justify-content-center">
@@ -273,20 +267,6 @@
                            title="Voir les détails">
                             <i class="fas fa-eye"></i>
                         </a>
-                        @if($credit->echeances->count() > 0)
-                        <a href="{{ route('adherent.credits.show', $credit) }}#echeances" 
-                           class="btn btn-outline-info btn-sm"
-                           title="Voir l'échéancier">
-                            <i class="fas fa-calendar-alt"></i>
-                        </a>
-                        @endif
-                        @if($credit->etat === 'actif')
-                        <a href="{{ route('adherent.credits.paiements.index') }}" 
-                           class="btn btn-outline-success btn-sm"
-                           title="Historique des paiements">
-                            <i class="fas fa-history"></i>
-                        </a>
-                        @endif
                         @if(in_array($credit->statut, ['rejeté']) || ($credit->etat === 'cloture'))
                         <button class="btn btn-outline-secondary btn-sm" 
                                 title="Demander des informations" 

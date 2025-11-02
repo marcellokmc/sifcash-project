@@ -26,16 +26,6 @@
                     <h4 class="card-title">Formulaire de demande de crédit</h4>
                     <p class="card-title-desc">Remplissez le formulaire ci-dessous pour soumettre votre demande de crédit.</p>
                     
-                    @if($conditions->isNotEmpty())
-                        <div class="alert alert-info">
-                            <h5 class="alert-heading">Conditions d'éligibilité</h5>
-                            <ul class="mb-0">
-                                @foreach($conditions as $condition)
-                                    <li>{{ $condition->description }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
 
                     <form action="{{ route('adherent.credits.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -63,6 +53,22 @@
                                            id="duree" name="duree" value="{{ old('duree') }}" 
                                            min="1" required>
                                     @error('duree')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="date_debut_remboursement" class="form-label">Date de début de remboursement</label>
+                                    <input type="date" class="form-control @error('date_debut_remboursement') is-invalid @enderror"
+                                           id="date_debut_remboursement" name="date_debut_remboursement"
+                                           value="{{ old('date_debut_remboursement', date('Y-m-d')) }}"
+                                           min="{{ date('Y-m-d') }}">
+                                    <small class="form-text text-muted">Choisissez la date à partir de laquelle vous souhaitez commencer le remboursement.</small>
+                                    @error('date_debut_remboursement')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>

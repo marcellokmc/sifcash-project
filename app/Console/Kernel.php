@@ -13,7 +13,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\ApplyCreditPenalties::class,
         \App\Console\Commands\SendBirthdayNotifications::class,
     ];
 
@@ -22,11 +21,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Apply credit penalties and mark overdue installments daily at 01:00
-        $schedule->command('credits:apply-penalties')->dailyAt('01:00');
-
-        // Send due/overdue notifications daily at 08:00
-        $schedule->command('credits:notify-due')->dailyAt('08:00');
 
         // Send birthday notifications daily at 06:00
         $schedule->command('birthdays:send-notifications')->dailyAt('06:00');

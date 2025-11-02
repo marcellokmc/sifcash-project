@@ -556,9 +556,6 @@
                         <a href="{{ route('adherent.credits.create') }}" class="sif-nav-dropdown-item">
                             <i class="fas fa-pen me-2"></i>Demander
                         </a>
-                        <a href="{{ route('adherent.credits.paiements.index') }}" class="sif-nav-dropdown-item">
-                            <i class="fas fa-calendar me-2"></i>Échéances
-                        </a>
                     </div>
                 </div>
                 

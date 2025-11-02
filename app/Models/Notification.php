@@ -17,6 +17,10 @@ class Notification extends Model
         'message',
         'lu',
         'type',
+        'action_by_user_id',
+        'action',
+        'entity_type',
+        'entity_id',
     ];
 
     protected $casts = [
@@ -26,5 +30,10 @@ class Notification extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function actionByUser()
+    {
+        return $this->belongsTo(User::class, 'action_by_user_id');
     }
 }

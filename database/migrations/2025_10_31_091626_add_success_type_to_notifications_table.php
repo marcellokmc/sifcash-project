@@ -16,8 +16,8 @@ return new class extends Migration
         if (DB::getDriverName() === 'sqlite') {
             return;
         }
-        // Modifier le type ENUM pour ajouter 'anniversaire'
-        DB::statement("ALTER TABLE notifications MODIFY COLUMN type ENUM('info', 'warning', 'alert', 'email', 'anniversaire') DEFAULT 'info'");
+        // Modifier le type ENUM pour ajouter 'success' et 'error'
+        DB::statement("ALTER TABLE notifications MODIFY COLUMN type ENUM('info', 'warning', 'alert', 'email', 'anniversaire', 'success', 'error') DEFAULT 'info'");
     }
 
     /**
@@ -28,7 +28,7 @@ return new class extends Migration
         if (DB::getDriverName() === 'sqlite') {
             return;
         }
-        // Retirer 'anniversaire' du type ENUM
-        DB::statement("ALTER TABLE notifications MODIFY COLUMN type ENUM('info', 'warning', 'alert', 'email') DEFAULT 'info'");
+        // Retirer 'success' et 'error' du type ENUM
+        DB::statement("ALTER TABLE notifications MODIFY COLUMN type ENUM('info', 'warning', 'alert', 'email', 'anniversaire') DEFAULT 'info'");
     }
 };

@@ -4,219 +4,194 @@
     <meta charset="UTF-8">
     <title>Contrat de Crédit - {{ $credit->id }}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-            margin: 30px;
-            color: #333;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 20px;
-        }
-        .header h1 {
-            color: #667eea;
-            font-size: 22px;
-            margin: 0 0 10px 0;
-        }
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-            margin: 5px 0;
-        }
-        .info-block {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-        }
-        .info-row {
-            margin: 8px 0;
-        }
-        .label {
-            font-weight: bold;
-            color: #667eea;
-            display: inline-block;
-            width: 180px;
-        }
-        .value {
-            color: #333;
-        }
-        .section-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #667eea;
-            margin: 25px 0 15px 0;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #667eea;
-        }
-        .content {
-            text-align: justify;
-            line-height: 1.6;
-            margin: 15px 0;
-        }
-        .signature-block {
-            margin-top: 50px;
-            page-break-inside: avoid;
-        }
-        .signature-row {
-            display: table;
-            width: 100%;
-            margin-top: 40px;
-        }
-        .signature-cell {
-            display: table-cell;
-            width: 50%;
-            text-align: center;
-        }
-        .signature-line {
-            border-top: 1px solid #333;
-            width: 200px;
-            margin: 60px auto 10px auto;
-        }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 9px;
-            color: #999;
-            border-top: 1px solid #ddd;
-            padding-top: 10px;
-        }
-        .highlight {
-            background: #fff3cd;
-            padding: 2px 4px;
-            font-weight: bold;
-        }
+        @page { margin: 15mm 12mm; }
+        body { font-family: DejaVu Sans, Arial, sans-serif; font-size: 9.5px; color: #1a1a1a; line-height: 1.35; }
+        .header { margin-bottom: 8px; border-bottom: 2px solid #2563eb; padding-bottom: 8px; }
+        .brand { width: 100%; }
+        .brand td { vertical-align: middle; padding: 4px 0; }
+        .brand .logo { width: 60px; }
+        .brand .title { color: #1e40af; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+        .brand .subtitle { color: #475569; font-size: 8.5px; margin-top: 2px; }
+        .contract-badge { background: #2563eb; color: #fff; padding: 3px 10px; border-radius: 10px; font-size: 8px; font-weight: 600; display: inline-block; margin-top: 3px; }
+        .kpis { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .kpis td { padding: 6px 8px; border: 1px solid #e2e8f0; background: #f8fafc; text-align: center; }
+        .kpis .label { color: #64748b; font-weight: 600; font-size: 8px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
+        .kpis .value { color: #1e293b; font-weight: 700; font-size: 11px; display: block; }
+        .section { margin-top: 8px; page-break-inside: avoid; }
+        .section h3 { margin: 0 0 6px 0; color: #1e40af; font-size: 11.5px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; font-weight: 700; }
+        .two-col { width: 100%; border-collapse: collapse; }
+        .two-col td { vertical-align: top; width: 50%; padding-right: 10px; }
+        .info { width: 100%; border-collapse: collapse; background: #fff; }
+        .info tr { border-bottom: 1px solid #f1f5f9; }
+        .info tr:last-child { border-bottom: none; }
+        .info td { padding: 4px 0; }
+        .info .label { width: 45%; color: #475569; font-weight: 600; font-size: 9.5px; }
+        .info .value { width: 55%; color: #1e293b; font-weight: 500; font-size: 10px; }
+        .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 8px; margin-top: 6px; }
+        .box h4 { margin: 0 0 5px 0; color: #334155; font-size: 10px; font-weight: 700; }
+        .box p { margin: 0; line-height: 1.4; color: #475569; font-size: 9px; }
+        .highlight { background: #fef3c7; padding: 6px 10px; border-left: 3px solid #f59e0b; margin: 6px 0; border-radius: 3px; font-size: 8.5px; }
+        .highlight strong { color: #92400e; }
+        .note { margin-top: 5px; color: #475569; line-height: 1.4; text-align: justify; font-size: 8.5px; }
+        .signature { position: absolute; bottom: 50mm; left: 0; right: 0; page-break-inside: avoid; }
+        .sig-table { width: 100%; table-layout: fixed; margin-top: 12px; }
+        .sig-table td { text-align: center; padding: 0 15px; }
+        .sig-line { border-top: 1.5px solid #334155; width: 70%; height: 1px; margin: 18px auto 6px; }
+        .sig-label { font-weight: 600; color: #334155; font-size: 9px; }
+        .sig-name { color: #64748b; font-size: 8px; margin-top: 2px; }
+        .sig-decl { background:#f8fafc; border:1px solid #e2e8f0; padding:8px; border-radius:4px; margin-bottom:12px; font-size:8px; color:#64748b; line-height:1.35; }
+        .footer { position: fixed; bottom: 8mm; left: 0; right: 0; text-align: center; font-size: 7px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 6px; }
     </style>
 </head>
 <body>
+    @php
+        $logo = null;
+        $candidates = [
+            public_path('img/SIF logo .jpg'),
+            public_path('img/SIF logo.jpg'),
+            public_path('img/SIF_logo.jpg'),
+            public_path('img/logo.png'),
+            public_path('img/logo.jpg'),
+            public_path('img/logo.jpeg'),
+            public_path('img/logo.svg'),
+        ];
+        foreach ($candidates as $c) { if (file_exists($c)) { $logo = $c; break; } }
+    @endphp
+
     <div class="header">
-        <h1>📄 SIFCash-Burkina FASO</h1>
-        <div class="subtitle">Système d'Information Financière</div>
-        <div class="subtitle" style="font-weight: bold; margin-top: 10px;">CONTRAT DE CRÉDIT N° {{ $credit->id }}</div>
-        <div class="subtitle">Établi le {{ $date }}</div>
+        <table class="brand">
+            <tr>
+                <td class="logo">
+                    @if($logo)
+                        <img src="{{ $logo }}" alt="Logo" style="height:60px;">
+                    @endif
+                </td>
+                <td>
+                    <div class="title">SIFCash - Burkina Faso</div>
+                    <div class="subtitle">Établissement de Microfinance agréé par le Ministère des Finances</div>
+                    <div class="contract-badge">CONTRAT DE CRÉDIT N° {{ str_pad($credit->id, 6, '0', STR_PAD_LEFT) }}</div>
+                </td>
+                <td style="text-align:right; color:#64748b; font-size:9px;">
+                    <strong style="color:#1e293b;">Membre: {{ $credit->adherent->membre_id ?? 'N/A' }}</strong><br>
+                    Émis le: {{ $date }}<br>
+                    Statut: <strong style="color:#16a34a;">{{ ucfirst($credit->statut) }}</strong>
+                </td>
+            </tr>
+        </table>
+
+        <table class="kpis">
+            <tr>
+                <td>
+                    <span class="label">Montant accordé</span>
+                    <span class="value">{{ number_format($credit->montant_accorde, 0, ',', ' ') }} FCFA</span>
+                </td>
+                <td>
+                    <span class="label">Type</span>
+                    <span class="value">{{ ucfirst($credit->type_credit ?? 'Personnel') }}</span>
+                </td>
+                <td>
+                    <span class="label">Durée</span>
+                    <span class="value">{{ $credit->duree }} mois</span>
+                </td>
+                <td>
+                    <span class="label">Périodicité</span>
+                    <span class="value">{{ ucfirst($credit->periodicite) }}</span>
+                </td>
+                <td>
+                    <span class="label">Statut</span>
+                    <span class="value">{{ ucfirst($credit->statut) }}</span>
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <div class="section-title">1. INFORMATIONS DU CRÉDIT</div>
-    <div class="info-block">
-        <div class="info-row">
-            <span class="label">Numéro de crédit :</span>
-            <span class="value">{{ $credit->id }}</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Date de demande :</span>
-            <span class="value">{{ \Carbon\Carbon::parse($credit->date_demande)->format('d/m/Y') }}</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Montant demandé :</span>
-            <span class="value highlight">{{ number_format($credit->montant_demande, 0, ',', ' ') }} FCFA</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Montant accordé :</span>
-            <span class="value highlight">{{ number_format($credit->montant_accorde, 0, ',', ' ') }} FCFA</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Taux d'intérêt :</span>
-            <span class="value">{{ number_format($credit->taux, 2) }}%</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Durée :</span>
-            <span class="value">{{ $credit->duree }} mois</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Périodicité :</span>
-            <span class="value">{{ ucfirst($credit->periodicite) }}</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Frais de dossier :</span>
-            <span class="value">{{ number_format($credit->frais_dossier, 0, ',', ' ') }} FCFA</span>
-        </div>
-        @if($credit->date_debut_remboursement)
-        <div class="info-row">
-            <span class="label">Début remboursement :</span>
-            <span class="value">{{ \Carbon\Carbon::parse($credit->date_debut_remboursement)->format('d/m/Y') }}</span>
-        </div>
-        @endif
+    <div class="section">
+        <table class="two-col">
+            <tr>
+                <td>
+                    <h3>📄 Informations du Crédit</h3>
+                    <table class="info">
+                        <tr><td class="label">Référence</td><td class="value">#{{ str_pad($credit->id, 6, '0', STR_PAD_LEFT) }}</td></tr>
+                        <tr><td class="label">Type de crédit</td><td class="value">{{ ucfirst($credit->type_credit ?? 'Personnel') }}</td></tr>
+                        <tr><td class="label">Date de demande</td><td class="value">{{ \Carbon\Carbon::parse($credit->date_demande)->format('d/m/Y') }}</td></tr>
+                        @if($credit->date_validation)
+                        <tr><td class="label">Date d'approbation</td><td class="value">{{ \Carbon\Carbon::parse($credit->date_validation)->format('d/m/Y') }}</td></tr>
+                        @endif
+                        @if($credit->date_debut_remboursement)
+                        <tr><td class="label">Début remboursement</td><td class="value">{{ \Carbon\Carbon::parse($credit->date_debut_remboursement)->format('d/m/Y') }}</td></tr>
+                        @endif
+                        <tr><td class="label">Montant demandé</td><td class="value">{{ number_format($credit->montant_demande, 0, ',', ' ') }} FCFA</td></tr>
+                        <tr><td class="label">Montant accordé</td><td class="value" style="color:#16a34a; font-weight:700;">{{ number_format($credit->montant_accorde, 0, ',', ' ') }} FCFA</td></tr>
+                    </table>
+                </td>
+                <td>
+                    <h3>👤 Bénéficiaire</h3>
+                    <table class="info">
+                        <tr><td class="label">Nom complet</td><td class="value">{{ $credit->adherent->nom_complet ?? 'N/A' }}</td></tr>
+                        <tr><td class="label">Téléphone</td><td class="value">{{ $credit->adherent->telephone ?? 'N/A' }}</td></tr>
+                        <tr><td class="label">Email</td><td class="value">{{ $credit->adherent->email ?? 'N/A' }}</td></tr>
+                        <tr><td class="label">Adresse</td><td class="value">{{ $credit->adherent->adresse ?? 'N/A' }}</td></tr>
+                        @if($credit->adherent->profession)
+                        <tr><td class="label">Profession</td><td class="value">{{ $credit->adherent->profession }}</td></tr>
+                        @endif
+                    </table>
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <div class="section-title">2. INFORMATIONS DU BÉNÉFICIAIRE</div>
-    <div class="info-block">
-        <div class="info-row">
-            <span class="label">Nom complet :</span>
-            <span class="value">{{ $credit->adherent->nom_complet ?? 'N/A' }}</span>
+
+    <div class="section">
+        <h3>📝 Objet et Conditions du Crédit</h3>
+        
+        <div class="highlight">
+            <strong>🏦 Information :</strong> Pré-approbation de crédit. Conditions finales (taux, frais, échéancier) à définir en agence.
         </div>
-        <div class="info-row">
-            <span class="label">ID Membre :</span>
-            <span class="value">{{ $credit->adherent->membre_id ?? 'N/A' }}</span>
+        
+        <div class="box">
+            <h4>Objet du crédit</h4>
+            <p>{{ $credit->motif ?? 'Non spécifié' }}</p>
+            @if($credit->garanties)
+            <h4 style="margin-top:8px;">Garanties</h4>
+            <p>{{ $credit->garanties }}</p>
+            @endif
         </div>
-        <div class="info-row">
-            <span class="label">Téléphone :</span>
-            <span class="value">{{ $credit->adherent->telephone ?? 'N/A' }}</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Email :</span>
-            <span class="value">{{ $credit->adherent->email ?? 'N/A' }}</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Adresse :</span>
-            <span class="value">{{ $credit->adherent->adresse ?? 'N/A' }}</span>
+        
+        <div class="box">
+            <h4>Remboursement</h4>
+            <p>
+                Périodicité <strong>{{ $credit->periodicite }}</strong> sur <strong>{{ $credit->duree }} mois</strong>.
+                Modalités finales et première échéance {{ $credit->date_debut_remboursement ? '(' . \Carbon\Carbon::parse($credit->date_debut_remboursement)->format('d/m/Y') . ')' : '' }} à définir en agence.
+                <br><strong>Clauses :</strong> Pénalités en cas de retard. Remboursement anticipé autorisé sans pénalité.
+            </p>
         </div>
     </div>
 
-    <div class="section-title">3. CONDITIONS DU CONTRAT</div>
-    <div class="content">
-        <p><strong>3.1 Objet du crédit</strong></p>
-        <p>{{ $credit->motif ?? 'Non spécifié' }}</p>
-
-        @if($credit->garanties)
-        <p><strong>3.2 Garanties</strong></p>
-        <p>{{ $credit->garanties }}</p>
-        @endif
-
-        <p><strong>3.3 Modalités de remboursement</strong></p>
-        <p>
-            Le bénéficiaire s'engage à rembourser le montant du crédit selon l'échéancier établi, 
-            avec une périodicité {{ $credit->periodicite }} sur une durée de {{ $credit->duree }} mois.
-            Le taux d'intérêt appliqué est de {{ number_format($credit->taux, 2) }}%.
-        </p>
-
-        <p><strong>3.4 Pénalités de retard</strong></p>
-        <p>
-            En cas de retard de paiement, des pénalités pourront être appliquées conformément 
-            au règlement intérieur de la SIF.
-        </p>
-
-        <p><strong>3.5 Remboursement anticipé</strong></p>
-        <p>
-            Le bénéficiaire peut procéder au remboursement anticipé du crédit sans pénalités.
-        </p>
-    </div>
-
-    <div class="signature-block">
-        <div class="section-title">4. SIGNATURES</div>
-        <div class="signature-row">
-            <div class="signature-cell">
-                <p><strong>Le Bénéficiaire</strong></p>
-                <p>{{ $credit->adherent->nom_complet ?? '' }}</p>
-                <div class="signature-line"></div>
-                <p>Date : ________________</p>
-            </div>
-            <div class="signature-cell">
-                <p><strong>Pour la SIFCash-Burkina Faso</strong></p>
-                <p>Le Responsable des Crédits</p>
-                <div class="signature-line"></div>
-                <p>Date : ________________</p>
-            </div>
+    <div class="signature">
+        <div class="sig-decl">
+            <strong style="color:#1e293b;">Déclaration :</strong> Je soussigné(e) <strong>{{ $credit->adherent->nom_complet ?? '______________________' }}</strong>,
+            reconnais avoir pris connaissance des clauses du présent contrat et m'engage à rembourser le montant de <strong>{{ number_format($credit->montant_accorde, 0, ',', ' ') }} FCFA</strong>
+            selon les modalités à finaliser en agence.
         </div>
+        
+        <table class="sig-table">
+            <tr>
+                <td>
+                    <div class="sig-line"></div>
+                    <div class="sig-label">Le Bénéficiaire</div>
+                    <div class="sig-name">{{ $credit->adherent->nom_complet ?? '' }}</div>
+                </td>
+                <td>
+                    <div class="sig-line"></div>
+                    <div class="sig-label">Pour SIFCash - Burkina Faso</div>
+                    <div class="sig-name">Responsable des Crédits</div>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div class="footer">
-        <p>© {{ date('Y') }} SIFCash-Burkina Faso - Système d'Information Financière</p>
-        <p>Document contractuel confidentiel - Usage strictement interne</p>
+        © {{ date('Y') }} SIFCash - Burkina Faso • Siège social : Ouagadougou, Burkina Faso • Document contractuel confidentiel
     </div>
 </body>
 </html>

@@ -51,7 +51,7 @@ class AuditFiltersTest extends TestCase
 
         // Filter by user_id and action within date range
         $response = $this->actingAs($admin)
-            ->get('/admin/audits?user_id='.$admin->id.'&action=admin.credits.approve&date_from=2025-10-01&date_to=2025-10-09')
+            ->get('/admin/audits?user_id='.$admin->id.'&action=admin.credits.approve&date_from=2025-10-01&date_to=2025-10-09&format=json')
             ->assertOk()
             ->json('data');
 
@@ -63,7 +63,7 @@ class AuditFiltersTest extends TestCase
 
         // Filter by another action
         $response2 = $this->actingAs($admin)
-            ->get('/admin/audits?action=admin.credits.reject')
+            ->get('/admin/audits?action=admin.credits.reject&format=json')
             ->assertOk()
             ->json('data');
         $this->assertGreaterThanOrEqual(1, count($response2));

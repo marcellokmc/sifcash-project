@@ -13,11 +13,9 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Adhesion::class => \App\Policies\AdhesionPolicy::class,
         \App\Models\Plan::class => \App\Policies\PlanPolicy::class,
         \App\Models\Credit::class => \App\Policies\CreditPolicy::class,
-        \App\Models\EcheanceCredit::class => \App\Policies\EcheanceCreditPolicy::class,
         \App\Models\ConditionEligibiliteCredit::class => \App\Policies\ConditionEligibiliteCreditPolicy::class,
         \App\Models\Paiement::class => \App\Policies\PaiementPolicy::class,
         \App\Models\DemandeRetrait::class => \App\Policies\DemandeRetraitPolicy::class,
-        \App\Models\PaiementCredit::class => \App\Policies\PaiementCreditPolicy::class,
     ];
 
     public function boot(): void

@@ -4,9 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Jobs\CalculateInterestsJob;
-use App\Jobs\SendPaymentRemindersJob;
 use App\Models\Adhesion;
-use App\Models\EcheanceCredit;
 use App\Services\NotificationService;
 use App\Services\PerformanceOptimizationService;
 use Carbon\Carbon;
@@ -48,14 +46,14 @@ class DailyMaintenanceCommand extends Command
                 $results['interests_calculated'] = $this->calculateDailyInterests($isDryRun);
             }
 
-            // 2. Envoi des rappels de paiement
+            // 2. Envoi des rappels de paiement (désactivé)
             if (!$onlyInterests && !$onlyCleanup) {
-                $results['reminders_sent'] = $this->sendPaymentReminders($isDryRun);
+                $results['reminders_sent'] = 0;
             }
 
-            // 3. Détection des impayés
+            // 3. Détection des impayés (désactivée)
             if (!$onlyInterests && !$onlyReminders && !$onlyCleanup) {
-                $results['overdue_detected'] = $this->detectOverduePayments($isDryRun);
+                $results['overdue_detected'] = 0;
             }
 
             // 4. Nettoyage et optimisation
@@ -130,36 +128,8 @@ class DailyMaintenanceCommand extends Command
      */
     private function sendPaymentReminders(bool $isDryRun): int
     {
-        $this->info('📧 Envoi des rappels de paiement...');
-
-        $reminderDays = [7, 3, 1]; // Rappels à 7, 3 et 1 jour avant échéance
-        $totalReminders = 0;
-
-        foreach ($reminderDays as $days) {
-            $targetDate = now()->addDays($days)->toDateString();
-            
-            $upcomingEcheances = EcheanceCredit::with(['credit.adherent'])
-                ->where('date_echeance', $targetDate)
-                ->where('statut', 'en_attente')
-                ->whereDoesntHave('credit.adherent.user', function($query) {
-                    $query->where('active', false);
-                })
-                ->count();
-
-            if ($upcomingEcheances > 0) {
-                $this->info("   📅 {$upcomingEcheances} échéance(s) due(s) dans {$days} jour(s)");
-                
-                if (!$isDryRun) {
-                    SendPaymentRemindersJob::dispatch($days, now()->toDateString())
-                        ->onQueue('notifications');
-                }
-                
-                $totalReminders += $upcomingEcheances;
-            }
-        }
-
-        $this->info("   ✅ {$totalReminders} rappel(s) " . ($isDryRun ? 'simulé(s)' : 'programmé(s)'));
-        return $totalReminders;
+        // Désactivé avec la simplification des crédits
+        return 0;
     }
 
     /**
@@ -167,40 +137,8 @@ class DailyMaintenanceCommand extends Command
      */
     private function detectOverduePayments(bool $isDryRun): int
     {
-        $this->info('⚠️  Détection des paiements en retard...');
-
-        $overdueEcheances = EcheanceCredit::with(['credit.adherent.user'])
-            ->where('date_echeance', '<', now()->toDateString())
-            ->where('statut', 'en_attente')
-            ->get();
-
-        if ($overdueEcheances->isEmpty()) {
-            $this->info('   ✅ Aucun paiement en retard détecté');
-            return 0;
-        }
-
-        $this->warn("   ⚠️  {$overdueEcheances->count()} paiement(s) en retard détecté(s)");
-
-        // Regrouper par nombre de jours de retard
-        $groupedOverdue = $overdueEcheances->groupBy(function($echeance) {
-            return now()->diffInDays($echeance->date_echeance);
-        });
-
-        foreach ($groupedOverdue as $daysOverdue => $echeances) {
-            $this->warn("     - {$echeances->count()} paiement(s) en retard de {$daysOverdue} jour(s)");
-        }
-
-        // Notifier les administrateurs si retards significatifs
-        $criticalOverdue = $overdueEcheances->filter(function($echeance) {
-            return now()->diffInDays($echeance->date_echeance) > 7; // Plus de 7 jours
-        });
-
-        if (!$isDryRun && $criticalOverdue->count() > 0) {
-            $notificationService = app(NotificationService::class);
-            $notificationService->notifyOverduePayments($criticalOverdue->toArray());
-        }
-
-        return $overdueEcheances->count();
+        // Désactivé avec la simplification des crédits
+        return 0;
     }
 
     /**

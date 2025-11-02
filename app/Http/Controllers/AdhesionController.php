@@ -111,6 +111,7 @@ class AdhesionController extends Controller
         $adhesion->load([
             'adherent.user', 
             'plan', 
+            'paiements.details',
             'renouvellements' => function($query) {
                 $query->orderBy('date_renouvellement', 'desc');
             },
@@ -221,6 +222,7 @@ class AdhesionController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
+            'type_cloture' => 'required|in:retrait_anticipé,arrivee_terme',
             'motif' => 'required|string|max:500',
         ]);
 
@@ -230,7 +232,7 @@ class AdhesionController extends Controller
                 ->withInput();
         }
 
-        $adhesion->cloturer($request->motif);
+        $adhesion->cloturer($request->motif, $request->type_cloture);
 
         return redirect()->back()
             ->with('success', 'Adhésion clôturée avec succès.');
@@ -476,5 +478,45 @@ class AdhesionController extends Controller
 
         return redirect()->route('adherent.adhesions.show', $adhesion)
             ->with('success', 'Votre souscription a été enregistrée. Elle sera activée après validation.');
+    }
+
+    /**
+     * Télécharger les détails de l'adhésion en PDF
+     */
+    public function download(Adhesion $adhesion)
+    {
+        $adhesion->load(['adherent.user', 'plan', 'createdByAgent']);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.adhesion-details', compact('adhesion'));
+        
+        return $pdf->download('adhesion-' . $adhesion->id . '-details.pdf');
+    }
+
+    /**
+     * Télécharger l'adhésion avec tous ses paiements en PDF
+     */
+    public function downloadWithPayments(Adhesion $adhesion)
+    {
+        $adhesion->load([
+            'adherent.user', 
+            'plan', 
+            'paiements.details',
+            'paiements.validatedByAgent',
+            'createdByAgent'
+        ]);
+
+        // Calcul du retrait anticipé
+        $retraitAnticipe = $adhesion->paiements
+            ->where('statut', 'validé')
+            ->where('categorie', '!=', 'ouverture')
+            ->sum(function($paiement) {
+                return $paiement->details
+                    ->whereNotIn('type_frais', ['interet', 'dossier', 'entretien'])
+                    ->sum('montant');
+            });
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.adhesion-with-payments', compact('adhesion', 'retraitAnticipe'));
+        
+        return $pdf->download('adhesion-' . $adhesion->id . '-paiements.pdf');
     }
 }

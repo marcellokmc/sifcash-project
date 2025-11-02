@@ -112,7 +112,12 @@ class User extends Authenticatable
     }
     public function audits()
     {
-        return $this->hasMany(\App\Models\Audit::class, 'user_id');
+        return $this->hasMany(Audit::class);
+    }
+
+    public function targetedAudits()
+    {
+        return $this->hasMany(Audit::class, 'target_user_id');
     }
     public function logsConnexion()
     {

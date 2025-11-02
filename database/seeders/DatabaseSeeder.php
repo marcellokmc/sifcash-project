@@ -20,8 +20,6 @@ class DatabaseSeeder extends Seeder
             ConditionEligibiliteCreditSeeder::class,
             PenaliteRetraitAnticipeSeeder::class,
             CreditSeeder::class,
-            EcheanceCreditSeeder::class,
-            PaiementCreditSeeder::class,
         ]);
     }
 }

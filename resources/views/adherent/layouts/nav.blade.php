@@ -65,26 +65,9 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item {{ request()->routeIs('adherent.credits.nouveau') ? 'active' : '' }}" 
-                               href="{{ route('adherent.credits.nouveau') }}">
+                            <a class="dropdown-item {{ request()->routeIs('adherent.credits.create') ? 'active' : '' }}" 
+                               href="{{ route('adherent.credits.create') }}">
                                 <i class="fas fa-plus-circle me-2"></i> Nouvelle demande
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item {{ request()->routeIs('adherent.credits.remboursements') ? 'active' : '' }}" 
-                               href="{{ route('adherent.credits.remboursements') }}">
-                                <i class="fas fa-credit-card me-2"></i> Remboursements
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item {{ request()->routeIs('adherent.credits.echeances') ? 'active' : '' }}" 
-                               href="{{ route('adherent.credits.echeances') }}">
-                                <i class="fas fa-calendar-alt me-2"></i> Échéances
-                                @php($echeancesEnRetard = auth()->user()->adherent->echeancesEnRetard()->count())
-                                @if($echeancesEnRetard > 0)
-                                    <span class="badge bg-danger rounded-pill ms-2">{{ $echeancesEnRetard }}</span>
-                                @endif
                             </a>
                         </li>
                     </ul>

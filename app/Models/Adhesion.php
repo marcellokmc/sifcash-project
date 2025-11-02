@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Traits\Auditable;
 
 class Adhesion extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $fillable = [
         'adherent_id',
@@ -27,6 +28,7 @@ class Adhesion extends Model
         'motif_suspension',
         'date_activation',
         'date_cloture',
+        'type_cloture',
         'created_by_agent_id',
         'frais_ouverture_payes',
     ];
@@ -78,6 +80,11 @@ class Adhesion extends Model
     public function createdByAgent()
     {
         return $this->belongsTo(User::class, 'created_by_agent_id');
+    }
+
+    public function paiements()
+    {
+        return $this->hasMany(Paiement::class);
     }
 
     // Scopes
@@ -192,12 +199,13 @@ class Adhesion extends Model
         ]);
     }
 
-    public function cloturer($motif = null)
+    public function cloturer($motif = null, $typeCloture = null)
     {
         $this->update([
             'statut' => 'clos',
             'date_cloture' => now(),
-            'motif_suspension' => $motif
+            'motif_suspension' => $motif,
+            'type_cloture' => $typeCloture
         ]);
     }
 

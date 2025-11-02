@@ -29,6 +29,10 @@ class Credit extends Model
         'taux_penalite',
         'mode_penalite',
         'etat',
+        // simplified flow additions
+        'motif',
+        'garanties',
+        'contract_path',
     ];
 
     protected $casts = [
@@ -48,23 +52,18 @@ class Credit extends Model
         return $this->belongsTo(Adherent::class);
     }
 
-    public function echeances(): HasMany
-    {
-        return $this->hasMany(EcheanceCredit::class);
-    }
-
     public function garanties(): HasMany
     {
         return $this->hasMany(CreditGarantie::class);
     }
 
-    public function paiements(): HasMany
-    {
-        return $this->hasMany(PaiementCredit::class);
-    }
-
     public function documents(): MorphMany
     {
         return $this->morphMany(Document::class, 'documentable');
+    }
+
+    public function paiements(): HasMany
+    {
+        return $this->hasMany(PaiementCredit::class);
     }
 }

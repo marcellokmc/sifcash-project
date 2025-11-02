@@ -1,5 +1,7 @@
 <?php
 
+// Removed in simplified credits module
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;

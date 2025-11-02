@@ -70,6 +70,10 @@ class PaiementController extends Controller
             'message' => 'Votre paiement de ' . number_format($paiement->montant, 0, ',', ' ') . ' FCFA a été validé.',
             'lu' => false,
             'type' => 'success',
+            'action_by_user_id' => Auth::id(),
+            'action' => 'validation',
+            'entity_type' => 'paiement',
+            'entity_id' => $paiement->id,
         ]);
 
         return redirect()->back()
@@ -105,6 +109,10 @@ class PaiementController extends Controller
             'message' => 'Votre paiement de ' . number_format($paiement->montant, 0, ',', ' ') . ' FCFA a été rejeté. Motif: ' . $request->motif_rejet,
             'lu' => false,
             'type' => 'error',
+            'action_by_user_id' => Auth::id(),
+            'action' => 'rejet',
+            'entity_type' => 'paiement',
+            'entity_id' => $paiement->id,
         ]);
 
         return redirect()->back()
