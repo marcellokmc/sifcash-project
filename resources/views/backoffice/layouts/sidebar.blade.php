@@ -279,8 +279,8 @@
             <a class="nav-link d-flex align-items-center justify-content-between {{ request()->routeIs('admin.plans.*', 'admin.adhesions.*') ? 'active' : '' }}" 
                data-bs-toggle="collapse" href="#" data-bs-target="#plansMenu" role="button" aria-controls="plansMenu" aria-expanded="{{ request()->routeIs('admin.plans.*', 'admin.adhesions.*') ? 'true' : 'false' }}">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-clipboard-list me-3"></i>
-                    <span>Plans & Adhésions</span>
+                    <i class="fas fa-handshake me-3"></i>
+                    <span>Adhésions</span>
                 </div>
                 <span class="badge bg-warning rounded-pill me-2 {{ (\App\Models\Adhesion::where('statut','en_attente_activation')->count() > 0) ? '' : 'd-none' }}">
                     {{ \App\Models\Adhesion::where('statut','en_attente_activation')->count() }}
@@ -290,20 +290,6 @@
             <div class="collapse {{ request()->routeIs('admin.plans.*', 'admin.adhesions.*') ? 'show' : '' }}" id="plansMenu">
                 <ul class="nav flex-column ms-4 py-2">
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}" 
-                           href="{{ route('admin.plans.index') }}">
-                            <i class="fas fa-list-alt me-2"></i>
-                            <span>Gestion des plans</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center text-success" 
-                           href="{{ route('admin.plans.create') }}">
-                            <i class="fas fa-plus-circle me-2"></i>
-                            <span>Créer un plan</span>
-                        </a>
-                    </li>
-                    <li class="nav-item mt-2 pt-2 border-top">
                         <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.adhesions.*') ? 'active' : '' }}" 
                            href="{{ route('admin.adhesions.index') }}">
                             <i class="fas fa-handshake me-2"></i>
@@ -431,17 +417,32 @@
         <!-- Section Paramètres -->
         @if(auth()->user()->isAdmin())
         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center justify-content-between {{ request()->routeIs('admin.parametres.*') ? 'active' : '' }}" 
-               data-bs-toggle="collapse" href="#" data-bs-target="#parametresMenu" role="button" aria-controls="parametresMenu" aria-expanded="{{ request()->routeIs('admin.parametres.*') ? 'true' : 'false' }}">
+            <a class="nav-link d-flex align-items-center justify-content-between {{ request()->routeIs('admin.parametres.*') || request()->routeIs('admin.plans.*') ? 'active' : '' }}" 
+               data-bs-toggle="collapse" href="#" data-bs-target="#parametresMenu" role="button" aria-controls="parametresMenu" aria-expanded="{{ request()->routeIs('admin.parametres.*') || request()->routeIs('admin.plans.*') ? 'true' : 'false' }}">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-cog me-3"></i>
                     <span>Paramètres</span>
                 </div>
                 <i class="fas fa-chevron-{{ request()->routeIs('admin.parametres.*') ? 'up' : 'down' }} small"></i>
             </a>
-            <div class="collapse {{ request()->routeIs('admin.parametres.*') ? 'show' : '' }}" id="parametresMenu">
+            <div class="collapse {{ request()->routeIs('admin.parametres.*') || request()->routeIs('admin.plans.*') ? 'show' : '' }}" id="parametresMenu">
                 <ul class="nav flex-column ms-4 py-2">
                     <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}" 
+                           href="{{ route('admin.plans.index') }}">
+                            <i class="fas fa-list-alt me-2"></i>
+                            <span>Gestion des plans</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center text-success" 
+                           href="{{ route('admin.plans.create') }}">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            <span>Créer un plan</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item mt-2 pt-2 border-top">
                         <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.agences.*') ? 'active' : '' }}" 
                            href="{{ route('admin.agences.index') }}">
                             <i class="fas fa-building me-2"></i>

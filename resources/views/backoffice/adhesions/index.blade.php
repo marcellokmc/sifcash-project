@@ -43,6 +43,89 @@
     </div>
 </div>
 
+{{-- Barre de recherche et filtres --}}
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ route('admin.adhesions.index') }}" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-search me-1"></i>Recherche</label>
+                <input type="text" 
+                       name="search" 
+                       class="form-control" 
+                       placeholder="ID, nom, téléphone, email, plan..." 
+                       value="{{ request('search') }}">
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label"><i class="fas fa-list me-1"></i>Plan</label>
+                <select name="plan_id" class="form-select">
+                    <option value="">Tous les plans</option>
+                    @foreach($plans as $plan)
+                        <option value="{{ $plan->id }}" {{ request('plan_id') == $plan->id ? 'selected' : '' }}>
+                            {{ $plan->nom }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label"><i class="fas fa-calendar me-1"></i>Date début</label>
+                <input type="date" 
+                       name="date_debut" 
+                       class="form-control" 
+                       value="{{ request('date_debut') }}">
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label"><i class="fas fa-calendar me-1"></i>Date fin</label>
+                <input type="date" 
+                       name="date_fin" 
+                       class="form-control" 
+                       value="{{ request('date_fin') }}">
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label"><i class="fas fa-sync me-1"></i>Renouvelable</label>
+                <select name="renouvelable" class="form-select">
+                    <option value="">Tous</option>
+                    <option value="1" {{ request('renouvelable') === '1' ? 'selected' : '' }}>Oui</option>
+                    <option value="0" {{ request('renouvelable') === '0' ? 'selected' : '' }}>Non</option>
+                </select>
+            </div>
+            
+            <div class="col-md-3">
+                <label class="form-label"><i class="fas fa-money-bill me-1"></i>Montant min (FCFA)</label>
+                <input type="number" 
+                       name="montant_min" 
+                       class="form-control" 
+                       placeholder="Min" 
+                       value="{{ request('montant_min') }}">
+            </div>
+            
+            <div class="col-md-3">
+                <label class="form-label"><i class="fas fa-money-bill me-1"></i>Montant max (FCFA)</label>
+                <input type="number" 
+                       name="montant_max" 
+                       class="form-control" 
+                       placeholder="Max" 
+                       value="{{ request('montant_max') }}">
+            </div>
+            
+            <div class="col-md-6 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search me-1"></i>Rechercher
+                </button>
+                <a href="{{ route('admin.adhesions.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-redo me-1"></i>Réinitialiser
+                </a>
+                <button type="button" class="btn btn-outline-secondary" id="toggleFilters">
+                    <i class="fas fa-filter me-1"></i>Plus de filtres
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Statistiques rapides -->
 @if(isset($stats))
 <div class="row mb-4">

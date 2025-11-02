@@ -18,12 +18,56 @@ class AdhesionController extends Controller
     {
         $query = Adhesion::with(['adherent', 'plan', 'createdByAgent']);
         
-        // Filtrage par statut si spécifié
-        if ($request->has('statut') && $request->statut) {
+        // Recherche multicritère
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('id', 'like', "%{$search}%")
+                  ->orWhereHas('adherent', function($q) use ($search) {
+                      $q->where('nom', 'like', "%{$search}%")
+                        ->orWhere('prenom', 'like', "%{$search}%")
+                        ->orWhere('telephone', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('membre_id', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('plan', function($q) use ($search) {
+                      $q->where('nom', 'like', "%{$search}%");
+                  });
+            });
+        }
+        
+        // Filtrage par statut
+        if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
         }
         
-        $adhesions = $query->latest()->paginate(20);
+        // Filtrage par plan
+        if ($request->filled('plan_id')) {
+            $query->where('plan_id', $request->plan_id);
+        }
+        
+        // Filtrage par période
+        if ($request->filled('date_debut')) {
+            $query->whereDate('date_debut', '>=', $request->date_debut);
+        }
+        if ($request->filled('date_fin')) {
+            $query->whereDate('date_debut', '<=', $request->date_fin);
+        }
+        
+        // Filtrage par montant
+        if ($request->filled('montant_min')) {
+            $query->where('montant_souscrit', '>=', $request->montant_min);
+        }
+        if ($request->filled('montant_max')) {
+            $query->where('montant_souscrit', '<=', $request->montant_max);
+        }
+        
+        // Filtrage par renouvelable
+        if ($request->filled('renouvelable')) {
+            $query->where('renouvelable', $request->renouvelable === '1');
+        }
+        
+        $adhesions = $query->latest()->paginate(20)->withQueryString();
 
         $stats = [
             'total' => Adhesion::count(),
@@ -31,8 +75,10 @@ class AdhesionController extends Controller
             'en_attente' => Adhesion::where('statut', 'en_attente_activation')->count(),
             'closes' => Adhesion::where('statut', 'clos')->count(),
         ];
+        
+        $plans = Plan::all();
 
-        return view('backoffice.adhesions.index', compact('adhesions', 'stats'));
+        return view('backoffice.adhesions.index', compact('adhesions', 'stats', 'plans'));
     }
 
     /**
@@ -394,12 +440,44 @@ class AdhesionController extends Controller
 
         $adhesion->load([
             'plan',
+            'paiements.details',
             'renouvellements' => function($query) {
                 $query->orderBy('date_renouvellement', 'desc');
             }
         ]);
+        
+        // Calcul des statistiques
+        $totalPaiements = $adhesion->paiements->where('statut', 'validé')->sum('montant');
+        $paiementsEnAttente = $adhesion->paiements->where('statut', 'en_attente')->count();
+        $dernierPaiement = $adhesion->paiements->where('statut', 'validé')->sortByDesc('date_soumission')->first();
+        
+        // Calcul du retrait anticipé disponible
+        $retraitAnticipe = $adhesion->paiements
+            ->where('statut', 'validé')
+            ->where('categorie', '!=', 'ouverture')
+            ->sum(function($paiement) {
+                return $paiement->details
+                    ->whereNotIn('type_frais', ['interet', 'dossier', 'entretien'])
+                    ->sum('montant');
+            });
+        
+        // Calcul des intérêts accumulés
+        $interetsAccumules = $adhesion->paiements
+            ->where('statut', 'validé')
+            ->sum(function($paiement) {
+                return $paiement->details
+                    ->where('type_frais', 'interet')
+                    ->sum('montant');
+            });
 
-        return view('adherent.adhesions.show', compact('adhesion'));
+        return view('adherent.adhesions.show', compact(
+            'adhesion', 
+            'totalPaiements', 
+            'paiementsEnAttente', 
+            'dernierPaiement',
+            'retraitAnticipe',
+            'interetsAccumules'
+        ));
     }
 
     /**

@@ -53,15 +53,12 @@ class CreditController extends Controller
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $file) {
                 $path = $file->store('documents/credits/' . $credit->id, 'public');
-                $document = new \App\Models\Document([
+                $credit->documents()->create([
                     'nom' => $file->getClientOriginalName(),
                     'chemin' => $path,
                     'type' => $file->getClientMimeType(),
                     'taille' => $file->getSize(),
-                    'documentable_id' => $credit->id,
-                    'documentable_type' => Credit::class,
                 ]);
-                $credit->documents()->save($document);
             }
         }
         Notification::create([

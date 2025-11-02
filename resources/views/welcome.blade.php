@@ -353,6 +353,7 @@
     </style>
 </head>
 <body>
+    @include('components.preloader')
     @include('partials.header')
 
     <!-- Hero Section améliorée -->

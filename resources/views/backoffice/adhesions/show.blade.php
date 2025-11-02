@@ -79,6 +79,28 @@
 @section('content')
 @include('components.backoffice.alerts')
 
+{{-- Alerte pour paiements en attente --}}
+@php
+    $paiementsEnAttenteCount = $adhesion->paiements->where('statut', 'en_attente')->count();
+@endphp
+
+@if($paiementsEnAttenteCount > 0)
+<div class="alert alert-warning alert-dismissible fade show mb-4" role="alert" style="border-left: 4px solid #ffc107;">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+        <div>
+            <h5 class="alert-heading mb-1">
+                <i class="fas fa-bell me-1"></i>Attention : {{ $paiementsEnAttenteCount }} paiement(s) en attente de validation
+            </h5>
+            <p class="mb-0">
+                Cette adhésion a des paiements qui nécessitent votre validation. Veuillez les examiner dans la section "Historique des Paiements" ci-dessous.
+            </p>
+        </div>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 mb-1">

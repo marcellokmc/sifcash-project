@@ -57,9 +57,9 @@ class Credit extends Model
         return $this->hasMany(CreditGarantie::class);
     }
 
-    public function documents(): MorphMany
+    public function documents(): HasMany
     {
-        return $this->morphMany(Document::class, 'documentable');
+        return $this->hasMany(CreditDocument::class);
     }
 
     public function paiements(): HasMany

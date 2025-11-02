@@ -7,37 +7,42 @@
     <style>
         body {
             font-family: 'DejaVu Sans', sans-serif;
-            font-size: 11px;
+            font-size: 8px;
             color: #333;
-            line-height: 1.5;
+            line-height: 1.3;
         }
         .header {
             text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 3px solid #007bff;
-            padding-bottom: 15px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+        }
+        .logo-img {
+            max-height: 40px;
+            width: auto;
+            margin-bottom: 5px;
         }
         .header h1 {
             color: #007bff;
             margin: 0;
-            font-size: 22px;
+            font-size: 13px;
         }
         .header p {
-            margin: 3px 0;
+            margin: 2px 0;
             color: #666;
-            font-size: 10px;
+            font-size: 7px;
         }
         .section {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .section-title {
             background-color: #f8f9fa;
-            padding: 8px;
-            margin-bottom: 12px;
-            font-size: 13px;
+            padding: 5px;
+            margin-bottom: 6px;
+            font-size: 9px;
             font-weight: bold;
             color: #007bff;
-            border-left: 4px solid #007bff;
+            border-left: 3px solid #007bff;
         }
         .info-grid {
             display: table;
@@ -50,16 +55,16 @@
         .info-label {
             display: table-cell;
             width: 35%;
-            padding: 6px 8px;
+            padding: 4px 5px;
             font-weight: bold;
             background-color: #f8f9fa;
-            font-size: 10px;
+            font-size: 7px;
         }
         .info-value {
             display: table-cell;
-            padding: 6px 8px;
+            padding: 4px 5px;
             border-bottom: 1px solid #e9ecef;
-            font-size: 10px;
+            font-size: 7px;
         }
         table.data-table {
             width: 100%;
@@ -71,23 +76,23 @@
             color: white;
         }
         table.data-table th {
-            padding: 8px 5px;
+            padding: 5px 3px;
             text-align: left;
-            font-size: 10px;
+            font-size: 7px;
             font-weight: bold;
         }
         table.data-table td {
-            padding: 6px 5px;
+            padding: 4px 3px;
             border-bottom: 1px solid #e9ecef;
-            font-size: 10px;
+            font-size: 7px;
         }
         table.data-table tbody tr:nth-child(even) {
             background-color: #f8f9fa;
         }
         .badge {
-            padding: 3px 6px;
-            border-radius: 3px;
-            font-size: 9px;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-size: 6px;
             font-weight: bold;
         }
         .badge-success {
@@ -108,35 +113,39 @@
         }
         .summary-box {
             background-color: #e7f3ff;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-            border: 2px solid #007bff;
+            padding: 8px;
+            border-radius: 3px;
+            margin: 10px 0;
+            border: 1px solid #007bff;
         }
         .summary-box h3 {
-            margin: 0 0 10px 0;
+            margin: 0 0 5px 0;
             color: #007bff;
-            font-size: 14px;
+            font-size: 9px;
         }
         .summary-item {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
+            padding: 3px 0;
             border-bottom: 1px dashed #ccc;
+            font-size: 7px;
         }
         .summary-item:last-child {
             border-bottom: none;
             font-weight: bold;
-            font-size: 12px;
-            margin-top: 5px;
-            padding-top: 10px;
+            font-size: 8px;
+            margin-top: 3px;
+            padding-top: 5px;
         }
         .footer {
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 2px solid #e9ecef;
+            position: fixed;
+            bottom: 10mm;
+            left: 0;
+            right: 0;
+            padding-top: 8px;
+            border-top: 1px solid #e9ecef;
             text-align: center;
-            font-size: 9px;
+            font-size: 6px;
             color: #999;
         }
         .page-break {
@@ -146,6 +155,7 @@
 </head>
 <body>
     <div class="header">
+        <img src="{{ public_path('img/SIF logo .jpg') }}" alt="SIFcash-Burkina" class="logo-img">
         <h1>Adhésion avec Historique des Paiements</h1>
         <p>Adhésion #{{ $adhesion->id }} - {{ $adhesion->numero_adhesion }}</p>
         <p>Date d'édition : {{ \Carbon\Carbon::now()->format('d/m/Y à H:i') }}</p>

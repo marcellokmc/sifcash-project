@@ -5,42 +5,42 @@
     <title>Contrat de Crédit - {{ $credit->id }}</title>
     <style>
         @page { margin: 15mm 12mm; }
-        body { font-family: DejaVu Sans, Arial, sans-serif; font-size: 9.5px; color: #1a1a1a; line-height: 1.35; }
-        .header { margin-bottom: 8px; border-bottom: 2px solid #2563eb; padding-bottom: 8px; }
+        body { font-family: DejaVu Sans, Arial, sans-serif; font-size: 8px; color: #1a1a1a; line-height: 1.3; }
+        .header { margin-bottom: 6px; border-bottom: 2px solid #2563eb; padding-bottom: 6px; }
         .brand { width: 100%; }
-        .brand td { vertical-align: middle; padding: 4px 0; }
-        .brand .logo { width: 60px; }
-        .brand .title { color: #1e40af; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
-        .brand .subtitle { color: #475569; font-size: 8.5px; margin-top: 2px; }
-        .contract-badge { background: #2563eb; color: #fff; padding: 3px 10px; border-radius: 10px; font-size: 8px; font-weight: 600; display: inline-block; margin-top: 3px; }
-        .kpis { width: 100%; border-collapse: collapse; margin-top: 8px; }
-        .kpis td { padding: 6px 8px; border: 1px solid #e2e8f0; background: #f8fafc; text-align: center; }
-        .kpis .label { color: #64748b; font-weight: 600; font-size: 8px; text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
-        .kpis .value { color: #1e293b; font-weight: 700; font-size: 11px; display: block; }
-        .section { margin-top: 8px; page-break-inside: avoid; }
-        .section h3 { margin: 0 0 6px 0; color: #1e40af; font-size: 11.5px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; font-weight: 700; }
+        .brand td { vertical-align: middle; padding: 2px 0; }
+        .brand .logo { width: 50px; }
+        .brand .title { color: #1e40af; font-size: 14px; font-weight: 700; letter-spacing: -0.5px; }
+        .brand .subtitle { color: #475569; font-size: 7px; margin-top: 2px; }
+        .contract-badge { background: #2563eb; color: #fff; padding: 2px 8px; border-radius: 8px; font-size: 7px; font-weight: 600; display: inline-block; margin-top: 2px; }
+        .kpis { width: 100%; border-collapse: collapse; margin-top: 6px; }
+        .kpis td { padding: 4px 6px; border: 1px solid #e2e8f0; background: #f8fafc; text-align: center; }
+        .kpis .label { color: #64748b; font-weight: 600; font-size: 6.5px; text-transform: uppercase; letter-spacing: 0.2px; display: block; margin-bottom: 2px; }
+        .kpis .value { color: #1e293b; font-weight: 700; font-size: 9px; display: block; }
+        .section { margin-top: 6px; page-break-inside: avoid; }
+        .section h3 { margin: 0 0 4px 0; color: #1e40af; font-size: 9px; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; font-weight: 700; }
         .two-col { width: 100%; border-collapse: collapse; }
-        .two-col td { vertical-align: top; width: 50%; padding-right: 10px; }
+        .two-col td { vertical-align: top; width: 50%; padding-right: 8px; }
         .info { width: 100%; border-collapse: collapse; background: #fff; }
         .info tr { border-bottom: 1px solid #f1f5f9; }
         .info tr:last-child { border-bottom: none; }
-        .info td { padding: 4px 0; }
-        .info .label { width: 45%; color: #475569; font-weight: 600; font-size: 9.5px; }
-        .info .value { width: 55%; color: #1e293b; font-weight: 500; font-size: 10px; }
-        .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 8px; margin-top: 6px; }
-        .box h4 { margin: 0 0 5px 0; color: #334155; font-size: 10px; font-weight: 700; }
-        .box p { margin: 0; line-height: 1.4; color: #475569; font-size: 9px; }
-        .highlight { background: #fef3c7; padding: 6px 10px; border-left: 3px solid #f59e0b; margin: 6px 0; border-radius: 3px; font-size: 8.5px; }
+        .info td { padding: 3px 0; }
+        .info .label { width: 45%; color: #475569; font-weight: 600; font-size: 7.5px; }
+        .info .value { width: 55%; color: #1e293b; font-weight: 500; font-size: 8px; }
+        .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 3px; padding: 6px; margin-top: 4px; }
+        .box h4 { margin: 0 0 3px 0; color: #334155; font-size: 8px; font-weight: 700; }
+        .box p { margin: 0; line-height: 1.3; color: #475569; font-size: 7.5px; }
+        .highlight { background: #fef3c7; padding: 4px 8px; border-left: 2px solid #f59e0b; margin: 4px 0; border-radius: 2px; font-size: 7px; }
         .highlight strong { color: #92400e; }
-        .note { margin-top: 5px; color: #475569; line-height: 1.4; text-align: justify; font-size: 8.5px; }
-        .signature { position: absolute; bottom: 50mm; left: 0; right: 0; page-break-inside: avoid; }
-        .sig-table { width: 100%; table-layout: fixed; margin-top: 12px; }
-        .sig-table td { text-align: center; padding: 0 15px; }
-        .sig-line { border-top: 1.5px solid #334155; width: 70%; height: 1px; margin: 18px auto 6px; }
-        .sig-label { font-weight: 600; color: #334155; font-size: 9px; }
-        .sig-name { color: #64748b; font-size: 8px; margin-top: 2px; }
-        .sig-decl { background:#f8fafc; border:1px solid #e2e8f0; padding:8px; border-radius:4px; margin-bottom:12px; font-size:8px; color:#64748b; line-height:1.35; }
-        .footer { position: fixed; bottom: 8mm; left: 0; right: 0; text-align: center; font-size: 7px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+        .note { margin-top: 4px; color: #475569; line-height: 1.3; text-align: justify; font-size: 7px; }
+        .signature { position: fixed; bottom: 15mm; left: 12mm; right: 12mm; page-break-inside: avoid; }
+        .sig-table { width: 100%; table-layout: fixed; margin-top: 8px; }
+        .sig-table td { text-align: center; padding: 0 10px; }
+        .sig-line { border-top: 1px solid #334155; width: 65%; height: 1px; margin: 12px auto 4px; }
+        .sig-label { font-weight: 600; color: #334155; font-size: 7.5px; }
+        .sig-name { color: #64748b; font-size: 7px; margin-top: 1px; }
+        .sig-decl { background:#f8fafc; border:1px solid #e2e8f0; padding:6px; border-radius:3px; margin-bottom:8px; font-size:7px; color:#64748b; line-height:1.3; }
+        .footer { position: fixed; bottom: 8mm; left: 0; right: 0; text-align: center; font-size: 6px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 4px; }
     </style>
 </head>
 <body>
@@ -63,7 +63,7 @@
             <tr>
                 <td class="logo">
                     @if($logo)
-                        <img src="{{ $logo }}" alt="Logo" style="height:60px;">
+                        <img src="{{ $logo }}" alt="Logo" style="height:50px;width:auto;">
                     @endif
                 </td>
                 <td>
@@ -71,7 +71,7 @@
                     <div class="subtitle">Établissement de Microfinance agréé par le Ministère des Finances</div>
                     <div class="contract-badge">CONTRAT DE CRÉDIT N° {{ str_pad($credit->id, 6, '0', STR_PAD_LEFT) }}</div>
                 </td>
-                <td style="text-align:right; color:#64748b; font-size:9px;">
+                <td style="text-align:right; color:#64748b; font-size:7.5px;">
                     <strong style="color:#1e293b;">Membre: {{ $credit->adherent->membre_id ?? 'N/A' }}</strong><br>
                     Émis le: {{ $date }}<br>
                     Statut: <strong style="color:#16a34a;">{{ ucfirst($credit->statut) }}</strong>

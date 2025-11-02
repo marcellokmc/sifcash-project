@@ -6,58 +6,58 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 9px;
-            line-height: 1.3;
+            font-size: 7.5px;
+            line-height: 1.25;
             margin: 0;
-            padding: 15px 25px;
+            padding: 12px 20px;
             color: #333;
         }
         
         .header {
             text-align: center;
             border-bottom: 2px solid #2c3e50;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
         
         .logo-img {
-            max-height: 60px;
+            max-height: 45px;
             width: auto;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         
         .logo {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
         
         .sub-title {
-            font-size: 9px;
+            font-size: 7px;
             color: #7f8c8d;
         }
         
         .contract-title {
             text-align: center;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
             color: #2c3e50;
-            margin: 15px 0 12px 0;
+            margin: 10px 0 8px 0;
             text-transform: uppercase;
         }
         
         .section {
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         
         .section-title {
-            font-size: 11px;
+            font-size: 9px;
             font-weight: bold;
             color: #2c3e50;
             border-bottom: 1px solid #bdc3c7;
-            padding-bottom: 3px;
-            margin-bottom: 8px;
+            padding-bottom: 2px;
+            margin-bottom: 5px;
         }
         
         .info-table {
@@ -66,7 +66,7 @@
         }
         
         .info-table td {
-            padding: 2px 6px;
+            padding: 2px 4px;
             vertical-align: top;
         }
         
@@ -74,12 +74,12 @@
             font-weight: bold;
             width: 35%;
             color: #2c3e50;
-            font-size: 8px;
+            font-size: 7px;
         }
         
         .info-table .value {
             width: 65%;
-            font-size: 8px;
+            font-size: 7px;
         }
         
         .two-columns {
@@ -95,35 +95,39 @@
         }
         
         .signature-section {
-            margin-top: 20px;
+            position: fixed;
+            bottom: 25mm;
+            left: 20px;
+            right: 20px;
             display: table;
-            width: 100%;
+            width: calc(100% - 40px);
         }
         
         .signature-box {
             display: table-cell;
             width: 50%;
             text-align: center;
-            padding: 10px;
-            font-size: 9px;
+            padding: 8px;
+            font-size: 7.5px;
         }
         
         .signature-line {
             border-bottom: 1px solid #333;
-            margin: 25px 0 5px 0;
+            margin: 15px auto 4px auto;
             height: 1px;
+            width: 60%;
         }
         
         .footer {
             position: fixed;
-            bottom: 15px;
-            left: 25px;
-            right: 25px;
+            bottom: 12px;
+            left: 20px;
+            right: 20px;
             text-align: center;
-            font-size: 7px;
+            font-size: 6px;
             color: #7f8c8d;
             border-top: 1px solid #bdc3c7;
-            padding-top: 5px;
+            padding-top: 4px;
         }
         
         .page-break {
@@ -133,9 +137,9 @@
         .badge {
             background-color: #3498db;
             color: white;
-            padding: 1px 4px;
+            padding: 1px 3px;
             border-radius: 2px;
-            font-size: 7px;
+            font-size: 6px;
         }
         
         .badge.success {
@@ -148,23 +152,23 @@
         
         .important {
             background-color: #ecf0f1;
-            padding: 8px;
-            border-left: 3px solid #3498db;
-            margin: 10px 0;
-            font-size: 9px;
+            padding: 6px;
+            border-left: 2px solid #3498db;
+            margin: 6px 0;
+            font-size: 7.5px;
         }
         
         p {
-            margin: 5px 0;
+            margin: 3px 0;
         }
         
         ul {
-            margin: 5px 0;
-            padding-left: 20px;
+            margin: 3px 0;
+            padding-left: 15px;
         }
         
         ul li {
-            margin: 2px 0;
+            margin: 1px 0;
         }
     </style>
 </head>
@@ -397,9 +401,11 @@
 
         <p><strong>Article 3 - Engagements de SIFCash-Burkina :</strong> SIFCash-Burkina s'engage à protéger la confidentialité des données personnelles, offrir des services financiers de qualité, respecter les termes des plans d'adhésion souscrits et informer l'adhérent de toute modification des conditions.</p>
 
-        <p><strong>Article 4 - Durée du contrat :</strong> Ce contrat prend effet à la date d'activation du compte et reste valable tant que l'adhésion est active.</p>
+        <p><strong>Article 4 - Conditions d'épargne :</strong> Les dépôts d'épargne sont sécurisés et rémunérés selon les taux en vigueur. L'adhérent peut effectuer des retraits partiels après une période minimum de détention de 3 mois. Les retraits anticipés sont soumis à conditions et peuvent entraîner une réduction des intérêts accumulés. Un retrait total clôture l'adhésion au plan d'épargne concerné.</p>
 
-        <p><strong>Article 5 - Résiliation :</strong> Le contrat peut être résilié par l'une ou l'autre des parties moyennant un préavis de 30 jours.</p>
+        <p><strong>Article 5 - Durée du contrat :</strong> Ce contrat prend effet à la date d'activation du compte et reste valable tant que l'adhésion est active.</p>
+
+        <p><strong>Article 6 - Résiliation :</strong> Le contrat peut être résilié par l'une ou l'autre des parties moyennant un préavis de 30 jours. En cas de résiliation, l'adhérent peut récupérer son épargne selon les modalités définies à l'article 4.</p>
     </div>
 
     <!-- Signatures -->
