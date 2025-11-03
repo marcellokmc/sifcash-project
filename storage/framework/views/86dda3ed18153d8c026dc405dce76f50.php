@@ -106,7 +106,7 @@
                                     <a href="tel:+22676182726" class="text-decoration-none">76 18 27 26</a> /
                                     <a href="tel:+22604370203" class="text-decoration-none">04 37 02 03</a>
                             </p>
-                            <p class="mb-0"><i class="fas fa-envelope text-primary me-2"></i>contact@sifcash-burkina.bf</p>
+                            <p class="mb-0"><i class="fas fa-envelope text-primary me-2"></i>contact@sifcash-burkina.com</p>
                         </div>
                     </div>
                 </div>

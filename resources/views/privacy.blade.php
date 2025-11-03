@@ -389,14 +389,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h6>Responsable de la Protection des Données :</h6>
-                                    <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i><a href="mailto:dpo@sifcash-burkina.bf" class="text-decoration-none">dpo@sifcash-burkina.bf</a></p>
+                                    <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i><a href="mailto:dpocontact@sifcash-burkina.com" class="text-decoration-none">dpocontact@sifcash-burkina.com</a></p>
                                     <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>
                                         <a href="tel:+22625456364" class="text-decoration-none">+226 25 45 63 64</a>
                                     </p>
                                 </div>
                                 <div class="col-md-6">
                                     <h6>Service Client :</h6>
-                                    <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i><a href="mailto:contact@sifcash-burkina.bf" class="text-decoration-none">contact@sifcash-burkina.bf</a></p>
+                                    <p class="mb-2"><i class="fas fa-envelope text-primary me-2"></i><a href="mailto:contact@sifcash-burkina.com" class="text-decoration-none">contact@sifcash-burkina.com</a></p>
                                     <p class="mb-2"><i class="fas fa-phone text-primary me-2"></i>
                                         <a href="tel:+22625456364" class="text-decoration-none">+226 25 45 63 64</a> /
                                         <a href="tel:+22676182726" class="text-decoration-none">76 18 27 26</a> /
@@ -492,8 +492,8 @@
                             </h6>
                             <p class="small mb-3 opacity-75">Délégué à la Protection des Données</p>
                             <div class="d-grid gap-2">
-                                <a href="mailto:dpo@sifcash-burkina.bf" class="btn btn-light btn-sm">
-                                    <i class="fas fa-envelope me-1"></i>dpo@sifcash-burkina.bf
+                                <a href="mailto:dpocontact@sifcash-burkina.com" class="btn btn-light btn-sm">
+                                    <i class="fas fa-envelope me-1"></i>dpocontact@sifcash-burkina.com
                                 </a>
                                 <a href="{{ route('contact') }}" class="btn btn-outline-light btn-sm">
                                     <i class="fas fa-phone me-1"></i>Nous contacter

@@ -502,7 +502,7 @@
                                 <span class="badge" style="background: rgba(255, 107, 107, 0.1); color: #ff6b6b;">💬 Chat</span>
                                 <span class="badge" style="background: rgba(255, 107, 107, 0.1); color: #ff6b6b;">📧 Email</span>
                             </div>
-                            <button class="btn btn-outline-danger btn-sm rounded-pill px-4" onclick="alert('📞 Contactez-nous au : +226 25 45 63 64\n📧 Email : contact@sifcash-burkina.bf\n💬 Chat en ligne disponible')">
+                            <button class="btn btn-outline-danger btn-sm rounded-pill px-4" onclick="alert('📞 Contactez-nous au : +226 25 45 63 64\n📧 Email : contact@sifcash-burkina.com\n💬 Chat en ligne disponible')">
                                 <i class="fas fa-phone me-1"></i>Contacter
                             </button>
                         </div>
@@ -1113,7 +1113,7 @@
                             </div>
                             <div>
                                 <h6 class="mb-0 fw-bold text-dark">Email</h6>
-                                <p class="mb-0 text-dark">contact@sifcash-burkina.bf</p>
+                                <p class="mb-0 text-dark">contact@sifcash-burkina.com</p>
                             </div>
                         </div>
                     </div>

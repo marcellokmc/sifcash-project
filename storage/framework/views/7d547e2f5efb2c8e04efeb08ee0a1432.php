@@ -176,7 +176,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
                                            id="email" name="email" value="<?php echo e(old('email')); ?>" required
-                                           placeholder="admin@sifcash-burkina.bf">
+                                           placeholder="admincontact@sifcash-burkina.com">
                                     <label for="email">
                                         <i class="fas fa-envelope me-2"></i>Adresse email
                                     </label>

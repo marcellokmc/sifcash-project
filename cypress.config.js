@@ -33,11 +33,11 @@ module.exports = defineConfig({
     env: {
       apiUrl: 'http://localhost:8000/api/v1',
       testUser: {
-        email: 'test@SIFCash-Burkina.bf',
+        email: 'testcontact@sifcash-burkina.com',
         password: 'TestPassword123!'
       },
       adminUser: {
-        email: 'admin@SIFCash-Burkina.bf',
+        email: 'admincontact@sifcash-burkina.com',
         password: 'AdminPassword123!'
       }
     },
@@ -94,11 +94,11 @@ module.exports = defineConfig({
       
       // Configuration conditionnelle selon l'environnement
       if (config.env.environment === 'staging') {
-        config.baseUrl = 'https://staging.SIFCash-Burkina.bf';
-        config.env.apiUrl = 'https://staging.SIFCash-Burkina.bf/api/v1';
+        config.baseUrl = 'https://staging.sifcash-burkina.com';
+        config.env.apiUrl = 'https://staging.sifcash-burkina.com/api/v1';
       } else if (config.env.environment === 'production') {
-        config.baseUrl = 'https://SIFCash-Burkina.bf';
-        config.env.apiUrl = 'https://SIFCash-Burkina.bf/api/v1';
+        config.baseUrl = 'https://sifcash-burkina.com';
+        config.env.apiUrl = 'https://sifcash-burkina.com/api/v1';
         config.video = false; // Pas de vidéo en prod
       }
       

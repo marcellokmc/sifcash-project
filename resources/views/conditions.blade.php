@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <p class="mb-1"><strong>Adresse :</strong> 01 BP 5368 Ouagadougou</p>
-                                    <p class="mb-0"><strong>Contact :</strong> contact@sifcash-burkina.bf</p>
+                                    <p class="mb-0"><strong>Contact :</strong> contact@sifcash-burkina.com</p>
                                 </div>
                             </div>
                         </div>
@@ -164,7 +164,7 @@
                             </div>
                             <div class="col-md-6">
                                 <h6 class="fw-bold">Email</h6>
-                                <p><a href="mailto:contact@sifcash-burkina.bf" class="text-decoration-none">contact@sifcash-burkina.bf</a></p>
+                                <p><a href="mailto:contact@sifcash-burkina.com" class="text-decoration-none">contact@sifcash-burkina.com</a></p>
                             </div>
                         </div>
 

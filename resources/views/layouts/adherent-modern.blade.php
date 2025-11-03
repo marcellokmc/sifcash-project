@@ -584,7 +584,7 @@
                 @endif
                 
                 <!-- Aide -->
-                <a href="#" class="sif-nav-link" onclick="alert('📞 Contact Support:\n\nTéléphone: +226 25 XX XX XX\nEmail: support@sifcash-burkina.bf\n\nDisponible du lundi au vendredi\nde 8h à 17h'); return false;">
+                <a href="#" class="sif-nav-link" onclick="alert('📞 Contact Support:\n\nTéléphone: +226 25 XX XX XX\nEmail: supportcontact@sifcash-burkina.com\n\nDisponible du lundi au vendredi\nde 8h à 17h'); return false;">
                     <i class="fas fa-headset me-3"></i>Support
                 </a>
                 

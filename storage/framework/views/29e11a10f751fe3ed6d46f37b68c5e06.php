@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protection des Données - SIFcash-Burkina</title>
-    <link rel="icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
+    <link rel="icon" type="image/jpeg" href="<?php echo e(asset('img/SIF logo .jpg')); ?>">
+    <link rel="shortcut icon" type="image/jpeg" href="<?php echo e(asset('img/SIF logo .jpg')); ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    @include('partials.header')
+    <?php echo $__env->make('partials.header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <!-- Header -->
     <div class="bg-success text-white py-5">
@@ -288,8 +288,8 @@
         </div>
     </div>
 
-    @include('partials.footer')
+    <?php echo $__env->make('partials.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html><?php /**PATH C:\Mes Sites Web\sif-project\resources\views/data-protection.blade.php ENDPATH**/ ?>

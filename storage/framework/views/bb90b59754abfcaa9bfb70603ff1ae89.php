@@ -81,8 +81,8 @@
                                 <div class="flex-grow-1">
                                     <h5 class="fw-bold mb-2">Email</h5>
                                     <p class="mb-1">
-                                        <a href="mailto:contact@sifcash-burkina.bf" class="text-decoration-none text-dark fw-bold">
-                                            contact@sifcash-burkina.bf
+                                        <a href="mailto:contact@sifcash-burkina.com" class="text-decoration-none text-dark fw-bold">
+                                            contact@sifcash-burkina.com
                                         </a>
                                     </p>
                                     <p class="small text-muted mb-0">
@@ -121,7 +121,7 @@
                             <a href="https://api.whatsapp.com/send?phone=22671337005" target="_blank" class="btn btn-outline-success btn-lg">
                                 <i class="fab fa-whatsapp"></i>
                             </a>
-                            <a href="mailto:contact@sifcash-burkina.bf" class="btn btn-outline-primary btn-lg">
+                            <a href="mailto:contact@sifcash-burkina.com" class="btn btn-outline-primary btn-lg">
                                 <i class="fas fa-envelope"></i>
                             </a>
                             <a href="tel:+22625456364" class="btn btn-outline-dark btn-lg">
@@ -348,7 +348,7 @@
                         <i class="fas fa-phone me-2"></i>
                         Appelez maintenant
                     </a>
-                    <a href="mailto:contact@sifcash-burkina.bf" class="btn btn-outline-light btn-lg">
+                    <a href="mailto:contact@sifcash-burkina.com" class="btn btn-outline-light btn-lg">
                         <i class="fas fa-envelope me-2"></i>
                         Envoyez un email
                     </a>

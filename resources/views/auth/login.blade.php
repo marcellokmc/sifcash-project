@@ -167,7 +167,7 @@
                                 <div class="form-floating mb-3">
                                     <input type="email" class="form-control @error('email') is-invalid @enderror" 
                                            id="email" name="email" value="{{ old('email') }}" required
-                                           placeholder="admin@sifcash-burkina.bf">
+                                           placeholder="admincontact@sifcash-burkina.com">
                                     <label for="email">
                                         <i class="fas fa-envelope me-2"></i>Adresse email
                                     </label>

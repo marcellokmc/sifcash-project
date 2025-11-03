@@ -24,7 +24,7 @@
                         <a href="https://api.whatsapp.com/send?phone=22671337005" target="_blank" class="text-white me-3" title="WhatsApp">
                             <i class="fab fa-whatsapp fa-lg"></i>
                         </a>
-                        <a href="mailto:contact@sifcash-burkina.bf" class="text-white me-3" title="Email">
+                        <a href="mailto:contact@sifcash-burkina.com" class="text-white me-3" title="Email">
                             <i class="fas fa-envelope fa-lg"></i>
                         </a>
                         <a href="tel:+22625456364" class="text-white" title="Téléphone">
@@ -120,7 +120,7 @@
                             <i class="fas fa-envelope text-primary me-2 mt-1" style="font-size: 0.9rem;"></i>
                             <div class="flex-grow-1">
                                 <strong class="text-white d-block mb-0" style="font-size: 0.9rem;">Email</strong>
-                                <a href="mailto:contact@sifcash-burkina.bf" class="text-white-50 text-decoration-none d-block" style="font-size: 0.85rem; word-break: break-all;">contact@sifcash-burkina.bf</a>
+                                <a href="mailto:contact@sifcash-burkina.com" class="text-white-50 text-decoration-none d-block" style="font-size: 0.85rem; word-break: break-all;">contact@sifcash-burkina.com</a>
                             </div>
                         </div>
                     </div>
