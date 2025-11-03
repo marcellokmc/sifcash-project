@@ -608,6 +608,14 @@
                         </a>
                     </li>
                 </ul>
+                <li>
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                        @csrf
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                        </button>
+                    </form>
+                </li>
             </div>
         </li>
         @endif

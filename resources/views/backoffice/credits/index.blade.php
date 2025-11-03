@@ -5,12 +5,22 @@
 @section('content')
 @include('components.backoffice.alerts')
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
   <div>
     <h1 class="h3 mb-0">Gestion des Crédits</h1>
     <p class="text-muted mb-0">Liste des demandes de crédit et leur traitement</p>
   </div>
-  <div>
+  <div class="d-flex align-items-center gap-2">
+    <form method="GET" action="{{ route('admin.credits.index') }}" class="d-flex" role="search">
+      <div class="input-group input-group-sm">
+        <span class="input-group-text"><i class="fas fa-search"></i></span>
+        <input type="search" name="q" value="{{ request('q', request('search')) }}" class="form-control" placeholder="Rechercher (id, adhérent, téléphone, motif...)" />
+        @foreach(request()->except(['q','search','page']) as $k => $v)
+          <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+        @endforeach
+        <button class="btn btn-primary" type="submit">OK</button>
+      </div>
+    </form>
     <div class="btn-group" role="group">
       <a href="{{ route('admin.credits.index') }}" 
          class="btn {{ !request('statut') && !request('etat') ? 'btn-primary' : 'btn-outline-primary' }}">
@@ -36,6 +46,94 @@
          class="btn {{ request('etat') === 'actif' ? 'btn-primary' : 'btn-outline-primary' }}">
         <i class="fas fa-play me-1"></i>Actifs
       </a>
+      
+      <!-- Menu filtres -->
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="filtersMenu" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-filter me-1"></i>Filtres
+        </button>
+        <div class="dropdown-menu dropdown-menu-end p-3 shadow" aria-labelledby="filtersMenu" style="min-width: 420px;" data-bs-auto-close="outside">
+          <form method="GET" action="{{ route('admin.credits.index') }}">
+            <div class="row g-2">
+              <div class="col-md-6">
+                <label class="form-label small">Statut</label>
+                <select name="statut" class="form-select form-select-sm">
+                  <option value="">-- Tous --</option>
+                  @foreach(['en_attente','approuve','rejete','actif','remboursé'] as $s)
+                    <option value="{{ $s }}" {{ request('statut')===$s ? 'selected' : '' }}>{{ ucfirst($s) }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small">État</label>
+                <select name="etat" class="form-select form-select-sm">
+                  <option value="">-- Tous --</option>
+                  @foreach(['soumis','en_examen','approuve','contrat','actif','rejete','cloture'] as $e)
+                    <option value="{{ $e }}" {{ request('etat')===$e ? 'selected' : '' }}>{{ ucfirst($e) }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small">Périodicité</label>
+                <select name="periodicite" class="form-select form-select-sm">
+                  <option value="">-- Toutes --</option>
+                  @foreach(($periodicites ?? []) as $p)
+                    <option value="{{ $p }}" {{ request('periodicite')===$p ? 'selected' : '' }}>{{ ucfirst($p) }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small">Type de crédit</label>
+                <select name="type_credit" class="form-select form-select-sm">
+                  <option value="">-- Tous --</option>
+                  @foreach(($types ?? []) as $t)
+                    <option value="{{ $t }}" {{ request('type_credit')===$t ? 'selected' : '' }}>{{ ucfirst($t) }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small">Montant min</label>
+                <input type="number" class="form-control form-control-sm" name="montant_min" value="{{ request('montant_min') }}" placeholder="Ex: 100000" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small">Montant max</label>
+                <input type="number" class="form-control form-control-sm" name="montant_max" value="{{ request('montant_max') }}" placeholder="Ex: 1000000" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small">Durée min (mois)</label>
+                <input type="number" class="form-control form-control-sm" name="duree_min" value="{{ request('duree_min') }}" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small">Durée max (mois)</label>
+                <input type="number" class="form-control form-control-sm" name="duree_max" value="{{ request('duree_max') }}" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small">Date de demande (du)</label>
+                <input type="date" class="form-control form-control-sm" name="date_from" value="{{ request('date_from') }}" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small">Date de demande (au)</label>
+                <input type="date" class="form-control form-control-sm" name="date_to" value="{{ request('date_to') }}" />
+              </div>
+              <div class="col-12">
+                <label class="form-label small">Agence</label>
+                <select name="agence_id" class="form-select form-select-sm">
+                  <option value="">-- Toutes --</option>
+                  @foreach(($agences ?? []) as $ag)
+                    <option value="{{ $ag->id }}" {{ request('agence_id')==$ag->id ? 'selected' : '' }}>{{ $ag->nom }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="mt-3 d-flex gap-2">
+              <button type="submit" class="btn btn-primary btn-sm">
+                <i class="fas fa-search me-1"></i>Appliquer
+              </button>
+              <a href="{{ route('admin.credits.index') }}" class="btn btn-outline-secondary btn-sm">Réinitialiser</a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -138,7 +236,7 @@
     </div>
   </div>
   @if(method_exists($items, 'links'))
-    <div class="card-footer">{{ $items->links() }}</div>
+    <div class="card-footer">{{ $items->withQueryString()->links() }}</div>
   @endif
 </div>
 

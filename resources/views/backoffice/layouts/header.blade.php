@@ -25,9 +25,9 @@
         <!-- Search Bar (Desktop only) -->
         <div class="search-bar ms-auto d-none d-lg-block">
             <i class="fas fa-search"></i>
-            <input type="text" class="form-control" placeholder="🔍 Rechercher..." id="globalSearch">
+            <input type="text" class="form-control" placeholder="Rechercher..." id="globalSearch">
         </div>
-    </div>
+    </div>   
     
     <!-- Right Section: Actions & Profile -->
     <div class="d-flex align-items-center gap-3">
@@ -119,10 +119,12 @@
                         </div>
                     </div>
                 </li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i>Mon profil</a></li>
+                
+               <!--  <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i>Mon profil</a></li>
                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Paramètres</a></li>
                 <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle me-2"></i>Aide</a></li>
-                <li><hr class="dropdown-divider"></li>
+                <li><hr class="dropdown-divider"></li> -->
+                
                 <li>
                     <form action="{{ route('logout') }}" method="POST" class="m-0">
                         @csrf

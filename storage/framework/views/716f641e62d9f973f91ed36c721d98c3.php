@@ -73,23 +73,9 @@
                         <a href="<?php echo e(route('register')); ?>" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-user-plus me-1"></i>S'inscrire
                         </a>
-                        <div class="dropdown">
-                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-sign-in-alt me-1"></i>Se connecter
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                <li>
-                                    <a class="dropdown-item" href="<?php echo e(route('login')); ?>">
-                                        <i class="fas fa-user-tie me-2"></i>Espace Personnel
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="<?php echo e(route('adherent.login')); ?>">
-                                        <i class="fas fa-user me-2"></i>Espace Adhérent
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                        <a href="http://127.0.0.1:8000/adherent/login" class="btn btn-primary btn-sm">
+                            <i class="fas fa-sign-in-alt me-1"></i>Se connecter
+                        </a>
                     </div>
                 <?php else: ?>
                     <div class="dropdown">

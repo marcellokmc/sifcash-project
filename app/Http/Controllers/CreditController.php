@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Credit;
+use App\Models\Agence;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -203,23 +204,62 @@ class CreditController extends Controller
         // Filtrer par agent si nécessaire
         $query = $this->applyAgentFilter($query, 'adherent');
         
-        if ($request->has('statut')) $query->where('statut',$request->statut);
-        if ($request->has('etat')) $query->where('etat',$request->etat);
-        if ($request->has('search')) {
-            $search = $request->search;
+        // Filtres simples
+        if ($request->filled('statut')) $query->where('statut', $request->string('statut'));
+        if ($request->filled('etat')) $query->where('etat', $request->string('etat'));
+        if ($request->filled('periodicite')) $query->where('periodicite', $request->string('periodicite'));
+        if ($request->filled('type_credit')) $query->where('type_credit', $request->string('type_credit'));
+        
+        // Barre de recherche (q ou search)
+        $term = $request->get('q') ?: $request->get('search');
+        if (!empty($term)) {
+            $search = trim($term);
             $query->where(function($q) use ($search) {
                 $q->where('id','like',"%{$search}%")
                   ->orWhere('montant_demande','like',"%{$search}%")
+                  ->orWhere('montant_accorde','like',"%{$search}%")
                   ->orWhere('statut','like',"%{$search}%")
-                  ->orWhereHas('adherent', function($q) use ($search) {
-                      $q->where('nom','like',"%{$search}%")
-                        ->orWhere('prenom','like',"%{$search}%")
-                        ->orWhere('telephone','like',"%{$search}%");
+                  ->orWhere('etat','like',"%{$search}%")
+                  ->orWhere('motif','like',"%{$search}%")
+                  ->orWhereHas('adherent', function($qa) use ($search) {
+                      $qa->where('nom','like',"%{$search}%")
+                         ->orWhere('prenom','like',"%{$search}%")
+                         ->orWhere('nom_complet','like',"%{$search}%")
+                         ->orWhere('telephone','like',"%{$search}%");
                   });
             });
         }
-        $items = $query->latest()->paginate(20);
-        return $request->wantsJson() ? response()->json($items) : view('backoffice.credits.index', compact('items'));
+        
+        // Plages de montants
+        if ($request->filled('montant_min')) $query->where('montant_demande', '>=', (float)$request->montant_min);
+        if ($request->filled('montant_max')) $query->where('montant_demande', '<=', (float)$request->montant_max);
+        
+        // Plage de durée
+        if ($request->filled('duree_min')) $query->where('duree', '>=', (int)$request->duree_min);
+        if ($request->filled('duree_max')) $query->where('duree', '<=', (int)$request->duree_max);
+        
+        // Période de demande
+        if ($request->filled('date_from')) $query->whereDate('date_demande', '>=', $request->date_from);
+        if ($request->filled('date_to')) $query->whereDate('date_demande', '<=', $request->date_to);
+        
+        // Filtre par agence de l'adhérent
+        if ($request->filled('agence_id')) {
+            $agenceId = (int)$request->agence_id;
+            $query->whereHas('adherent', function($qa) use ($agenceId) {
+                $qa->where('agence_id', $agenceId);
+            });
+        }
+        
+        $items = $query->latest()->paginate(20)->appends($request->query());
+        
+        // Données pour filtres
+        $agences = Agence::where('active', true)->get();
+        $periodicites = Credit::select('periodicite')->distinct()->pluck('periodicite')->filter()->values();
+        $types = Credit::select('type_credit')->distinct()->pluck('type_credit')->filter()->values();
+        
+        return $request->wantsJson()
+            ? response()->json($items)
+            : view('backoffice.credits.index', compact('items','agences','periodicites','types'));
     }
 
     public function show(Credit $credit)

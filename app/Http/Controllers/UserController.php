@@ -15,7 +15,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $auth = auth()->user();
         $usersQuery = User::with(['agence', 'suspendedByUser'])->latest();
@@ -26,8 +26,41 @@ class UserController extends Controller
                 ->whereIn('role', ['agent', 'adherent']);
         }
 
-        $users = $usersQuery->paginate(20);
-        return view('backoffice.users.index', compact('users'));
+        // Filtres de recherche multicritères
+        if ($request->filled('q')) {
+            $q = trim($request->get('q'));
+            $usersQuery->where(function($query) use ($q) {
+                $query->where('name', 'like', "%{$q}%")
+                      ->orWhere('email', 'like', "%{$q}%")
+                      ->orWhere('phone', 'like', "%{$q}%")
+                      ->orWhere('matricule', 'like', "%{$q}%");
+            });
+        }
+
+        if ($request->filled('role')) {
+            $usersQuery->where('role', $request->get('role'));
+        }
+
+        if ($request->filled('agence_id')) {
+            $usersQuery->where('agence_id', $request->get('agence_id'));
+        }
+
+        if ($request->filled('status')) {
+            $status = $request->get('status');
+            if ($status === 'active') {
+                $usersQuery->where('active', true)->whereNull('suspended_at');
+            } elseif ($status === 'inactive') {
+                $usersQuery->where('active', false)->whereNull('suspended_at');
+            } elseif ($status === 'suspended') {
+                $usersQuery->whereNotNull('suspended_at');
+            }
+        }
+
+        $users = $usersQuery->paginate(20)->appends($request->query());
+        $agences = Agence::where('active', true)->get();
+        $roles = Role::all();
+
+        return view('backoffice.users.index', compact('users', 'agences', 'roles'));
     }
 
     /**

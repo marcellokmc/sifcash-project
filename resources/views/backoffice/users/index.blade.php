@@ -72,13 +72,63 @@
 </div>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <div class="card-header py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">
             <i class="fas fa-users me-2"></i>Liste des Utilisateurs
         </h6>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus me-1"></i>Nouvel Utilisateur
-        </a>
+        <div class="d-flex gap-2 align-items-center">
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="filtersMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-filter me-1"></i>Filtres
+                </button>
+                <div class="dropdown-menu dropdown-menu-end p-3 shadow" aria-labelledby="filtersMenu" style="min-width: 360px;" data-bs-auto-close="outside">
+                    <form method="GET" action="{{ route('admin.users.index') }}">
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label small">Recherche</label>
+                                <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="Nom, email, téléphone, matricule">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small">Rôle</label>
+                                <select name="role" class="form-select">
+                                    <option value="">-- Tous --</option>
+                                    @foreach(($roles ?? []) as $role)
+                                        <option value="{{ $role->name }}" {{ request('role')===$role->name ? 'selected' : '' }}>{{ ucfirst(str_replace('_',' ', $role->name)) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small">Agence</label>
+                                <select name="agence_id" class="form-select">
+                                    <option value="">-- Toutes --</option>
+                                    @foreach(($agences ?? []) as $agence)
+                                        <option value="{{ $agence->id }}" {{ request('agence_id')==$agence->id ? 'selected' : '' }}>{{ $agence->nom }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small">Statut</label>
+                                <select name="status" class="form-select">
+                                    <option value="">-- Tous --</option>
+                                    <option value="active" {{ request('status')==='active' ? 'selected' : '' }}>Actif</option>
+                                    <option value="inactive" {{ request('status')==='inactive' ? 'selected' : '' }}>Inactif</option>
+                                    <option value="suspended" {{ request('status')==='suspended' ? 'selected' : '' }}>Suspendu</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-3 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-search me-1"></i>Rechercher
+                            </button>
+                            <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary btn-sm">Réinitialiser</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i>Nouvel Utilisateur
+            </a>
+        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -197,6 +247,16 @@
                                         </button>
                                     @endif
                                 @endcan
+
+                                @if(auth()->user()->isAdmin() && auth()->id() !== $user->id)
+                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Supprimer définitivement cet utilisateur ?');" style="display:inline-block;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-danger" title="Supprimer" data-bs-toggle="tooltip">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -215,12 +275,12 @@
         <!-- Pagination -->
         @if($users->hasPages())
             <div class="p-3 border-top bg-light">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
                     <div class="text-muted">
                         Affichage de {{ $users->firstItem() }} à {{ $users->lastItem() }} sur {{ $users->total() }} résultats
                     </div>
                     <div>
-                        {{ $users->links() }}
+                        {{ $users->withQueryString()->links() }}
                     </div>
                 </div>
             </div>

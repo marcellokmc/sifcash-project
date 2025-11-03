@@ -615,6 +615,14 @@
                         </a>
                     </li>
                 </ul>
+                <li>
+                    <form action="<?php echo e(route('logout')); ?>" method="POST" class="m-0">
+                        <?php echo csrf_field(); ?>
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                        </button>
+                    </form>
+                </li>
             </div>
         </li>
         <?php endif; ?>
