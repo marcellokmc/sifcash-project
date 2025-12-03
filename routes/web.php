@@ -23,6 +23,7 @@ use App\Http\Controllers\LogConnexionController;
 use App\Http\Controllers\EpargneController;
 use App\Http\Middleware\AuditActions;
 use App\Http\Controllers\AuditController;
+use App\Http\Controllers\Admin\CommercialController;
 
 // ==================== ROUTES PUBLIQUES ====================
 
@@ -342,6 +343,11 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('agences', AgenceController::class);
             Route::post('agences/{agence}/toggle-status', [AgenceController::class, 'toggleStatus'])
                 ->name('agences.toggle-status');
+                
+            // Gestion des commerciaux
+            Route::resource('commercials', CommercialController::class);
+            Route::post('commercials/{commercial}/toggle', [CommercialController::class, 'toggle'])
+                ->name('commercials.toggle');
         });
 
         // Gestion des rôles et permissions (Admin seulement)

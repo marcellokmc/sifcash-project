@@ -326,7 +326,7 @@ unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Adresse email *</label>
+                                    <label for="email" class="form-label">Adresse email (optionnel)</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="fas fa-envelope text-muted"></i></span>
                                         <input type="email" class="form-control <?php $__errorArgs = ['email'];
@@ -338,7 +338,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
                                                id="email" name="email" value="<?php echo e(old('email')); ?>" 
-                                               placeholder="votre@email.com" required>
+                                               placeholder="votre@email.com (optionnel)">
                                         <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -350,7 +350,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                                     </div>
-                                    <div class="form-text">Utilisez une ademail valide pour recevoir les confirmations</div>
+                                    <div class="form-text">L'email est optionnel. Si vous en fournissez un, il doit être valide.</div>
                                 </div>
 
                                 <div class="row">

@@ -168,6 +168,29 @@
                                 </tr>
                             </table>
                         </div>
+                        
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Commercial Référent</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th width="40%">Commercial:</th>
+                                    <td>
+                                        <?php if($adherent->commercial): ?>
+                                            <span class="badge bg-primary"><?php echo e($adherent->commercial->nom); ?> <?php echo e($adherent->commercial->prenoms); ?></span>
+                                            <small class="text-muted d-block">Code: <?php echo e($adherent->commercial->code_commercial); ?></small>
+                                        <?php else: ?>
+                                            <span class="text-muted">Non assigné</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <?php if($adherent->commercial): ?>
+                                <tr>
+                                    <th>Téléphone:</th>
+                                    <td><?php echo e($adherent->commercial->telephone ?? 'Non renseigné'); ?></td>
+                                </tr>
+                                <?php endif; ?>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

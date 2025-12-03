@@ -116,13 +116,15 @@ public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'nullable|string|email|max:255|unique:users',
             'phone' => 'required|string|max:20|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'terms' => 'required|accepted'
         ], [
             'terms.required' => 'Vous devez accepter les conditions générales.',
-            'terms.accepted' => 'Vous devez accepter les conditions générales.'
+            'terms.accepted' => 'Vous devez accepter les conditions générales.',
+            'email.unique' => 'Cet email est déjà utilisé.',
+            'phone.unique' => 'Ce numéro de téléphone est déjà utilisé.'
         ]);
 
         if ($validator->fails()) {
@@ -133,7 +135,7 @@ public function login(Request $request)
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => $request->email, // Peut être null
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'role' => 'adherent',

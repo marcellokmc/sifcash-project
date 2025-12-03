@@ -567,6 +567,14 @@
                         </a>
                     </li>
                     
+                    <li class="nav-item mt-2 pt-2 border-top">
+                        <a class="nav-link d-flex align-items-center <?php echo e(request()->routeIs('admin.commercials.*') ? 'active' : ''); ?>" 
+                           href="<?php echo e(route('admin.commercials.index')); ?>">
+                            <i class="fas fa-user-tie me-2"></i>
+                            <span>Gestion des commerciaux</span>
+                        </a>
+                    </li>
+                    
                 </ul>
             </div>
         </li>

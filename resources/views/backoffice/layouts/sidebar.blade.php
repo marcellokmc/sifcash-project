@@ -560,6 +560,14 @@
                         </a>
                     </li>
                     
+                    <li class="nav-item mt-2 pt-2 border-top">
+                        <a class="nav-link d-flex align-items-center {{ request()->routeIs('admin.commercials.*') ? 'active' : '' }}" 
+                           href="{{ route('admin.commercials.index') }}">
+                            <i class="fas fa-user-tie me-2"></i>
+                            <span>Gestion des commerciaux</span>
+                        </a>
+                    </li>
+                    
                 </ul>
             </div>
         </li>

@@ -150,12 +150,14 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email *</label>
+                                    <label for="email" class="form-label">Email (optionnel)</label>
                                     <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                           id="email" name="email" value="{{ old('email', $adherent->email) }}" required>
+                                           id="email" name="email" value="{{ old('email', $adherent->email) }}" 
+                                           placeholder="email@exemple.com">
                                     @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    <div class="form-text">L'email est optionnel</div>
                                 </div>
 
                                 <div class="mb-3">
@@ -302,7 +304,6 @@
 
                         <div class="row mt-4">
                             <div class="col-md-6">
-
                                 <div class="section-title">
                                     <i class="fas fa-user-shield"></i>
                                     <span>Statut du Compte</span>
@@ -327,6 +328,65 @@
                                         <input type="text" class="form-control" value="{{ $adherent->date_activation->format('d/m/Y H:i') }}" readonly>
                                     </div>
                                 @endif
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="section-title">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span>Commercial Assigné</span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="commercial_id" class="form-label">Commercial</label>
+                                    <select class="form-select @error('commercial_id') is-invalid @enderror" 
+                                            id="commercial_id" name="commercial_id">
+                                        <option value="">Sélectionner un commercial</option>
+                                        @foreach($commercials as $commercial)
+                                            <option value="{{ $commercial->id }}" 
+                                                {{ old('commercial_id', $adherent->commercial_id) == $commercial->id ? 'selected' : '' }}>
+                                                {{ $commercial->nom_complet }} ({{ $commercial->code_commercial }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('commercial_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Assignez un commercial pour suivre cet adhérent
+                                    </div>
+                                </div>
+
+                                @if($adherent->commercial)
+                                    <div class="alert alert-info">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                {{ strtoupper(substr($adherent->commercial->nom, 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <strong>Commercial actuel:</strong><br>
+                                                {{ $adherent->commercial->nom_complet }}<br>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-phone me-1"></i>{{ $adherent->commercial->telephone }} | 
+                                                    <i class="fas fa-id-badge me-1"></i>{{ $adherent->commercial->code_commercial }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div class="mb-3">
+                                    <label for="date_affectation_commercial" class="form-label">Date d'affectation</label>
+                                    <input type="date" class="form-control @error('date_affectation_commercial') is-invalid @enderror" 
+                                           id="date_affectation_commercial" name="date_affectation_commercial" 
+                                           value="{{ old('date_affectation_commercial', $adherent->date_affectation_commercial ? $adherent->date_affectation_commercial->format('Y-m-d') : '') }}">
+                                    @error('date_affectation_commercial')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">
+                                        Date à laquelle ce commercial a été assigné à l'adhérent
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

@@ -22,7 +22,15 @@ class InscriptionController extends Controller
         $step = $request->get('step', 1);
         $typesDocuments = TypeDocument::where('actif', true)->get();
         
-        return view('adherent.inscription.steps.step' . $step, compact('adherent', 'typesDocuments', 'step'));
+        // Charger les commerciaux pour l'étape 1
+        $commercials = [];
+        if ($step == 1) {
+            $commercials = \App\Models\Commercial::actifs()
+                ->orderBy('nom')
+                ->get(['id', 'nom', 'prenoms', 'code_commercial', 'telephone']);
+        }
+        
+        return view('adherent.inscription.steps.step' . $step, compact('adherent', 'typesDocuments', 'step', 'commercials'));
     }
 
     /**
@@ -40,7 +48,8 @@ class InscriptionController extends Controller
             'adresse' => 'required|string',
             'telephone' => 'required|string|max:20',
             'telephone_secondaire' => 'nullable|string|max:20',
-            'email' => 'required|email',
+            'email' => 'nullable|email',
+            'commercial_id' => 'nullable|exists:commercials,id',
             // Contact d'urgence principal
             'contact_urgence_nom' => 'required|string|max:255',
             'contact_urgence_lien' => 'required|string|max:255',
@@ -79,6 +88,7 @@ class InscriptionController extends Controller
             'situation_famille' => $request->situation_famille,
             'profession' => $request->profession,
             'statut_compte' => 'en_attente_de_verification',
+            'commercial_id' => $request->commercial_id,
             // Mapping des champs contact d'urgence vers les vrais noms de colonnes
             'contact_urgence_nom' => $request->contact_urgence_nom,
             'contact_urgence_lien_parente' => $request->contact_urgence_lien,
@@ -150,6 +160,72 @@ class InscriptionController extends Controller
 
         $documentsData = $request->file('documents', []);
 
+        // Validation des fichiers uploadés
+        $validatedDocuments = [];
+        foreach ($documentsData as $typeDocumentId => $files) {
+            $rectoFile = $files['recto'] ?? null;
+            $versoFile = $files['verso'] ?? null;
+            
+            // Vérifier si au moins un fichier est présent pour ce type de document
+            if (!$rectoFile && !$versoFile) {
+                continue; // Ignorer ce type de document si aucun fichier n'est uploadé
+            }
+            
+            // Valider le fichier recto
+            if ($rectoFile && $rectoFile->isValid()) {
+                // Vérifier la taille du fichier (max 5MB)
+                if ($rectoFile->getSize() > 5 * 1024 * 1024) {
+                    return redirect()->route('adherent.inscription', ['step' => 3])
+                        ->withInput()
+                        ->with('error', "Le fichier recto est trop volumineux (max 5MB).");
+                }
+                
+                // Vérifier le type de fichier
+                $allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+                if (!in_array($rectoFile->getMimeType(), $allowedMimes)) {
+                    return redirect()->route('adherent.inscription', ['step' => 3])
+                        ->withInput()
+                        ->with('error', "Le fichier recto n'est pas dans un format valide (JPG, PNG, PDF uniquement).");
+                }
+                
+                $validatedDocuments[$typeDocumentId]['recto'] = $rectoFile;
+            } elseif ($rectoFile) {
+                return redirect()->route('adherent.inscription', ['step' => 3])
+                    ->withInput()
+                    ->with('error', "Le fichier recto n'est pas valide ou est corrompu.");
+            }
+            
+            // Valider le fichier verso
+            if ($versoFile && $versoFile->isValid()) {
+                // Vérifier la taille du fichier (max 5MB)
+                if ($versoFile->getSize() > 5 * 1024 * 1024) {
+                    return redirect()->route('adherent.inscription', ['step' => 3])
+                        ->withInput()
+                        ->with('error', "Le fichier verso est trop volumineux (max 5MB).");
+                }
+                
+                // Vérifier le type de fichier
+                $allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+                if (!in_array($versoFile->getMimeType(), $allowedMimes)) {
+                    return redirect()->route('adherent.inscription', ['step' => 3])
+                        ->withInput()
+                        ->with('error', "Le fichier verso n'est pas dans un format valide (JPG, PNG, PDF uniquement).");
+                }
+                
+                $validatedDocuments[$typeDocumentId]['verso'] = $versoFile;
+            } elseif ($versoFile) {
+                return redirect()->route('adherent.inscription', ['step' => 3])
+                    ->withInput()
+                    ->with('error', "Le fichier verso n'est pas valide ou est corrompu.");
+            }
+        }
+
+        if (empty($validatedDocuments)) {
+            return redirect()->route('adherent.inscription', ['step' => 3])
+                ->withInput()
+                ->with('error', 'Veuillez sélectionner au moins un fichier à uploader.');
+        }
+
         // Détection des types "document d'identité" par mots-clés (sans changer le schéma DB)
         $allTypesActifs = TypeDocument::where('actif', true)->get();
         $identityTypeIds = $allTypesActifs->filter(function($t){
@@ -160,10 +236,10 @@ class InscriptionController extends Controller
         // Vérifier que l'utilisateur ne choisit qu'un seul document d'identité et au moins un si des types existent
         if (!empty($identityTypeIds)) {
             $selectedIdentityIds = [];
-            foreach ($documentsData as $typeId => $files) {
+            foreach ($validatedDocuments as $typeId => $files) {
                 if (in_array((int)$typeId, $identityTypeIds, true)) {
-                    $hasRecto = !empty($files['recto'] ?? null);
-                    $hasVerso = !empty($files['verso'] ?? null);
+                    $hasRecto = !empty($files['recto']);
+                    $hasVerso = !empty($files['verso']);
                     if ($hasRecto || $hasVerso) {
                         $selectedIdentityIds[] = (int)$typeId;
                     }
@@ -182,7 +258,7 @@ class InscriptionController extends Controller
             }
         }
 
-        foreach ($documentsData as $typeDocumentId => $files) {
+        foreach ($validatedDocuments as $typeDocumentId => $files) {
             $typeDocument = TypeDocument::find($typeDocumentId);
             
             if (!$typeDocument) continue;
@@ -198,23 +274,40 @@ class InscriptionController extends Controller
 
                 $version = $existingDocument ? $existingDocument->version + 1 : 1;
 
-                // Upload des fichiers
-                $rectoPath = $rectoFile->store('documents', 'public');
-                $versoPath = $versoFile ? $versoFile->store('documents', 'public') : null;
+                try {
+                    // Upload des fichiers avec validation supplémentaire
+                    $rectoPath = $rectoFile->store('documents', 'public');
+                    if (!$rectoPath) {
+                        throw new \Exception('Erreur lors du stockage du fichier recto.');
+                    }
+                    
+                    $versoPath = null;
+                    if ($versoFile) {
+                        $versoPath = $versoFile->store('documents', 'public');
+                        if (!$versoPath) {
+                            throw new \Exception('Erreur lors du stockage du fichier verso.');
+                        }
+                    }
 
-                // Vérification des champs requis
-                if ($typeDocument->verso_requis && !$versoPath) {
-                    continue; // Passer au document suivant
+                    // Vérification des champs requis
+                    if ($typeDocument->verso_requis && !$versoPath) {
+                        continue; // Passer au document suivant
+                    }
+
+                    // Créer le document
+                    $adherent->documents()->create([
+                        'type_document_id' => $typeDocumentId,
+                        'fichier_recto' => $rectoPath,
+                        'fichier_verso' => $versoPath,
+                        'statut' => 'soumis',
+                        'version' => $version,
+                    ]);
+                } catch (\Exception $e) {
+                    \Log::error('Erreur lors de l\'upload du document: ' . $e->getMessage());
+                    return redirect()->route('adherent.inscription', ['step' => 3])
+                        ->withInput()
+                        ->with('error', 'Erreur lors du téléversement du fichier. Veuillez réessayer.');
                 }
-
-                // Créer le document
-                $adherent->documents()->create([
-                    'type_document_id' => $typeDocumentId,
-                    'fichier_recto' => $rectoPath, // Ajout du champ manquant
-                    'fichier_verso' => $versoPath,
-                    'statut' => 'soumis',
-                    'version' => $version,
-                ]);
             }
         }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Adherent;
 use App\Models\User;
 use App\Models\Agence;
+use App\Models\Commercial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -365,7 +366,7 @@ class AdherentController extends Controller
             'lieu_naissance' => 'required|string|max:255',
             'adresse' => 'required|string',
             'telephone' => 'required|string|max:20',
-            'email' => 'required|email',
+            'email' => 'nullable|email',
             // Contact d'urgence principal
             'contact_urgence_nom' => 'required|string|max:255',
             'contact_urgence_lien' => 'required|string|max:255',
@@ -443,8 +444,9 @@ class AdherentController extends Controller
     public function edit(Adherent $adherent)
     {
         $agences = Agence::where('active', true)->get();
+        $commercials = Commercial::where('actif', true)->orderBy('nom')->get();
 
-        return view('backoffice.adherents.edit', compact('adherent', 'agences'));
+        return view('backoffice.adherents.edit', compact('adherent', 'agences', 'commercials'));
     }
 
     /**
@@ -459,7 +461,7 @@ class AdherentController extends Controller
             'lieu_naissance' => 'required|string|max:255',
             'adresse' => 'required|string',
             'telephone' => 'required|string|max:20',
-            'email' => 'required|email',
+            'email' => 'nullable|email',
             // Contact d'urgence principal
             'contact_urgence_nom' => 'required|string|max:255',
             'contact_urgence_lien' => 'required|string|max:255',
@@ -473,6 +475,9 @@ class AdherentController extends Controller
             'profession_exercee' => 'nullable|string|max:255',
             'situation_famille' => 'required|in:marié,celibataire,veuf/veuve,divorcé',
             'profession' => 'required|string|max:255',
+            'statut_compte' => 'required|in:actif,inactif,en_attente_de_verification',
+            'commercial_id' => 'nullable|exists:commercials,id',
+            'date_affectation_commercial' => 'nullable|date',
         ]);
 
         if ($validator->fails()) {
@@ -495,6 +500,9 @@ class AdherentController extends Controller
             'profession_exercee' => $request->profession_exercee,
             'situation_famille' => $request->situation_famille,
             'profession' => $request->profession,
+            'statut_compte' => $request->statut_compte,
+            'commercial_id' => $request->commercial_id,
+            'date_affectation_commercial' => $request->date_affectation_commercial,
             // Mapping des champs contact d'urgence
             'contact_urgence_nom' => $request->contact_urgence_nom,
             'contact_urgence_lien_parente' => $request->contact_urgence_lien,
@@ -590,7 +598,8 @@ class AdherentController extends Controller
             'adhesions.plan',
             'credits' => function($query) {
                 $query->latest()->limit(5);
-            }
+            },
+            'commercial'
         ]);
 
         return view('adherent.profile.show', compact('adherent'));
@@ -627,7 +636,7 @@ class AdherentController extends Controller
             'adresse' => 'required|string',
             'telephone' => 'required|string|max:20',
             'telephone_secondaire' => 'nullable|string|max:20',
-            'email' => 'required|email',
+            'email' => 'nullable|email',
             // Contact d'urgence principal
             'contact_urgence_nom' => 'required|string|max:255',
             'contact_urgence_lien' => 'required|string|max:255',

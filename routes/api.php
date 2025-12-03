@@ -7,6 +7,7 @@ use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\StatistiqueController;
 use App\Http\Controllers\API\AdminController;
+use App\Http\Controllers\API\CommercialController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,10 @@ Route::prefix('v1')->group(function () {
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
+    
+    // Commerciaux (public pour inscription)
+    Route::get('/commercials', [CommercialController::class, 'index']);
+    Route::get('/commercials/search', [CommercialController::class, 'search']);
     
     // Public info
     Route::get('/info', function () {

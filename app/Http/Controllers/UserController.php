@@ -80,10 +80,10 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|string|email|max:255|unique:users',
+            'phone' => 'required|string|max:20|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role_id' => 'required|exists:roles,id', // ← CHANGEMENT ICI
+            'role_id' => 'required|exists:roles,id', 
             'matricule' => 'nullable|string|max:50|unique:users',
             'date_embauche' => 'nullable|date',
             'agence_id' => 'nullable|exists:agences,id'
@@ -161,10 +161,10 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|string|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'required|string|max:20',
             'password' => 'nullable|confirmed|min:8',
-            'role_id' => 'required|exists:roles,id', // ← CHANGEMENT ICI
+            'role_id' => 'required|exists:roles,id', 
             'matricule' => 'nullable|string|max:50|unique:users,matricule,' . $user->id,
             'date_embauche' => 'nullable|date',
             'agence_id' => 'nullable|exists:agences,id'

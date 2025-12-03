@@ -1,8 +1,8 @@
-@extends('layouts.adherent-modern')
 
-@section('title', 'Inscription - Étape 3')
 
-@section('content')
+<?php $__env->startSection('title', 'Inscription - Étape 3'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-10">
@@ -23,36 +23,37 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @php
+                    <?php
                         // Initialize all variables at the top
                         $missingTypes = collect(session('missing_types', []));
                         $missingIds = $missingTypes->pluck('id')->toArray();
                         $typesDocuments = $typesDocuments ?? collect();
-                    @endphp
+                    ?>
 
-                    @if(session('error'))
+                    <?php if(session('error')): ?>
                         <div class="alert alert-danger">
-                            {{ session('error') }}
-                            @if($missingTypes->isNotEmpty())
+                            <?php echo e(session('error')); ?>
+
+                            <?php if($missingTypes->isNotEmpty()): ?>
                                 <ul class="mt-2 mb-0">
-                                    @foreach($missingTypes as $mt)
+                                    <?php $__currentLoopData = $missingTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <li>
-                                            <a href="#doc-{{ $mt['id'] }}" class="text-danger text-decoration-underline">
-                                                {{ $mt['nom'] }} (aller au formulaire)
+                                            <a href="#doc-<?php echo e($mt['id']); ?>" class="text-danger text-decoration-underline">
+                                                <?php echo e($mt['nom']); ?> (aller au formulaire)
                                             </a>
                                         </li>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </ul>
-                            @endif
+                            <?php endif; ?>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
+                    <?php if(session('success')): ?>
+                        <div class="alert alert-success"><?php echo e(session('success')); ?></div>
+                    <?php endif; ?>
 
-                    <form action="{{ route('adherent.inscription.documents') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
+                    <form action="<?php echo e(route('adherent.inscription.documents')); ?>" method="POST" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
 
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle"></i>
@@ -63,69 +64,98 @@
                         </div>
 
                         <div class="row">
-                            @foreach($typesDocuments as $typeDoc)
-                                @php
+                            <?php $__currentLoopData = $typesDocuments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $typeDoc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     $name = mb_strtolower($typeDoc->nom ?? '');
                                     $isIdentity = $name && (str_contains($name, 'identit') || str_contains($name, 'cni') || str_contains($name, 'passeport') || str_contains($name, 'permis'));
                                     $isMissing = isset($typeDoc->id) && in_array($typeDoc->id, $missingIds);
-                                @endphp
+                                ?>
                             <div class="col-md-6 mb-4">
-                                <div class="card h-100 {{ $isMissing ? 'border-danger' : '' }}" id="doc-{{ $typeDoc->id }}"
-                                     data-identity="{{ $isIdentity ? '1' : '0' }}"
-                                     data-doc-id="{{ $typeDoc->id }}"
-                                     data-recto-req="{{ $typeDoc->recto_requis ? '1' : '0' }}"
-                                     data-verso-req="{{ $typeDoc->verso_requis ? '1' : '0' }}">
+                                <div class="card h-100 <?php echo e($isMissing ? 'border-danger' : ''); ?>" id="doc-<?php echo e($typeDoc->id); ?>"
+                                     data-identity="<?php echo e($isIdentity ? '1' : '0'); ?>"
+                                     data-doc-id="<?php echo e($typeDoc->id); ?>"
+                                     data-recto-req="<?php echo e($typeDoc->recto_requis ? '1' : '0'); ?>"
+                                     data-verso-req="<?php echo e($typeDoc->verso_requis ? '1' : '0'); ?>">
                                     <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h6 class="mb-0">{{ $typeDoc->nom }}
-                                            @if($isMissing)
+                                        <h6 class="mb-0"><?php echo e($typeDoc->nom); ?>
+
+                                            <?php if($isMissing): ?>
                                                 <span class="badge bg-danger ms-2">Manquant</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </h6>
-                                        @if($isIdentity)
+                                        <?php if($isIdentity): ?>
                                             <div class="form-check m-0">
-                                                <input class="form-check-input identity-radio" type="radio" name="identity_choice" value="{{ $typeDoc->id }}" @checked(old('identity_choice') == $typeDoc->id) aria-label="Choisir ce document d'identité">
+                                                <input class="form-check-input identity-radio" type="radio" name="identity_choice" value="<?php echo e($typeDoc->id); ?>" <?php if(old('identity_choice') == $typeDoc->id): echo 'checked'; endif; ?> aria-label="Choisir ce document d'identité">
                                             </div>
-                                        @endif
-                                        @if($typeDoc->description)
-                                            <small class="text-muted">{{ $typeDoc->description }}</small>
-                                        @endif
+                                        <?php endif; ?>
+                                        <?php if($typeDoc->description): ?>
+                                            <small class="text-muted"><?php echo e($typeDoc->description); ?></small>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="card-body">
                                         <div class="mb-3">
                                             <label class="form-label">
                                                 Fichier Recto *
-                                                @if($typeDoc->recto_requis)
+                                                <?php if($typeDoc->recto_requis): ?>
                                                     <span class="text-danger">*</span>
-                                                @endif
+                                                <?php endif; ?>
                                             </label>
-                                            <input type="file" class="form-control identity-file @error('documents.'.$typeDoc->id.'.recto') is-invalid @enderror" 
-                                                   name="documents[{{ $typeDoc->id }}][recto]" 
-                                                   accept=".jpg,.jpeg,.png,.pdf" {{ (!$isIdentity && $typeDoc->recto_requis) ? 'required' : '' }}>
-                                            @error('documents.'.$typeDoc->id.'.recto')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            <input type="file" class="form-control identity-file <?php $__errorArgs = ['documents.'.$typeDoc->id.'.recto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                                   name="documents[<?php echo e($typeDoc->id); ?>][recto]" 
+                                                   accept=".jpg,.jpeg,.png,.pdf" <?php echo e((!$isIdentity && $typeDoc->recto_requis) ? 'required' : ''); ?>>
+                                            <?php $__errorArgs = ['documents.'.$typeDoc->id.'.recto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                             <div class="form-text">
                                                 Formats: JPG, JPEG, PNG, PDF (Max: 5MB)
                                             </div>
                                         </div>
 
-                                        @if($typeDoc->verso_requis)
+                                        <?php if($typeDoc->verso_requis): ?>
                                         <div class="mb-3">
                                             <label class="form-label">
                                                 Fichier Verso *
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="file" class="form-control identity-file @error('documents.'.$typeDoc->id.'.verso') is-invalid @enderror" 
-                                                   name="documents[{{ $typeDoc->id }}][verso]" 
-                                                   accept=".jpg,.jpeg,.png,.pdf" {{ !$isIdentity ? 'required' : '' }}>
-                                            @error('documents.'.$typeDoc->id.'.verso')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            <input type="file" class="form-control identity-file <?php $__errorArgs = ['documents.'.$typeDoc->id.'.verso'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                                   name="documents[<?php echo e($typeDoc->id); ?>][verso]" 
+                                                   accept=".jpg,.jpeg,.png,.pdf" <?php echo e(!$isIdentity ? 'required' : ''); ?>>
+                                            <?php $__errorArgs = ['documents.'.$typeDoc->id.'.verso'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                             <div class="form-text">
                                                 Formats: JPG, JPEG, PNG, PDF (Max: 5MB)
                                             </div>
                                         </div>
-                                        @endif
+                                        <?php endif; ?>
 
                                         <div class="alert alert-warning py-2">
                                             <small>
@@ -142,7 +172,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
 
                         <div class="alert alert-success">
@@ -153,7 +183,7 @@
 
                         <div class="row mt-4">
                             <div class="col-md-6">
-                                <a href="{{ route('adherent.inscription', ['step' => 2]) }}" class="btn btn-secondary">
+                                <a href="<?php echo e(route('adherent.inscription', ['step' => 2])); ?>" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left me-2"></i> Retour
                                 </a>
                             </div>
@@ -360,4 +390,6 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.adherent-modern', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Mes Sites Web\projet sifcash final\sif-project\resources\views/adherent/inscription/steps/step3.blade.php ENDPATH**/ ?>

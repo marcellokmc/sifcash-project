@@ -297,17 +297,17 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Adresse email *</label>
+                                    <label for="email" class="form-label">Adresse email (optionnel)</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="fas fa-envelope text-muted"></i></span>
                                         <input type="email" class="form-control @error('email') is-invalid @enderror" 
                                                id="email" name="email" value="{{ old('email') }}" 
-                                               placeholder="votre@email.com" required>
+                                               placeholder="votre@email.com (optionnel)">
                                         @error('email')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="form-text">Utilisez une ademail valide pour recevoir les confirmations</div>
+                                    <div class="form-text">L'email est optionnel. Si vous en fournissez un, il doit être valide.</div>
                                 </div>
 
                                 <div class="row">

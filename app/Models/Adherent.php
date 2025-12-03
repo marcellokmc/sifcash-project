@@ -11,7 +11,7 @@ class Adherent extends Model
     use HasFactory, Auditable;
 
     protected $fillable = [
-        'user_id', 'agence_id', 'agent_gestionnaire_id', 'membre_id', 'nom', 'prenom', 'date_naissance', 'lieu_naissance',
+        'user_id', 'agence_id', 'commercial_id', 'agent_gestionnaire_id', 'membre_id', 'nom', 'prenom', 'date_naissance', 'lieu_naissance',
         'adresse', 'telephone', 'telephone_secondaire', 'email',
         'contact_urgence_nom', 'contact_urgence_prenoms', 'contact_urgence_lien_parente', 'contact_urgence_telephone',
         'contact_urgence_secondaire_nom', 'contact_urgence_secondaire_prenoms', 'contact_urgence_secondaire_lien_parente', 'contact_urgence_secondaire_telephone',
@@ -33,6 +33,11 @@ class Adherent extends Model
     public function agence()
     {
         return $this->belongsTo(Agence::class);
+    }
+
+    public function commercial()
+    {
+        return $this->belongsTo(Commercial::class);
     }
 
     public function agentGestionnaire()

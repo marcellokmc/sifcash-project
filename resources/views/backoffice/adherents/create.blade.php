@@ -120,12 +120,14 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email *</label>
+                                    <label for="email" class="form-label">Email (optionnel)</label>
                                     <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                           id="email" name="email" value="{{ old('email') }}" required>
+                                           id="email" name="email" value="{{ old('email') }}" 
+                                           placeholder="email@exemple.com">
                                     @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    <div class="form-text">L'email est optionnel</div>
                                 </div>
 
                                 <div class="mb-3">

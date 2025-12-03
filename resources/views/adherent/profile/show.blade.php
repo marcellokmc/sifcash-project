@@ -168,6 +168,29 @@
                                 </tr>
                             </table>
                         </div>
+                        
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Commercial Référent</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th width="40%">Commercial:</th>
+                                    <td>
+                                        @if($adherent->commercial)
+                                            <span class="badge bg-primary">{{ $adherent->commercial->nom }} {{ $adherent->commercial->prenoms }}</span>
+                                            <small class="text-muted d-block">Code: {{ $adherent->commercial->code_commercial }}</small>
+                                        @else
+                                            <span class="text-muted">Non assigné</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @if($adherent->commercial)
+                                <tr>
+                                    <th>Téléphone:</th>
+                                    <td>{{ $adherent->commercial->telephone ?? 'Non renseigné' }}</td>
+                                </tr>
+                                @endif
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -175,3 +198,4 @@
     </div>
 </div>
 @endsection
+
