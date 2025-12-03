@@ -2,9 +2,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
         <!-- Logo et nom de la marque -->
-        <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
+        <a class="navbar-brand d-flex align-items-center" href="<?php echo e(route('home')); ?>">
             <div class="brand-logo me-2">
-                <img src="{{ asset('img/SIF logo .jpg') }}" alt="SIFcash-Burkina Logo" class="logo-img" style="height: 50px; width: auto; object-fit: contain; border-radius: 8px;">
+                <img src="<?php echo e(asset('img/SIF logo .jpg')); ?>" alt="SIFcash-Burkina Logo" class="logo-img" style="height: 50px; width: auto; object-fit: contain; border-radius: 8px;">
             </div>
             <div class="brand-text">
                 <h4 class="mb-0 text-white fw-bold">SIFcash-Burkina</h4>
@@ -21,46 +21,46 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                    <a class="nav-link <?php echo e(request()->routeIs('home') ? 'active' : ''); ?>" href="<?php echo e(route('home')); ?>">
                         <i class="fas fa-home me-1"></i>Accueil
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->routeIs(['about', 'privacy', 'data-protection', 'terms']) ? 'active' : '' }}" 
+                    <a class="nav-link dropdown-toggle <?php echo e(request()->routeIs(['about', 'privacy', 'data-protection', 'terms']) ? 'active' : ''); ?>" 
                        href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-info-circle me-1"></i>À propos
                     </a>
                     <ul class="dropdown-menu shadow-sm">
                         <li>
-                            <a class="dropdown-item {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">
+                            <a class="dropdown-item <?php echo e(request()->routeIs('about') ? 'active' : ''); ?>" href="<?php echo e(route('about')); ?>">
                                 <i class="fas fa-building me-2"></i>Notre entreprise
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item {{ request()->routeIs('privacy') ? 'active' : '' }}" href="{{ route('privacy') }}">
+                            <a class="dropdown-item <?php echo e(request()->routeIs('privacy') ? 'active' : ''); ?>" href="<?php echo e(route('privacy')); ?>">
                                 <i class="fas fa-shield-alt me-2"></i>Confidentialité
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item {{ request()->routeIs('data-protection') ? 'active' : '' }}" href="{{ route('data-protection') }}">
+                            <a class="dropdown-item <?php echo e(request()->routeIs('data-protection') ? 'active' : ''); ?>" href="<?php echo e(route('data-protection')); ?>">
                                 <i class="fas fa-lock me-2"></i>Protection des données
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item {{ request()->routeIs('terms') ? 'active' : '' }}" href="{{ route('terms') }}">
+                            <a class="dropdown-item <?php echo e(request()->routeIs('terms') ? 'active' : ''); ?>" href="<?php echo e(route('terms')); ?>">
                                 <i class="fas fa-file-contract me-2"></i>Conditions d'utilisation
                             </a>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('services') ? 'active' : '' }}" href="{{ route('services') }}">
+                    <a class="nav-link <?php echo e(request()->routeIs('services') ? 'active' : ''); ?>" href="<?php echo e(route('services')); ?>">
                         <i class="fas fa-handshake me-1"></i>Services
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}" href="{{ route('contact') }}">
+                    <a class="nav-link <?php echo e(request()->routeIs('contact') ? 'active' : ''); ?>" href="<?php echo e(route('contact')); ?>">
                         <i class="fas fa-phone me-1"></i>Contact
                     </a>
                 </li>
@@ -68,44 +68,44 @@
 
             <!-- Actions utilisateur -->
             <div class="navbar-nav ms-auto">
-                @guest
+                <?php if(auth()->guard()->guest()): ?>
                     <div class="d-flex gap-2 align-items-center">
-                        <a href="{{ route('register') }}" class="btn btn-outline-primary btn-sm">
+                        <a href="<?php echo e(route('register')); ?>" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-user-plus me-1"></i>S'inscrire
                         </a>
-                        <a href="{{ route('adherent.login') }}" class="btn btn-primary btn-sm">
+                        <a href="<?php echo e(route('adherent.login')); ?>" class="btn btn-primary btn-sm">
                             <i class="fas fa-sign-in-alt me-1"></i>Se connecter
                         </a>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="dropdown">
                         <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user-circle me-2"></i>
-                            <span>{{ auth()->user()->nom ?? 'Utilisateur' }}</span>
+                            <span><?php echo e(auth()->user()->nom ?? 'Utilisateur'); ?></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                            @if(auth()->user()->hasRole('admin'))
+                            <?php if(auth()->user()->hasRole('admin')): ?>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                    <a class="dropdown-item" href="<?php echo e(route('admin.dashboard')); ?>">
                                         <i class="fas fa-tachometer-alt me-2"></i>Tableau de bord Admin
                                     </a>
                                 </li>
-                            @elseif(auth()->user()->hasRole('adherent'))
+                            <?php elseif(auth()->user()->hasRole('adherent')): ?>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('adherent.dashboard') }}">
+                                    <a class="dropdown-item" href="<?php echo e(route('adherent.dashboard')); ?>">
                                         <i class="fas fa-tachometer-alt me-2"></i>Mon tableau de bord
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('adherent.profile') }}">
+                                    <a class="dropdown-item" href="<?php echo e(route('adherent.profile')); ?>">
                                         <i class="fas fa-user me-2"></i>Mon profil
                                     </a>
                                 </li>
-                            @endif
+                            <?php endif; ?>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                                    @csrf
+                                <form method="POST" action="<?php echo e(route('logout')); ?>" class="d-inline">
+                                    <?php echo csrf_field(); ?>
                                     <button type="submit" class="dropdown-item text-danger">
                                         <i class="fas fa-sign-out-alt me-2"></i>Se déconnecter
                                     </button>
@@ -113,37 +113,37 @@
                             </li>
                         </ul>
                     </div>
-                @endguest
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </nav>
 
-@if(isset($showBreadcrumb) && $showBreadcrumb)
+<?php if(isset($showBreadcrumb) && $showBreadcrumb): ?>
 <!-- Fil d'Ariane -->
 <nav aria-label="breadcrumb" class="bg-light border-bottom">
     <div class="container">
         <ol class="breadcrumb py-3 mb-0">
             <li class="breadcrumb-item">
-                <a href="{{ route('home') }}" class="text-decoration-none">
+                <a href="<?php echo e(route('home')); ?>" class="text-decoration-none">
                     <i class="fas fa-home me-1"></i>Accueil
                 </a>
             </li>
-            @if(isset($breadcrumbs))
-                @foreach($breadcrumbs as $breadcrumb)
-                    @if($loop->last)
-                        <li class="breadcrumb-item active" aria-current="page">{{ $breadcrumb['title'] }}</li>
-                    @else
+            <?php if(isset($breadcrumbs)): ?>
+                <?php $__currentLoopData = $breadcrumbs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $breadcrumb): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if($loop->last): ?>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo e($breadcrumb['title']); ?></li>
+                    <?php else: ?>
                         <li class="breadcrumb-item">
-                            <a href="{{ $breadcrumb['url'] }}" class="text-decoration-none">{{ $breadcrumb['title'] }}</a>
+                            <a href="<?php echo e($breadcrumb['url']); ?>" class="text-decoration-none"><?php echo e($breadcrumb['title']); ?></a>
                         </li>
-                    @endif
-                @endforeach
-            @endif
+                    <?php endif; ?>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php endif; ?>
         </ol>
     </div>
 </nav>
-@endif
+<?php endif; ?>
 
 <style>
 .navbar-brand .brand-logo .logo-img {
@@ -221,4 +221,4 @@
         height: 40px;
     }
 }
-</style>
+</style><?php /**PATH C:\Mes Sites Web\projet sifcash final\sif-project\resources\views/partials/header.blade.php ENDPATH**/ ?>

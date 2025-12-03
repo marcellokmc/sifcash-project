@@ -253,7 +253,7 @@
     </style>
 </head>
 <body>
-    @include('partials.header')
+    <?php echo $__env->make('partials.header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <div class="login-container d-flex align-items-center">
         <div class="floating-elements"></div>
@@ -273,40 +273,57 @@
                         <div class="form-section">
 
                             <!-- Affichage des messages d'alerte -->
-                            @if(session('success'))
+                            <?php if(session('success')): ?>
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                                    <i class="fas fa-check-circle me-2"></i><?php echo e(session('success')); ?>
+
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                            @endif
+                            <?php endif; ?>
 
-                            @if(session('error'))
+                            <?php if(session('error')): ?>
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>{{ session('error') }}
+                                    <i class="fas fa-exclamation-triangle me-2"></i><?php echo e(session('error')); ?>
+
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                            @endif
+                            <?php endif; ?>
 
-                            @if(session('status'))
+                            <?php if(session('status')): ?>
                                 <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-info-circle me-2"></i>{{ session('status') }}
+                                    <i class="fas fa-info-circle me-2"></i><?php echo e(session('status')); ?>
+
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                            @endif
+                            <?php endif; ?>
 
-                            <form method="POST" action="{{ route('adherent.login') }}">
-                                @csrf
+                            <form method="POST" action="<?php echo e(route('adherent.login')); ?>">
+                                <?php echo csrf_field(); ?>
                                 
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control @error('login') is-invalid @enderror" 
-                                           id="login" name="login" value="{{ old('login') }}" required
+                                    <input type="text" class="form-control <?php $__errorArgs = ['login'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           id="login" name="login" value="<?php echo e(old('login')); ?>" required
                                            placeholder="votre@email.com ou 70 00 00 00">
                                     <label for="login">
                                         <i class="fas fa-user me-2"></i>Email ou Téléphone
                                     </label>
-                                    @error('login')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['login'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     <div class="form-text mt-2" style="color: #6366f1; font-weight: 500;">
                                         <i class="fas fa-info-circle me-1" style="color: #667eea;"></i>
                                         📱 Utilisez votre email ou numéro de téléphone enregistré
@@ -314,19 +331,33 @@
                                 </div>
 
                                 <div class="form-floating mb-3">
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                                    <input type="password" class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            id="password" name="password" required
                                            placeholder="Votre mot de passe">
                                     <label for="password">
                                         <i class="fas fa-lock me-2"></i>Mot de passe
                                     </label>
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="form-check mb-4">
-                                    <input type="checkbox" class="form-check-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                    <input type="checkbox" class="form-check-input" id="remember" name="remember" <?php echo e(old('remember') ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="remember">
                                         <i class="fas fa-check-circle me-1"></i>Se souvenir de moi
                                     </label>
@@ -349,7 +380,7 @@
                             </div>
 
                             <div class="text-center">
-                                <a href="{{ route('register') }}" class="btn btn-outline-success w-100" style="font-size: 1.05rem; font-weight: 600;">
+                                <a href="<?php echo e(route('register')); ?>" class="btn btn-outline-success w-100" style="font-size: 1.05rem; font-weight: 600;">
                                     <i class="fas fa-user-plus me-2"></i>✨ Créer un compte
                                 </a>
                             </div>
@@ -360,7 +391,7 @@
         </div>
     </div>
 
-    @include('partials.footer')
+    <?php echo $__env->make('partials.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -434,4 +465,4 @@
         });
     </script>
 </body>
-</html>
+</html><?php /**PATH C:\Mes Sites Web\projet sifcash final\sif-project\resources\views/auth/adherent-login.blade.php ENDPATH**/ ?>

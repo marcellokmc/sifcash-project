@@ -118,7 +118,7 @@
                         <p class="card-text">Devenez membre de SIFcash-Burkina et profitez de nos services financiers.</p>
                         <div class="d-grid gap-2">
                             <a href="{{ route('register') }}" class="btn btn-primary">S'inscrire</a>
-                            <a href="{{ route('login') }}" class="btn btn-outline-primary">Se connecter</a>
+                            <a href="{{ route('adherent.login') }}" class="btn btn-outline-primary">Se connecter</a>
                         </div>
                     </div>
                 </div>

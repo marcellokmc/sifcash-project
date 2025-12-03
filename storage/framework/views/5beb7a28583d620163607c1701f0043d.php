@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIFcash-Burkina - Système d'Épargne et de Crédit</title>
-    <link rel="icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('img/SIF logo .jpg') }}">
+    <link rel="icon" type="image/jpeg" href="<?php echo e(asset('img/SIF logo .jpg')); ?>">
+    <link rel="shortcut icon" type="image/jpeg" href="<?php echo e(asset('img/SIF logo .jpg')); ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -353,8 +353,8 @@
     </style>
 </head>
 <body>
-    @include('components.preloader')
-    @include('partials.header')
+    <?php echo $__env->make('components.preloader', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+    <?php echo $__env->make('partials.header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <!-- Hero Section améliorée -->
     <section class="hero-section text-center position-relative overflow-hidden">
@@ -403,12 +403,12 @@
                         <div class="hero-actions" data-aos="fade-up" data-aos-delay="600">
                             <div class="row justify-content-center g-3">
                                 <div class="col-sm-6 col-lg-4">
-                                    <a href="{{ route('register') }}" class="btn btn-light btn-lg w-100 shadow-lg">
+                                    <a href="<?php echo e(route('register')); ?>" class="btn btn-light btn-lg w-100 shadow-lg">
                                         <i class="fas fa-user-plus me-2"></i>Devenir Adhérent
                                     </a>
                                 </div>
                                 <div class="col-sm-6 col-lg-4">
-                                    <a href="{{ route('adherent.login') }}" class="btn btn-outline-light btn-lg w-100">
+                                    <a href="<?php echo e(route('adherent.login')); ?>" class="btn btn-outline-light btn-lg w-100">
                                         <i class="fas fa-sign-in-alt me-2"></i>Se Connecter
                                     </a>
                                 </div>
@@ -452,7 +452,7 @@
                                 <span class="badge" style="background: rgba(102, 126, 234, 0.1); color: #667eea;">🏛️ Fiable</span>
                                 <span class="badge" style="background: rgba(102, 126, 234, 0.1); color: #667eea;">🇧🇫 Local</span>
                             </div>
-                            <a href="{{ route('about') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                            <a href="<?php echo e(route('about')); ?>" class="btn btn-outline-primary btn-sm rounded-pill px-4">
                                 <i class="fas fa-arrow-right me-1"></i>En savoir plus
                             </a>
                         </div>
@@ -477,7 +477,7 @@
                                 <span class="badge" style="background: rgba(17, 153, 142, 0.1); color: #11998e;">🔐 Crypté</span>
                                 <span class="badge" style="background: rgba(17, 153, 142, 0.1); color: #11998e;">✅ RGPD</span>
                             </div>
-                            <a href="{{ route('privacy') }}" class="btn btn-outline-success btn-sm rounded-pill px-4">
+                            <a href="<?php echo e(route('privacy')); ?>" class="btn btn-outline-success btn-sm rounded-pill px-4">
                                 <i class="fas fa-lock me-1"></i>Confidentialité
                             </a>
                         </div>
@@ -543,7 +543,7 @@
                                     <li class="mb-0"><i class="fas fa-check text-success me-2"></i><strong>Capital garanti</strong> à l'échéance</li>
                                 </ul>
                             </div>
-                            <a href="{{ route('register') }}" class="btn btn-success rounded-pill px-4">
+                            <a href="<?php echo e(route('register')); ?>" class="btn btn-success rounded-pill px-4">
                                 <i class="fas fa-plus me-1"></i>Commencer
                             </a>
                         </div>
@@ -570,7 +570,7 @@
                                     <li class="mb-0"><i class="fas fa-check text-primary me-2"></i><strong>Microcrédits</strong> rapides</li>
                                 </ul>
                             </div>
-                            <a href="{{ route('register') }}" class="btn btn-primary rounded-pill px-4">
+                            <a href="<?php echo e(route('register')); ?>" class="btn btn-primary rounded-pill px-4">
                                 <i class="fas fa-rocket me-1"></i>Demander
                             </a>
                         </div>
@@ -597,7 +597,7 @@
                                     <li class="mb-0"><i class="fas fa-award text-warning me-2"></i><strong>15</strong> ans</li>
                                 </ul>
                             </div>
-                            <a href="{{ route('about') }}" class="btn btn-warning rounded-pill px-4 text-white">
+                            <a href="<?php echo e(route('about')); ?>" class="btn btn-warning rounded-pill px-4 text-white">
                                 <i class="fas fa-trophy me-1"></i>Découvrir
                             </a>
                         </div>
@@ -614,10 +614,10 @@
                             <h3 class="fw-bold mb-3 text-white" style="font-size: 2.2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">🚀 Prêt à transformer vos rêves en réalité ?</h3>
                             <p class="mb-4 text-white" style="font-size: 1.1rem; opacity: 0.95;">Rejoignez plus de 10,000 adhérents qui nous font confiance pour réaliser leurs projets</p>
                             <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
-                                <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5 shadow-lg" style="border-radius: 25px; font-weight: 600; transform: scale(1); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <a href="<?php echo e(route('register')); ?>" class="btn btn-light btn-lg px-5 shadow-lg" style="border-radius: 25px; font-weight: 600; transform: scale(1); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                                     <i class="fas fa-rocket me-2"></i>Commencer maintenant
                                 </a>
-                                <a href="{{ route('about') }}" class="btn btn-outline-light btn-lg px-5" style="border-radius: 25px; font-weight: 600; border-width: 2px;">
+                                <a href="<?php echo e(route('about')); ?>" class="btn btn-outline-light btn-lg px-5" style="border-radius: 25px; font-weight: 600; border-width: 2px;">
                                     <i class="fas fa-info-circle me-2"></i>En savoir plus
                                 </a>
                             </div>
@@ -864,10 +864,10 @@
                                     <strong style="color: #667eea;">Important :</strong> <span class="text-dark">Vos épargnes servent de garantie. Plus vous épargnez, plus vous avez accès à des montants élevés !</span>
                                 </div>
                                 <div class="d-flex justify-content-center gap-2 flex-wrap">
-                                    <a href="{{ route('register') }}" class="btn btn-md px-4 shadow" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">
+                                    <a href="<?php echo e(route('register')); ?>" class="btn btn-md px-4 shadow" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 20px; font-weight: 600; font-size: 0.9rem;">
                                         <i class="fas fa-user-plus me-1"></i>Devenir Adhérent
                                     </a>
-                                    <a href="{{ route('login') }}" class="btn btn-outline-primary btn-md px-4" style="border-radius: 20px; font-weight: 600; border-width: 2px; font-size: 0.9rem;">
+                                    <a href="<?php echo e(route('login')); ?>" class="btn btn-outline-primary btn-md px-4" style="border-radius: 20px; font-weight: 600; border-width: 2px; font-size: 0.9rem;">
                                         <i class="fas fa-calculator me-1"></i>Simuler mon crédit
                                     </a>
                                 </div>
@@ -1035,28 +1035,28 @@
             
             <div class="row g-4 justify-content-center">
                 <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="100">
-                    <a href="{{ route('terms') }}" class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-decoration-none shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
+                    <a href="<?php echo e(route('terms')); ?>" class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-decoration-none shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
                         <i class="fas fa-file-contract text-primary mb-2" style="font-size: 1.5rem;"></i>
                         <small class="fw-bold text-dark">📋 CGU</small>
                     </a>
                 </div>
                 
                 <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="200">
-                    <a href="{{ route('data-protection') }}" class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-decoration-none shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
+                    <a href="<?php echo e(route('data-protection')); ?>" class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-decoration-none shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
                         <i class="fas fa-database text-success mb-2" style="font-size: 1.5rem;"></i>
                         <small class="fw-bold text-dark">🗃️ Protection</small>
                     </a>
                 </div>
                 
                 <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="300">
-                    <a href="{{ route('about') }}" class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-decoration-none shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
+                    <a href="<?php echo e(route('about')); ?>" class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-decoration-none shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
                         <i class="fas fa-building text-info mb-2" style="font-size: 1.5rem;"></i>
                         <small class="fw-bold text-dark">🏢 À Propos</small>
                     </a>
                 </div>
                 
                 <div class="col-lg-2 col-md-4 col-6" data-aos="fade-up" data-aos-delay="400">
-                    <a href="{{ route('privacy') }}" class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-decoration-none shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
+                    <a href="<?php echo e(route('privacy')); ?>" class="btn btn-light w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-decoration-none shadow-sm" style="border-radius: 15px; min-height: 120px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.05)'">
                         <i class="fas fa-user-shield text-warning mb-2" style="font-size: 1.5rem;"></i>
                         <small class="fw-bold text-dark">🔒 Vie privée</small>
                     </a>
@@ -1153,7 +1153,7 @@
         </div>
     </section>
 
-    @include('partials.footer')
+    <?php echo $__env->make('partials.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -1264,4 +1264,4 @@
         });
     </script>
 </body>
-</html>
+</html><?php /**PATH C:\Mes Sites Web\projet sifcash final\sif-project\resources\views/welcome.blade.php ENDPATH**/ ?>

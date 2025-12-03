@@ -128,7 +128,7 @@
     </style>
 </head>
 <body>
-    @include('partials.header')
+    <?php echo $__env->make('partials.header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <div class="login-container d-flex align-items-center">
         <div class="container">
@@ -147,49 +147,79 @@
                         <!-- Form Section -->
                         <div class="form-section">
                             <!-- Messages d'alerte -->
-                            @if(session('success'))
+                            <?php if(session('success')): ?>
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                                    <i class="fas fa-check-circle me-2"></i><?php echo e(session('success')); ?>
+
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                            @endif
+                            <?php endif; ?>
 
-                            @if(session('error'))
+                            <?php if(session('error')): ?>
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>{{ session('error') }}
+                                    <i class="fas fa-exclamation-triangle me-2"></i><?php echo e(session('error')); ?>
+
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                            @endif
+                            <?php endif; ?>
 
-                            <form method="POST" action="{{ route('login') }}">
-                                @csrf
+                            <form method="POST" action="<?php echo e(route('login')); ?>">
+                                <?php echo csrf_field(); ?>
                                 
                                 <div class="form-floating mb-3">
-                                    <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                           id="email" name="email" value="{{ old('email') }}" required
+                                    <input type="email" class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           id="email" name="email" value="<?php echo e(old('email')); ?>" required
                                            placeholder="admincontact@sifcash-burkina.com">
                                     <label for="email">
                                         <i class="fas fa-envelope me-2"></i>Adresse email
                                     </label>
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="form-floating mb-3">
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                                    <input type="password" class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            id="password" name="password" required
                                            placeholder="Votre mot de passe">
                                     <label for="password">
                                         <i class="fas fa-lock me-2"></i>Mot de passe
                                     </label>
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <div class="form-check mb-4">
-                                    <input type="checkbox" class="form-check-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                    <input type="checkbox" class="form-check-input" id="remember" name="remember" <?php echo e(old('remember') ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="remember">
                                         Se souvenir de moi
                                     </label>
@@ -201,7 +231,7 @@
                             </form>
 
                             <div class="text-center">
-                                <a href="{{ route('password.request') }}" class="text-decoration-none small text-muted">
+                                <a href="<?php echo e(route('password.request')); ?>" class="text-decoration-none small text-muted">
                                     <i class="fas fa-key me-1"></i>Mot de passe oublié ?
                                 </a>
                             </div>
@@ -217,7 +247,7 @@
         </div>
     </div>
 
-    @include('partials.footer')
+    <?php echo $__env->make('partials.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -272,3 +302,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH C:\Mes Sites Web\projet sifcash final\sif-project\resources\views/auth/login.blade.php ENDPATH**/ ?>

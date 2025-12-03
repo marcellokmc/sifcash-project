@@ -205,7 +205,7 @@
 <body>
     <div class="register-container d-flex align-items-center py-4">
         <!-- Bouton retour accueil -->
-        <a href="{{ route('home') }}" class="back-to-home btn btn-outline-light">
+        <a href="<?php echo e(route('home')); ?>" class="back-to-home btn btn-outline-light">
             <i class="fas fa-arrow-left me-2"></i>Accueil
         </a>
         
@@ -225,20 +225,21 @@
                         <div class="card-body p-4 p-md-5">
 
                             <!-- Affichage des messages d'alerte -->
-                            @if($errors->any())
+                            <?php if($errors->any()): ?>
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                     Veuillez corriger les erreurs ci-dessous.
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                            @endif
+                            <?php endif; ?>
 
-                            @if(session('success'))
+                            <?php if(session('success')): ?>
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                                    <i class="fas fa-check-circle me-2"></i><?php echo e(session('success')); ?>
+
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
-                            @endif
+                            <?php endif; ?>
 
                             <!-- Indicateur d'étapes -->
                             <div class="step-indicator">
@@ -256,8 +257,8 @@
                                 </div>
                             </div>
 
-                            <form method="POST" action="{{ route('register') }}">
-                                @csrf
+                            <form method="POST" action="<?php echo e(route('register')); ?>">
+                                <?php echo csrf_field(); ?>
                                 
                                 <h5 class="mb-4 text-primary">
                                     <i class="fas fa-user-circle me-2"></i>Étape 1 : Création de votre compte
@@ -269,12 +270,26 @@
                                             <label for="name" class="form-label">Nom complet *</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light"><i class="fas fa-user text-muted"></i></span>
-                                                <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                                                       id="name" name="name" value="{{ old('name') }}" 
+                                                <input type="text" class="form-control <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                                       id="name" name="name" value="<?php echo e(old('name')); ?>" 
                                                        placeholder="Votre nom complet" required>
-                                                @error('name')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
+                                                <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                             </div>
                                         </div>
                                     </div>
@@ -284,12 +299,26 @@
                                             <label for="phone" class="form-label">Téléphone *</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light"><i class="fas fa-phone text-muted"></i></span>
-                                                <input type="tel" class="form-control @error('phone') is-invalid @enderror" 
-                                                       id="phone" name="phone" value="{{ old('phone') }}" 
+                                                <input type="tel" class="form-control <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                                       id="phone" name="phone" value="<?php echo e(old('phone')); ?>" 
                                                        placeholder="70 00 00 00" required>
-                                                @error('phone')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
+                                                <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                             </div>
                                             <div class="form-text">Format: 70 00 00 00 ou 01 00 00 00</div>
                                         </div>
@@ -300,12 +329,26 @@
                                     <label for="email" class="form-label">Adresse email *</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="fas fa-envelope text-muted"></i></span>
-                                        <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                               id="email" name="email" value="{{ old('email') }}" 
+                                        <input type="email" class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                               id="email" name="email" value="<?php echo e(old('email')); ?>" 
                                                placeholder="votre@email.com" required>
-                                        @error('email')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                     <div class="form-text">Utilisez une ademail valide pour recevoir les confirmations</div>
                                 </div>
@@ -316,12 +359,26 @@
                                             <label for="password" class="form-label">Mot de passe *</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light"><i class="fas fa-lock text-muted"></i></span>
-                                                <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                                                <input type="password" class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                                        id="password" name="password" 
                                                        placeholder="Minimum 8 caractères" required>
-                                                @error('password')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
+                                                <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                             </div>
                                             <div id="password-strength" class="password-strength d-none"></div>
                                             <div class="form-text">
@@ -338,12 +395,26 @@
                                             <label for="password_confirmation" class="form-label">Confirmation *</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light"><i class="fas fa-lock text-muted"></i></span>
-                                                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" 
+                                                <input type="password" class="form-control <?php $__errorArgs = ['password_confirmation'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                                        id="password_confirmation" name="password_confirmation" 
                                                        placeholder="Retapez votre mot de passe" required>
-                                                @error('password_confirmation')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
+                                                <?php $__errorArgs = ['password_confirmation'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                             </div>
                                             <div id="password-match" class="form-text"></div>
                                         </div>
@@ -352,18 +423,32 @@
 
                                 <div class="mb-4">
                                     <div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input form-check-input-switch @error('terms') is-invalid @enderror" 
-                                               id="terms" name="terms" {{ old('terms') ? 'checked' : '' }} required>
+                                        <input type="checkbox" class="form-check-input form-check-input-switch <?php $__errorArgs = ['terms'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                               id="terms" name="terms" <?php echo e(old('terms') ? 'checked' : ''); ?> required>
                                         <label class="form-check-label" for="terms">
                                             J'accepte les 
-                                            <a href="{{ route('terms') }}" target="_blank" class="text-primary text-decoration-none fw-bold">conditions générales</a> 
+                                            <a href="<?php echo e(route('terms')); ?>" target="_blank" class="text-primary text-decoration-none fw-bold">conditions générales</a> 
                                             et la 
-                                            <a href="{{ route('privacy') }}" target="_blank" class="text-primary text-decoration-none fw-bold">politique de confidentialité</a>
+                                            <a href="<?php echo e(route('privacy')); ?>" target="_blank" class="text-primary text-decoration-none fw-bold">politique de confidentialité</a>
                                             *
                                         </label>
-                                        @error('terms')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['terms'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
 
@@ -381,7 +466,7 @@
                                     </button>
                                     <div class="text-center mt-3">
                                         <span class="text-muted">Déjà membre ? </span>
-                                        <a href="{{ route('adherent.login') }}" class="text-decoration-none fw-bold">
+                                        <a href="<?php echo e(route('adherent.login')); ?>" class="text-decoration-none fw-bold">
                                             Connectez-vous ici
                                         </a>
                                     </div>
@@ -477,4 +562,4 @@
         });
     </script>
 </body>
-</html>
+</html><?php /**PATH C:\Mes Sites Web\projet sifcash final\sif-project\resources\views/auth/register.blade.php ENDPATH**/ ?>
