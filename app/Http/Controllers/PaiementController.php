@@ -26,13 +26,21 @@ class PaiementController extends Controller
         // Filtres
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $searchDigits = preg_replace('/[^0-9]/', '', $search);
+
+            $query->where(function($q) use ($search, $searchDigits) {
                 $q->where('reference_paiement', 'like', "%$search%")
-                  ->orWhereHas('adherent', function($q2) use ($search) {
+                  ->orWhereHas('adherent', function($q2) use ($search, $searchDigits) {
                       $q2->where('nom', 'like', "%$search%")
                          ->orWhere('prenom', 'like', "%$search%")
-                         ->orWhere('telephone', 'like', "%$search%")
                          ->orWhere('membre_id', 'like', "%$search%");
+                         
+                      // Recherche intelligente sur le téléphone
+                      if (!empty($searchDigits)) {
+                          $q2->orWhere(DB::raw("REPLACE(REPLACE(REPLACE(REPLACE(telephone, ' ', ''), '-', ''), '.', ''), '+', '')"), 'like', "%$searchDigits%");
+                      } else {
+                          $q2->orWhere('telephone', 'like', "%$search%");
+                      }
                   });
             });
         }
