@@ -12,6 +12,7 @@ class Plan extends Model
 
     protected $fillable = [
         'nom',
+        'type_plan',
         'description',
         'periodicite',
         'montant_min',

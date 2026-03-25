@@ -32,6 +32,7 @@ class PlanController extends Controller
             'hebdomadaire' => 'Hebdomadaire', 
             'mensuel' => 'Mensuel',
             'trimestriel' => 'Trimestriel',
+            'semestriel' => 'Semestriel',
             'annuel' => 'Annuel'
         ];
 
@@ -45,8 +46,9 @@ class PlanController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nom' => 'required|string|max:255|unique:plans,nom',
+            'type_plan' => 'required|in:epargne,credit',
             'description' => 'nullable|string',
-            'periodicite' => 'required|in:journalier,hebdomadaire,mensuel,trimestriel,annuel',
+            'periodicite' => 'required|in:journalier,hebdomadaire,mensuel,trimestriel,semestriel,annuel',
             'montant_min' => 'nullable|numeric|min:0',
             'montant_max' => 'nullable|numeric|min:0|gt:montant_min',
             'taux_interet' => 'required|numeric|min:0|max:100',
@@ -99,6 +101,7 @@ class PlanController extends Controller
             'hebdomadaire' => 'Hebdomadaire',
             'mensuel' => 'Mensuel',
             'trimestriel' => 'Trimestriel',
+            'semestriel' => 'Semestriel',
             'annuel' => 'Annuel'
         ];
 
@@ -112,8 +115,9 @@ class PlanController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nom' => 'required|string|max:255|unique:plans,nom,' . $plan->id,
+            'type_plan' => 'required|in:epargne,credit',
             'description' => 'nullable|string',
-            'periodicite' => 'required|in:journalier,hebdomadaire,mensuel,trimestriel,annuel',
+            'periodicite' => 'required|in:journalier,hebdomadaire,mensuel,trimestriel,semestriel,annuel',
             'montant_min' => 'nullable|numeric|min:0',
             'montant_max' => 'nullable|numeric|min:0|gt:montant_min',
             'taux_interet' => 'required|numeric|min:0|max:100',

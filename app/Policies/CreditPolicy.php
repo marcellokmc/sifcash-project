@@ -15,6 +15,10 @@ class CreditPolicy
     
     public function create(User $user): bool
     {
+        // Admin can create credits for testing or management
+        if ($user->isAdmin()) {
+            return true;
+        }
         // Only adherents with an adherent profile can create a credit request
         return $user->isAdherent() && $user->adherent !== null;
     }

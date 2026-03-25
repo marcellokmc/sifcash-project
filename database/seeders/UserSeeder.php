@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@sif.bf'
         ], [
             'name' => 'Administrateur SIF',
+            'phone' => '+226 70 00 00 00',
             'password' => Hash::make('password123'),
             'role' => 'admin',
             'agence_id' => null

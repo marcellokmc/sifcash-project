@@ -97,10 +97,11 @@
                                     <label for="mode_paiement" class="form-label">Mode de Paiement <span class="text-danger">*</span></label>
                                     <select class="form-control @error('mode_paiement') is-invalid @enderror" id="mode_paiement" name="mode_paiement" required>
                                         <option value="">Sélectionner un mode</option>
-                                        <option value="mobile_money" {{ old('mode_paiement') == 'mobile_money' ? 'selected' : '' }}>Mobile Money</option>
+                                        <option value="espece" {{ old('mode_paiement', 'espece') == 'espece' ? 'selected' : '' }}>Espèces</option>
+                                        <option value="orange_money" {{ old('mode_paiement') == 'orange_money' ? 'selected' : '' }}>📱 Orange Money</option>
+                                        <option value="ligdicash" {{ old('mode_paiement') == 'ligdicash' ? 'selected' : '' }}>💎 LigdiCash</option>
                                         <option value="virement" {{ old('mode_paiement') == 'virement' ? 'selected' : '' }}>Virement Bancaire</option>
                                         <option value="cheque" {{ old('mode_paiement') == 'cheque' ? 'selected' : '' }}>Chèque</option>
-                                        <option value="especes" {{ old('mode_paiement') == 'especes' ? 'selected' : '' }}>Espèces</option>
                                     </select>
                                     @error('mode_paiement')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -252,7 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Afficher les champs appropriés
         switch(selectedMode) {
-            case 'mobile_money':
+            case 'orange_money':
+            case 'ligdicash':
                 document.getElementById('mobile-money-fields').style.display = 'block';
                 break;
             case 'virement':

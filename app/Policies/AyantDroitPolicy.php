@@ -40,6 +40,10 @@ class AyantDroitPolicy
      */
     public function create(User $user): bool
     {
+        // Admin can create ayants droit for management
+        if ($user->isAdmin()) {
+            return true;
+        }
         // Seuls les adhérents peuvent créer des ayants droit
         return $user->isAdherent() && $user->adherent;
     }

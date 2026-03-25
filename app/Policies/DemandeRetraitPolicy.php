@@ -15,7 +15,7 @@ class DemandeRetraitPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur']);
+        return $user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur();
     }
 
     /**
@@ -24,12 +24,12 @@ class DemandeRetraitPolicy
     public function view(User $user, DemandeRetrait $demandeRetrait)
     {
         // Admin/Agent peuvent voir toutes les demandes
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur()) {
             return true;
         }
 
         // Adhérent peut voir ses propres demandes
-        if ($user->hasRole('adherent') && $user->adherent) {
+        if ($user->isAdherent() && $user->adherent) {
             return $demandeRetrait->adherent_id === $user->adherent->id;
         }
 
@@ -41,8 +41,12 @@ class DemandeRetraitPolicy
      */
     public function create(User $user)
     {
+        // Admin can create for management
+        if ($user->isAdmin()) {
+            return true;
+        }
         // Seuls les adhérents peuvent créer des demandes de retrait
-        return $user->hasRole('adherent') && $user->adherent;
+        return $user->isAdherent() && $user->adherent;
     }
 
     /**
@@ -51,12 +55,12 @@ class DemandeRetraitPolicy
     public function update(User $user, DemandeRetrait $demandeRetrait)
     {
         // Admin/Agent peuvent modifier toutes les demandes
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur()) {
             return true;
         }
 
         // Adhérent peut modifier ses demandes en attente
-        if ($user->hasRole('adherent') && $user->adherent) {
+        if ($user->isAdherent() && $user->adherent) {
             return $demandeRetrait->adherent_id === $user->adherent->id && $demandeRetrait->statut === 'en_attente';
         }
 
@@ -69,12 +73,12 @@ class DemandeRetraitPolicy
     public function delete(User $user, DemandeRetrait $demandeRetrait)
     {
         // Admin/Agent peuvent supprimer toutes les demandes
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur()) {
             return true;
         }
 
         // Adhérent peut supprimer ses demandes en attente
-        if ($user->hasRole('adherent') && $user->adherent) {
+        if ($user->isAdherent() && $user->adherent) {
             return $demandeRetrait->adherent_id === $user->adherent->id && $demandeRetrait->statut === 'en_attente';
         }
 
@@ -86,7 +90,7 @@ class DemandeRetraitPolicy
      */
     public function validate(User $user, DemandeRetrait $demandeRetrait)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])
+        return ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur())
             && $demandeRetrait->statut === 'en_attente';
     }
 
@@ -95,7 +99,7 @@ class DemandeRetraitPolicy
      */
     public function reject(User $user, DemandeRetrait $demandeRetrait)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])
+        return ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur())
             && $demandeRetrait->statut === 'en_attente';
     }
 
@@ -104,7 +108,7 @@ class DemandeRetraitPolicy
      */
     public function process(User $user, DemandeRetrait $demandeRetrait)
     {
-        return $user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])
+        return ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur())
             && $demandeRetrait->statut === 'validé';
     }
 
@@ -114,12 +118,12 @@ class DemandeRetraitPolicy
     public function viewHistory(User $user, DemandeRetrait $demandeRetrait)
     {
         // Admin/Agent peuvent voir tous les historiques
-        if ($user->hasRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur()) {
             return true;
         }
 
         // Adhérent peut voir l'historique de ses demandes
-        if ($user->hasRole('adherent') && $user->adherent) {
+        if ($user->isAdherent() && $user->adherent) {
             return $demandeRetrait->adherent_id === $user->adherent->id;
         }
 

@@ -646,7 +646,7 @@ class AdherentController extends Controller
             'contact_urgence_2_lien' => 'nullable|string|max:255',
             'contact_urgence_2_telephone' => 'nullable|string|max:20',
             'residence' => 'required|string|max:255',
-            'secteur_numero' => 'nullable|integer|min:1',
+            'secteur_numero' => 'nullable|string|max:255',
             'profession_exercee' => 'nullable|string|max:255',
             'situation_famille' => 'required|in:marié,celibataire,veuf/veuve,divorcé',
             'profession' => 'required|string|max:255',

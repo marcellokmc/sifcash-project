@@ -286,6 +286,34 @@ class EpargneController extends Controller
     }
     
     /**
+     * Afficher les comptes épargne et l'historique des transactions pour l'adhérent connecté
+     */
+    public function indexForAdherent()
+    {
+        $user     = auth()->user();
+        $adherent = $user->adherent;
+
+        if (!$adherent) {
+            return redirect()->route('adherent.inscription')
+                ->with('info', 'Veuillez compléter votre profil adhérent.');
+        }
+
+        // Tous les comptes épargne actifs de l'adhérent
+        $epargnes = Epargne::where('adherent_id', $adherent->id)
+            ->where('statut', 'actif')
+            ->get();
+
+        // Historique paginé de toutes les transactions (tous comptes confondus)
+        $epargneIds   = $epargnes->pluck('id');
+        $transactions = \App\Models\TransactionEpargne::with('epargne')
+            ->whereIn('epargne_id', $epargneIds)
+            ->latest('date_operation')
+            ->paginate(20);
+
+        return view('adherent.epargnes.index', compact('epargnes', 'transactions'));
+    }
+
+    /**
      * Exporter la liste des épargnes en Excel
      */
     public function export()

@@ -184,7 +184,7 @@
                                     <div class="input-group">
                                         <input type="number" class="form-control @error('frais_adhesion') is-invalid @enderror" 
                                                id="frais_adhesion" name="frais_adhesion" 
-                                               value="{{ old('frais_adhesion', $plan->frais_adhesion) }}" min="0">
+                                               value="{{ old('frais_adhesion', $plan->frais_adhesion) }}" step="any" min="0">
                                         <span class="input-group-text">FCFA</span>
                                     </div>
                                     @error('frais_adhesion')
@@ -198,7 +198,7 @@
                                     <div class="input-group">
                                         <input type="number" class="form-control @error('frais_retrait') is-invalid @enderror" 
                                                id="frais_retrait" name="frais_retrait" 
-                                               value="{{ old('frais_retrait', $plan->frais_retrait) }}" min="0">
+                                               value="{{ old('frais_retrait', $plan->frais_retrait) }}" step="any" min="0">
                                         <span class="input-group-text">FCFA</span>
                                     </div>
                                     @error('frais_retrait')

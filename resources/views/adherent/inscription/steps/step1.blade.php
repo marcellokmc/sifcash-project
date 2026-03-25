@@ -41,7 +41,7 @@
                                                 <div class="mb-3">
                                                     <label for="nom" class="form-label fw-bold">Nom *</label>
                                                     <input type="text" class="form-control @error('nom') is-invalid @enderror" 
-                                                           id="nom" name="nom" value="{{ old('nom', $adherent->nom ?? '') }}" required>
+                                                           id="nom" name="nom" value="{{ old('nom', $adherent->nom ?? explode(' ', auth()->user()->name)[0]) }}" required>
                                                     @error('nom')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -51,7 +51,7 @@
                                                 <div class="mb-3">
                                                     <label for="prenom" class="form-label fw-bold">Prénom *</label>
                                                     <input type="text" class="form-control @error('prenom') is-invalid @enderror" 
-                                                           id="prenom" name="prenom" value="{{ old('prenom', $adherent->prenom ?? '') }}" required>
+                                                           id="prenom" name="prenom" value="{{ old('prenom', $adherent->prenom ?? (count(explode(' ', auth()->user()->name)) > 1 ? explode(' ', auth()->user()->name, 2)[1] : '')) }}" required>
                                                     @error('prenom')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -62,7 +62,7 @@
                                                     <label for="date_naissance" class="form-label fw-bold">Date de Naissance *</label>
                                                     <input type="date" class="form-control @error('date_naissance') is-invalid @enderror" 
                                                            id="date_naissance" name="date_naissance" 
-                                                           value="{{ old('date_naissance', $adherent->date_naissance ?? '') }}" required>
+                                                           value="{{ old('date_naissance', (isset($adherent->date_naissance) && $adherent->date_naissance) ? $adherent->date_naissance->format('Y-m-d') : '') }}" required>
                                                     @error('date_naissance')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -134,7 +134,7 @@
                                                 <div class="mb-3">
                                                     <label for="telephone" class="form-label fw-bold">Téléphone *</label>
                                                     <input type="text" class="form-control @error('telephone') is-invalid @enderror" 
-                                                           id="telephone" name="telephone" value="{{ old('telephone', $adherent->telephone ?? '') }}" required>
+                                                           id="telephone" name="telephone" value="{{ old('telephone', $adherent->telephone ?? auth()->user()->phone) }}" required>
                                                     @error('telephone')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -155,7 +155,7 @@
                                                 <div class="mb-3">
                                                     <label for="email" class="form-label fw-bold">Email (optionnel)</label>
                                                     <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                                           id="email" name="email" value="{{ old('email', $adherent->email ?? '') }}" 
+                                                           id="email" name="email" value="{{ old('email', $adherent->email ?? auth()->user()->email) }}" 
                                                            placeholder="email@exemple.com">
                                                     @error('email')
                                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -199,7 +199,7 @@
                                                     <div class="position-relative">
                                                         <input type="text" class="form-control @error('commercial_id') is-invalid @enderror" 
                                                                id="commercial_code" name="commercial_code" 
-                                                               value="{{ old('commercial_code') }}" 
+                                                               value="{{ old('commercial_code', $adherent->commercial->code_commercial ?? '') }}" 
                                                                placeholder="Tapez pour rechercher ou cliquez pour voir la liste"
                                                                autocomplete="off">
                                                         <button type="button" class="btn btn-outline-secondary position-absolute" 
@@ -220,7 +220,7 @@
                                                     </div>
                                                     <small class="text-muted">Optionnel : Si vous avez été référencé par un commercial</small>
                                                     <div id="commercial-selection" class="mt-2"></div>
-                                                    <input type="hidden" id="commercial_id" name="commercial_id" value="{{ old('commercial_id') }}">
+                                                    <input type="hidden" id="commercial_id" name="commercial_id" value="{{ old('commercial_id', $adherent->commercial_id ?? '') }}">
                                                     @error('commercial_id')
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
@@ -613,6 +613,36 @@ document.addEventListener('DOMContentLoaded', function() {
             closeDropdown();
         }
     });
+
+    // Gérer l'état initial (si un commercial est déjà sélectionné)
+    function checkInitialSelection() {
+        const initialId = commercialIdInput.value;
+        if (initialId && allCommercials.length > 0) {
+            const commercial = allCommercials.find(c => c.id == initialId);
+            if (commercial) {
+                const nomComplet = `${commercial.nom} ${commercial.prenoms}`;
+                commercialSelection.innerHTML = `
+                    <div class="alert alert-success py-2">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Commercial sélectionné:</strong> ${nomComplet} (${commercial.code_commercial})
+                        <button type="button" class="btn btn-sm btn-outline-danger float-end" id="clear-commercial">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                document.getElementById('clear-commercial').addEventListener('click', function() {
+                    clearSelection();
+                });
+            }
+        }
+    }
+
+    // Appeler checkInitialSelection après l'initialisation des commerciaux
+    const originalInitialize = initializeCommercials;
+    initializeCommercials = function(data) {
+        originalInitialize(data);
+        checkInitialSelection();
+    };
 });
 </script>
 @endpush

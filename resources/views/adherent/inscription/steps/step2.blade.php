@@ -38,7 +38,20 @@
 
                         <div id="ayants-droit-container">
                             @php
-                                $oldAyants = old('ayants_droit', []);
+                                $oldAyants = old('ayants_droit');
+                                if (is_null($oldAyants) && isset($adherent) && $adherent->ayantsDroit->count() > 0) {
+                                    $oldAyants = $adherent->ayantsDroit->map(function($a) {
+                                        return [
+                                            'nom' => $a->nom,
+                                            'prenom' => $a->prenom,
+                                            'date_naissance' => $a->date_naissance ? $a->date_naissance->format('Y-m-d') : null,
+                                            'lien_parente' => $a->lien_parente,
+                                            'contact' => $a->contact,
+                                            'type_beneficiaire' => $a->type_beneficiaire,
+                                        ];
+                                    })->toArray();
+                                }
+                                $oldAyants = $oldAyants ?? [];
                                 $ayantCount = count($oldAyants) > 0 ? count($oldAyants) : 1;
                             @endphp
 

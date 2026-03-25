@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Adhesion;
 use App\Models\Plan;
 use App\Models\Adherent;
+use App\Models\Epargne;
+use App\Models\TransactionEpargne;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Traits\FiltersByAgentAdherents;
@@ -247,19 +251,106 @@ class AdhesionController extends Controller
     }
 
     /**
-     * Activer une adhésion
+     * Activer une adhésion et créditer le compte épargne de l'adhérent
      */
-    public function activate(Adhesion $adhesion)
+    public function activate(Request $request, Adhesion $adhesion)
     {
         if ($adhesion->isActif()) {
             return redirect()->back()
                 ->with('error', 'Cette adhésion est déjà active.');
         }
 
-        $adhesion->activer();
+        DB::transaction(function () use ($request, $adhesion) {
+            $adherent   = $adhesion->adherent;
+            $plan       = $adhesion->plan;
+            $montant    = (float) $adhesion->montant_souscrit;
+            $moyen      = $request->input('moyen_paiement', 'espece');
+
+            // 1. Créer le paiement officiel de catégorie 'ouverture'
+            // cela permet de tracer le paiement initial dans l'historique de l'adhésion
+            $paiement = \App\Models\Paiement::create([
+                'adhesion_id'           => $adhesion->id,
+                'adherent_id'           => $adherent->id,
+                'montant'                => $montant,
+                'categorie'              => 'ouverture',
+                'mode_paiement'          => $moyen,
+                'statut'                 => 'validé',
+                'date_soumission'        => now(),
+                'date_validation'        => now(),
+                'validated_by_agent_id'  => auth()->id(),
+                'reference_paiement'     => 'AUTO-' . strtoupper(uniqid()),
+            ]);
+
+            // Forcer le flag de frais d'ouverture car l'admin valide manuellement l'activation
+            $adhesion->frais_ouverture_payes = true;
+            $adhesion->save();
+
+            // 2. Activer l'adhésion (statut → actif) via le modèle
+            $adhesion->activer();
+
+            // Mapper le nom du plan vers un type_epargne connu
+            $typeEpargne = $this->resoudreTypeEpargne($plan->nom ?? '');
+
+            // 3. Trouver ou créer le compte épargne de l'adhérent pour ce type
+            $epargne = Epargne::firstOrCreate(
+                [
+                    'adherent_id'  => $adherent->id,
+                    'type_epargne' => $typeEpargne,
+                    'statut'       => 'actif',
+                ],
+                [
+                    'montant_initial'  => 0,
+                    'solde_actuel'     => 0,
+                    'taux_interet'     => $plan->taux_interet ?? 2.5,
+                    'interet_cumule'   => 0,
+                    'date_ouverture'   => now(),
+                ]
+            );
+
+            // 4. Enregistrer la transaction d'épargne (dépôt)
+            $soldeAvant = (float) $epargne->solde_actuel;
+            TransactionEpargne::create([
+                'epargne_id'           => $epargne->id,
+                'type_operation'       => 'depot',
+                'montant'              => $montant,
+                'date_operation'       => now(),
+                'moyen_paiement'       => $moyen,
+                'reference'            => 'ADH-' . str_pad($adhesion->id, 6, '0', STR_PAD_LEFT),
+                'notes'                => 'Activation de l\'adhésion au plan : ' . ($plan->nom ?? 'N/A'),
+                'solde_apres_operation'=> $soldeAvant + $montant,
+                'auteur_id'            => auth()->id(),
+            ]);
+
+            // 5. Créditer le solde du compte épargne
+            $epargne->increment('solde_actuel', $montant);
+
+            // 6. Notifier l'adhérent si un compte utilisateur existe
+            if ($adherent->user_id) {
+                NotificationService::creerNotification(
+                    $adherent->user_id,
+                    '🎉 Adhésion activée & solde crédité !',
+                    'Votre adhésion au plan "' . ($plan->nom ?? 'N/A') . '" a été activée. '
+                      . number_format($montant, 0, ',', ' ') . ' FCFA ont été crédités sur votre compte épargne.',
+                    'success'
+                );
+            }
+        });
 
         return redirect()->back()
-            ->with('success', 'Adhésion activée avec succès.');
+            ->with('success', 'Adhésion activée et compte épargne crédité avec succès.');
+    }
+
+    /**
+     * Résoudre le type d'épargne en fonction du nom du plan
+     */
+    private function resoudreTypeEpargne(string $nomPlan): string
+    {
+        $nomLower = strtolower($nomPlan);
+        if (str_contains($nomLower, 'jeune'))    return 'epargne_jeune';
+        if (str_contains($nomLower, 'logement')) return 'epargne_logement';
+        if (str_contains($nomLower, 'retraite')) return 'epargne_retraite';
+        if (str_contains($nomLower, 'scolaire')) return 'epargne_scolaire';
+        return 'epargne_ordinaire'; // par défaut
     }
 
     /**

@@ -15,7 +15,7 @@ class PaiementPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur']);
+        return $user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur();
     }
 
     /**
@@ -24,12 +24,12 @@ class PaiementPolicy
     public function view(User $user, Paiement $paiement)
     {
         // Admin/Agent peuvent voir tous les paiements
-        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur()) {
             return true;
         }
 
         // Adhérent peut voir ses propres paiements
-        if ($user->hasRole('adherent') && $user->adherent) {
+        if ($user->isAdherent() && $user->adherent) {
             return $paiement->adherent_id === $user->adherent->id;
         }
 
@@ -41,8 +41,12 @@ class PaiementPolicy
      */
     public function create(User $user)
     {
+        // Admin can create payments for management
+        if ($user->isAdmin()) {
+            return true;
+        }
         // Seuls les adhérents peuvent créer des paiements
-        return $user->hasRole('adherent') && $user->adherent;
+        return $user->isAdherent() && $user->adherent;
     }
 
     /**
@@ -51,12 +55,12 @@ class PaiementPolicy
     public function update(User $user, Paiement $paiement)
     {
         // Admin/Agent peuvent modifier tous les paiements
-        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur()) {
             return true;
         }
 
         // Adhérent peut modifier ses paiements en brouillon
-        if ($user->hasRole('adherent') && $user->adherent) {
+        if ($user->isAdherent() && $user->adherent) {
             return $paiement->adherent_id === $user->adherent->id && $paiement->statut === 'brouillon';
         }
 
@@ -69,12 +73,12 @@ class PaiementPolicy
     public function delete(User $user, Paiement $paiement)
     {
         // Admin/Agent peuvent supprimer tous les paiements
-        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur()) {
             return true;
         }
 
         // Adhérent peut supprimer ses paiements en brouillon
-        if ($user->hasRole('adherent') && $user->adherent) {
+        if ($user->isAdherent() && $user->adherent) {
             return $paiement->adherent_id === $user->adherent->id && $paiement->statut === 'brouillon';
         }
 
@@ -86,7 +90,7 @@ class PaiementPolicy
      */
     public function validate(User $user, Paiement $paiement)
     {
-        return $user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])
+        return ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur())
             && in_array($paiement->statut, ['soumis', 'en_attente']);
     }
 
@@ -95,7 +99,7 @@ class PaiementPolicy
      */
     public function reject(User $user, Paiement $paiement)
     {
-        return $user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])
+        return ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur())
             && in_array($paiement->statut, ['soumis', 'en_attente']);
     }
 
@@ -105,12 +109,12 @@ class PaiementPolicy
     public function download(User $user, Paiement $paiement)
     {
         // Admin/Agent peuvent télécharger toutes les preuves
-        if ($user->hasAnyRole(['admin', 'agent', 'chef_service', 'superviseur'])) {
+        if ($user->isAdmin() || $user->isAgent() || $user->isChefService() || $user->isSuperviseur()) {
             return true;
         }
 
         // Adhérent peut télécharger ses propres preuves
-        if ($user->hasRole('adherent') && $user->adherent) {
+        if ($user->isAdherent() && $user->adherent) {
             return $paiement->adherent_id === $user->adherent->id;
         }
 

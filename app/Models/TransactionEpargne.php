@@ -24,6 +24,8 @@ class TransactionEpargne extends Model
      */
     public const MOYENS_PAIEMENT = [
         'espece' => 'Espèces',
+        'orange_money' => 'Orange Money',
+        'ligdicash' => 'LigdiCash',
         'cheque' => 'Chèque',
         'virement' => 'Virement bancaire',
         'prelevement' => 'Prélèvement',

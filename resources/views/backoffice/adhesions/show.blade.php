@@ -429,12 +429,9 @@
             <div class="card-body">
                 @if($adhesion->statut === 'en_attente_activation')
                     @can('activate', $adhesion)
-                        <form method="POST" action="{{ route('admin.adhesions.activate', $adhesion) }}" class="mb-2">
-                            @csrf
-                            <button type="submit" class="btn btn-success w-100" onclick="return confirm('Activer cette adhésion ?')">
-                                <i class="fas fa-play me-1"></i>Activer l'adhésion
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-success w-100 mb-2" data-bs-toggle="modal" data-bs-target="#activateModal">
+                            <i class="fas fa-play me-1"></i>Activer & Créditer le solde
+                        </button>
                     @endcan
                 @elseif($adhesion->statut === 'actif')
                     @can('suspend', $adhesion)
@@ -653,6 +650,65 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-danger">
                         <i class="fas fa-times me-1"></i>Rejeter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Modal pour activer et créditer l'adhésion --}}
+<div class="modal fade" id="activateModal" tabindex="-1" aria-labelledby="activateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ route('admin.adhesions.activate', $adhesion) }}">
+                @csrf
+                <div class="modal-header" style="background: linear-gradient(135deg,#11998e,#38ef7d); color:white;">
+                    <h5 class="modal-title" id="activateModalLabel">
+                        <i class="fas fa-play-circle me-2"></i>Activer & Créditer le solde
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Cette action va <strong>activer l'adhésion</strong> et <strong>créditer
+                        {{ number_format($adhesion->montant_souscrit, 0, ',', ' ') }} FCFA</strong>
+                        sur le compte épargne de
+                        <strong>{{ $adhesion->adherent->prenom ?? '' }} {{ $adhesion->adherent->nom ?? '' }}</strong>.
+                    </div>
+                    <div class="mb-3">
+                        <label for="moyen_paiement" class="form-label fw-bold">
+                            <i class="fas fa-credit-card me-1"></i>Moyen de paiement <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="moyen_paiement" name="moyen_paiement" required>
+                            <option value="espece" selected>💵 Espèces</option>
+                            <option value="orange_money">📱 Orange Money</option>
+                            <option value="ligdicash">💎 LigdiCash</option>
+                            <option value="cheque">📄 Chèque</option>
+                            <option value="virement">🏦 Virement bancaire</option>
+                            <option value="prelevement">🔄 Prélèvement automatique</option>
+                            <option value="carte">💳 Carte bancaire</option>
+                            <option value="autre">📋 Autre</option>
+                        </select>
+                    </div>
+                    <div class="p-3 bg-light rounded">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Plan</small>
+                                <strong>{{ $adhesion->plan->nom ?? 'N/A' }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Montant à créditer</small>
+                                <strong class="text-success">{{ number_format($adhesion->montant_souscrit, 0, ',', ' ') }} FCFA</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check me-1"></i>Confirmer & Créditer
                     </button>
                 </div>
             </form>

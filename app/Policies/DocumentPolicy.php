@@ -40,6 +40,10 @@ class DocumentPolicy
      */
     public function create(User $user): bool
     {
+        // Admin can upload documents for management
+        if ($user->isAdmin()) {
+            return true;
+        }
         // Seuls les adhérents peuvent uploader des documents
         return $user->isAdherent() && $user->adherent;
     }
