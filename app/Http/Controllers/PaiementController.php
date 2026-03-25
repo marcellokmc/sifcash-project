@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\FiltersByAgentAdherents;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class PaiementController extends Controller
 {
@@ -21,6 +23,40 @@ class PaiementController extends Controller
     {
         $query = Paiement::with(['adherent', 'adhesion.plan', 'validatedByAgent']);
         
+        // Filtres
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('reference_paiement', 'like', "%$search%")
+                  ->orWhereHas('adherent', function($q2) use ($search) {
+                      $q2->where('nom', 'like', "%$search%")
+                         ->orWhere('prenom', 'like', "%$search%")
+                         ->orWhere('telephone', 'like', "%$search%")
+                         ->orWhere('membre_id', 'like', "%$search%");
+                  });
+            });
+        }
+
+        if ($request->filled('statut') && $request->statut !== 'all') {
+            $query->where('statut', $request->statut);
+        }
+
+        if ($request->filled('categorie')) {
+            $query->where('categorie', $request->categorie);
+        }
+
+        if ($request->filled('mode')) {
+            $query->where('mode_paiement', $request->mode);
+        }
+
+        if ($request->filled('date_debut')) {
+            $query->whereDate('date_soumission', '>=', $request->date_debut);
+        }
+
+        if ($request->filled('date_fin')) {
+            $query->whereDate('date_soumission', '<=', $request->date_fin);
+        }
+
         // Filtrer par agent si nécessaire
         $query = $this->applyAgentFilter($query, 'adherent');
         
@@ -176,7 +212,9 @@ class PaiementController extends Controller
 
         $adhesions = Adhesion::where('adherent_id', $adherent->id)
             ->where('statut', 'actif')
-            ->with('plan')
+            ->with(['plan', 'paiements' => function($query) {
+                $query->latest();
+            }])
             ->get();
 
         return view('adherent.paiements.create', compact('adhesions'));
@@ -198,8 +236,8 @@ class PaiementController extends Controller
             'adhesion_id' => 'required|exists:adhesions,id',
             'categorie' => 'required|in:ouverture,cotisation,credit,autre',
             'montant' => 'required|numeric|min:0.01',
-            'mode_paiement' => 'required|in:mobile_money,virement,cheque,espece,orange_money,ligdicash',
-            'preuve' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'mode_paiement' => 'required|in:mobile_money,virement,cheque,espece,orange_money,moov_money,ligdicash',
+            'preuve' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'reference_paiement' => 'nullable|string|max:255',
             'numero_compte_beneficiaire' => 'nullable|string|max:255',
             'banque_emetteur' => 'nullable|string|max:255',
@@ -224,8 +262,11 @@ class PaiementController extends Controller
                 ->withInput();
         }
 
-        // Upload de la preuve
-        $preuvePath = $request->file('preuve')->store('paiements_preuves');
+        // Upload de la preuve (optionnel)
+        $preuvePath = null;
+        if ($request->hasFile('preuve')) {
+            $preuvePath = $request->file('preuve')->store('paiements_preuves');
+        }
 
         $paiement = Paiement::create([
             'adhesion_id' => $request->adhesion_id,
@@ -233,7 +274,7 @@ class PaiementController extends Controller
             'montant' => $request->montant,
             'categorie' => $request->categorie,
             'mode_paiement' => $request->mode_paiement,
-            'preuve' => $preuvePath,
+            'preuve' => $preuvePath ?? null,
             'reference_paiement' => $request->reference_paiement,
             'numero_compte_beneficiaire' => $request->numero_compte_beneficiaire,
             'banque_emetteur' => $request->banque_emetteur,
@@ -242,8 +283,15 @@ class PaiementController extends Controller
             'date_soumission' => now(),
         ]);
 
+        $msg = 'Votre versement a été soumis avec succès.';
+        if($paiement->mode_paiement === 'espece') {
+            $msg .= ' Vous pouvez maintenant télécharger votre quittance de dépôt ci-dessous pour la présenter en bureau SIFCash.';
+        } else {
+            $msg .= ' Il sera validé par nos équipes dans les 24h à 48h.';
+        }
+
         return redirect()->route('adherent.paiements.show', $paiement)
-            ->with('success', 'Paiement soumis avec succès. Il sera validé dans les 24-48h.');
+            ->with('success', $msg);
     }
 
     /**
@@ -378,5 +426,29 @@ class PaiementController extends Controller
         }
 
         return Storage::download($paiement->preuve);
+    }
+
+    /**
+     * Download payment receipt (Quittance) as PDF.
+     */
+    public function downloadQuittance(Paiement $paiement)
+    {
+        $user = Auth::user();
+        $isAdherent = $user->hasRole('adherent');
+        
+        if ($isAdherent) {
+            $adherent = $user->adherent;
+            if (!$adherent || $paiement->adherent_id !== $adherent->id) {
+                abort(403, 'Accès non autorisé.');
+            }
+        }
+
+        $paiement->load(['adherent', 'adhesion.plan']);
+        
+        $pdf = Pdf::loadView('pdf.quittance', compact('paiement'));
+        
+        $filename = 'quittance_' . ($paiement->reference_paiement ?? 'P'.$paiement->id) . '.pdf';
+        
+        return $pdf->download($filename);
     }
 }

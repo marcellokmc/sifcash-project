@@ -172,6 +172,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('paiements/{paiement}/edit', [PaiementController::class, 'editForAdherent'])->middleware('can:update,paiement')->name('paiements.edit');
         Route::put('paiements/{paiement}', [PaiementController::class, 'updateForAdherent'])->middleware('can:update,paiement')->name('paiements.update');
         Route::get('paiements/{paiement}/download', [PaiementController::class, 'downloadForAdherent'])->middleware('can:download,paiement')->name('paiements.download');
+        Route::get('paiements/{paiement}/quittance', [PaiementController::class, 'downloadQuittance'])->name('paiements.quittance');
 
         // Retraits (Espace adhérent)
         Route::get('retraits', [DemandeRetraitController::class, 'indexForAdherent'])->name('retraits.index');
@@ -189,6 +190,10 @@ Route::middleware(['auth'])->group(function () {
         // Téléchargement du contrat d'adhésion
         Route::get('contrat/download', [AdherentController::class, 'downloadContract'])
             ->name('contrat.download');
+
+        // Épargne - solde et historique des transactions
+        Route::get('epargne', [EpargneController::class, 'indexForAdherent'])
+            ->name('epargne.index');
     });
 
     // API Notifications (utilisé par le front - garde web + session)
@@ -274,6 +279,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('paiements/{paiement}/validate', [PaiementController::class, 'validatePayment'])->middleware('can:validate,paiement')->name('paiements.validate');
         Route::post('paiements/{paiement}/reject', [PaiementController::class, 'reject'])->middleware('can:reject,paiement')->name('paiements.reject');
         Route::get('paiements/{paiement}/download', [PaiementController::class, 'download'])->middleware('can:download,paiement')->name('paiements.download');
+        Route::get('paiements/{paiement}/quittance', [PaiementController::class, 'downloadQuittance'])->name('paiements.quittance');
 
         // Gestion des épargnes
         Route::resource('epargnes', EpargneController::class);

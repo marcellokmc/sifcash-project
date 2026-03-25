@@ -1,9 +1,9 @@
-@extends('backoffice.layouts.app')
 
-@section('title', 'Adhésion #'.$adhesion->id)
-@section('page-title', 'Détails de l\'Adhésion')
 
-@push('styles')
+<?php $__env->startSection('title', 'Adhésion #'.$adhesion->id); ?>
+<?php $__env->startSection('page-title', 'Détails de l\'Adhésion'); ?>
+
+<?php $__env->startPush('styles'); ?>
 <style>
     .stat-card {
         border-radius: 12px;
@@ -74,23 +74,23 @@
         box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
-@include('components.backoffice.alerts')
+<?php $__env->startSection('content'); ?>
+<?php echo $__env->make('components.backoffice.alerts', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-{{-- Alerte pour paiements en attente --}}
-@php
+
+<?php
     $paiementsEnAttenteCount = $adhesion->paiements->where('statut', 'en_attente')->count();
-@endphp
+?>
 
-@if($paiementsEnAttenteCount > 0)
+<?php if($paiementsEnAttenteCount > 0): ?>
 <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert" style="border-left: 4px solid #ffc107;">
     <div class="d-flex align-items-center">
         <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
         <div>
             <h5 class="alert-heading mb-1">
-                <i class="fas fa-bell me-1"></i>Attention : {{ $paiementsEnAttenteCount }} paiement(s) en attente de validation
+                <i class="fas fa-bell me-1"></i>Attention : <?php echo e($paiementsEnAttenteCount); ?> paiement(s) en attente de validation
             </h5>
             <p class="mb-0">
                 Cette adhésion a des paiements qui nécessitent votre validation. Veuillez les examiner dans la section "Historique des Paiements" ci-dessous.
@@ -99,40 +99,43 @@
     </div>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
-@endif
+<?php endif; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 mb-1">
-            <i class="fas fa-file-contract text-primary me-2"></i>Adhésion #{{ $adhesion->id }}
+            <i class="fas fa-file-contract text-primary me-2"></i>Adhésion #<?php echo e($adhesion->id); ?>
+
         </h1>
         <div class="text-muted">
-            <i class="fas fa-user me-1"></i>{{ $adhesion->adherent->nom ?? 'N/A' }} {{ $adhesion->adherent->prenom ?? '' }}
-            @if($adhesion->adherent->telephone)
-                | <i class="fas fa-phone me-1"></i>{{ $adhesion->adherent->telephone }}
-            @endif
+            <i class="fas fa-user me-1"></i><?php echo e($adhesion->adherent->nom ?? 'N/A'); ?> <?php echo e($adhesion->adherent->prenom ?? ''); ?>
+
+            <?php if($adhesion->adherent->telephone): ?>
+                | <i class="fas fa-phone me-1"></i><?php echo e($adhesion->adherent->telephone); ?>
+
+            <?php endif; ?>
         </div>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('admin.adhesions.index') }}" class="btn btn-secondary btn-action">
+        <a href="<?php echo e(route('admin.adhesions.index')); ?>" class="btn btn-secondary btn-action">
             <i class="fas fa-arrow-left me-1"></i>Retour
         </a>
-        <a href="{{ route('admin.adhesions.download', $adhesion) }}" class="btn btn-info btn-action">
+        <a href="<?php echo e(route('admin.adhesions.download', $adhesion)); ?>" class="btn btn-info btn-action">
             <i class="fas fa-download me-1"></i>Télécharger
         </a>
-        <a href="{{ route('admin.adhesions.download-with-payments', $adhesion) }}" class="btn btn-primary btn-action">
+        <a href="<?php echo e(route('admin.adhesions.download-with-payments', $adhesion)); ?>" class="btn btn-primary btn-action">
             <i class="fas fa-file-pdf me-1"></i>Avec paiements
         </a>
-        @can('update', $adhesion)
-            <a href="{{ route('admin.adhesions.edit', $adhesion) }}" class="btn btn-warning btn-action">
+        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('update', $adhesion)): ?>
+            <a href="<?php echo e(route('admin.adhesions.edit', $adhesion)); ?>" class="btn btn-warning btn-action">
                 <i class="fas fa-edit me-1"></i>Modifier
             </a>
-        @endcan
+        <?php endif; ?>
     </div>
 </div>
 
-{{-- Statistiques de l'adhésion --}}
-@php
+
+<?php
     $totalPaiements = $adhesion->paiements->where('statut', 'validé')->sum('montant');
     $paiementsEnAttente = $adhesion->paiements->where('statut', 'en_attente')->count();
     $retraitAnticipe = $adhesion->paiements
@@ -143,7 +146,7 @@
                 ->whereNotIn('type_frais', ['interet', 'dossier', 'entretien'])
                 ->sum('montant');
         });
-@endphp
+?>
 
 <div class="row g-3 mb-4">
     <div class="col-md-3">
@@ -155,7 +158,7 @@
                     </div>
                     <div>
                         <div class="info-label">Montant souscrit</div>
-                        <div class="info-value">{{ number_format($adhesion->montant_souscrit, 0, ',', ' ') }}</div>
+                        <div class="info-value"><?php echo e(number_format($adhesion->montant_souscrit, 0, ',', ' ')); ?></div>
                         <small class="text-muted">FCFA</small>
                     </div>
                 </div>
@@ -171,7 +174,7 @@
                     </div>
                     <div>
                         <div class="info-label">Total paiements</div>
-                        <div class="info-value">{{ number_format($totalPaiements, 0, ',', ' ') }}</div>
+                        <div class="info-value"><?php echo e(number_format($totalPaiements, 0, ',', ' ')); ?></div>
                         <small class="text-muted">FCFA</small>
                     </div>
                 </div>
@@ -187,7 +190,7 @@
                     </div>
                     <div>
                         <div class="info-label">En attente</div>
-                        <div class="info-value">{{ $paiementsEnAttente }}</div>
+                        <div class="info-value"><?php echo e($paiementsEnAttente); ?></div>
                         <small class="text-muted">paiement(s)</small>
                     </div>
                 </div>
@@ -203,7 +206,7 @@
                     </div>
                     <div>
                         <div class="info-label">Retrait anticipé</div>
-                        <div class="info-value">{{ number_format($retraitAnticipe, 0, ',', ' ') }}</div>
+                        <div class="info-value"><?php echo e(number_format($retraitAnticipe, 0, ',', ' ')); ?></div>
                         <small class="text-muted">FCFA</small>
                     </div>
                 </div>
@@ -226,40 +229,43 @@
                     <div class="col-md-6 mb-3">
                         <h6 class="text-muted">Plan d'épargne</h6>
                         <p class="mb-0">
-                            <strong>{{ $adhesion->plan->nom ?? 'Plan supprimé' }}</strong>
-                            @if($adhesion->plan)
+                            <strong><?php echo e($adhesion->plan->nom ?? 'Plan supprimé'); ?></strong>
+                            <?php if($adhesion->plan): ?>
                                 <br><small class="text-muted">
-                                    Taux: {{ $adhesion->plan->taux_interet }}% - {{ ucfirst($adhesion->plan->periodicite) }}
+                                    Taux: <?php echo e($adhesion->plan->taux_interet); ?>% - <?php echo e(ucfirst($adhesion->plan->periodicite)); ?>
+
                                 </small>
-                            @endif
+                            <?php endif; ?>
                         </p>
                     </div>
                     
                     <div class="col-md-6 mb-3">
                         <h6 class="text-muted">Montant souscrit</h6>
                         <p class="mb-0">
-                            <strong class="text-primary h5">{{ number_format($adhesion->montant_souscrit, 0, ',', ' ') }} FCFA</strong>
+                            <strong class="text-primary h5"><?php echo e(number_format($adhesion->montant_souscrit, 0, ',', ' ')); ?> FCFA</strong>
                         </p>
                     </div>
                     
                     <div class="col-md-6 mb-3">
                         <h6 class="text-muted">Date de début</h6>
                         <p class="mb-0">
-                            {{ $adhesion->date_debut ? \Carbon\Carbon::parse($adhesion->date_debut)->format('d/m/Y') : 'Non définie' }}
+                            <?php echo e($adhesion->date_debut ? \Carbon\Carbon::parse($adhesion->date_debut)->format('d/m/Y') : 'Non définie'); ?>
+
                         </p>
                     </div>
                     
                     <div class="col-md-6 mb-3">
                         <h6 class="text-muted">Date de fin</h6>
                         <p class="mb-0">
-                            {{ $adhesion->date_fin ? \Carbon\Carbon::parse($adhesion->date_fin)->format('d/m/Y') : 'Non définie' }}
+                            <?php echo e($adhesion->date_fin ? \Carbon\Carbon::parse($adhesion->date_fin)->format('d/m/Y') : 'Non définie'); ?>
+
                         </p>
                     </div>
                     
                     <div class="col-md-6 mb-3">
                         <h6 class="text-muted">Statut</h6>
                         <p class="mb-0">
-                            @php
+                            <?php
                                 $statutClass = match($adhesion->statut) {
                                     'actif' => 'bg-success',
                                     'en_attente_activation' => 'bg-warning text-dark',
@@ -268,9 +274,10 @@
                                     'annulee' => 'bg-danger',
                                     default => 'bg-info'
                                 };
-                            @endphp
-                            <span class="badge {{ $statutClass }} fs-6">
-                                {{ ucfirst(str_replace('_', ' ', $adhesion->statut)) }}
+                            ?>
+                            <span class="badge <?php echo e($statutClass); ?> fs-6">
+                                <?php echo e(ucfirst(str_replace('_', ' ', $adhesion->statut))); ?>
+
                             </span>
                         </p>
                     </div>
@@ -278,39 +285,40 @@
                     <div class="col-md-6 mb-3">
                         <h6 class="text-muted">Renouvelable</h6>
                         <p class="mb-0">
-                            @if($adhesion->renouvelable)
+                            <?php if($adhesion->renouvelable): ?>
                                 <span class="badge bg-success fs-6">
                                     <i class="fas fa-check me-1"></i>Oui
                                 </span>
-                            @else
+                            <?php else: ?>
                                 <span class="badge bg-secondary fs-6">
                                     <i class="fas fa-times me-1"></i>Non
                                 </span>
-                            @endif
+                            <?php endif; ?>
                         </p>
                     </div>
                     
                     <div class="col-md-6 mb-3">
                         <h6 class="text-muted">Date de création</h6>
-                        <p class="mb-0">{{ $adhesion->created_at->format('d/m/Y à H:i') }}</p>
+                        <p class="mb-0"><?php echo e($adhesion->created_at->format('d/m/Y à H:i')); ?></p>
                     </div>
                     
                     <div class="col-md-6 mb-3">
                         <h6 class="text-muted">Dernière mise à jour</h6>
-                        <p class="mb-0">{{ $adhesion->updated_at->format('d/m/Y à H:i') }}</p>
+                        <p class="mb-0"><?php echo e($adhesion->updated_at->format('d/m/Y à H:i')); ?></p>
                     </div>
                 </div>
                 
-                @if($adhesion->notes)
+                <?php if($adhesion->notes): ?>
                 <div class="row">
                     <div class="col-12">
                         <h6 class="text-muted">Notes</h6>
                         <div class="alert alert-info">
-                            <i class="fas fa-sticky-note me-2"></i>{{ $adhesion->notes }}
+                            <i class="fas fa-sticky-note me-2"></i><?php echo e($adhesion->notes); ?>
+
                         </div>
                     </div>
                 </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
         
@@ -322,7 +330,7 @@
                 </h5>
             </div>
             <div class="card-body p-0">
-                @if($adhesion->paiements->count() > 0)
+                <?php if($adhesion->paiements->count() > 0): ?>
                     <div class="table-responsive">
                         <table class="table table-hover paiement-table mb-0">
                             <thead>
@@ -337,82 +345,85 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($adhesion->paiements->sortByDesc('date_soumission') as $paiement)
+                                <?php $__currentLoopData = $adhesion->paiements->sortByDesc('date_soumission'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $paiement): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td><span class="badge bg-secondary">#{{ $paiement->id }}</span></td>
+                                    <td><span class="badge bg-secondary">#<?php echo e($paiement->id); ?></span></td>
                                     <td>
                                         <small class="text-muted">
-                                            {{ $paiement->date_soumission ? $paiement->date_soumission->format('d/m/Y H:i') : 'N/A' }}
+                                            <?php echo e($paiement->date_soumission ? $paiement->date_soumission->format('d/m/Y H:i') : 'N/A'); ?>
+
                                         </small>
                                     </td>
-                                    <td><strong>{{ number_format($paiement->montant, 0, ',', ' ') }} FCFA</strong></td>
+                                    <td><strong><?php echo e(number_format($paiement->montant, 0, ',', ' ')); ?> FCFA</strong></td>
                                     <td>
-                                        <span class="badge bg-{{ $paiement->categorie === 'ouverture' ? 'info' : 'primary' }}">
-                                            {{ ucfirst($paiement->categorie) }}
+                                        <span class="badge bg-<?php echo e($paiement->categorie === 'ouverture' ? 'info' : 'primary'); ?>">
+                                            <?php echo e(ucfirst($paiement->categorie)); ?>
+
                                         </span>
                                     </td>
-                                    <td><small>{{ ucfirst(str_replace('_', ' ', $paiement->mode_paiement)) }}</small></td>
+                                    <td><small><?php echo e(ucfirst(str_replace('_', ' ', $paiement->mode_paiement))); ?></small></td>
                                     <td>
-                                        @if($paiement->statut === 'validé')
+                                        <?php if($paiement->statut === 'validé'): ?>
                                             <span class="badge bg-success">
                                                 <i class="fas fa-check me-1"></i>Validé
                                             </span>
-                                        @elseif($paiement->statut === 'rejeté')
+                                        <?php elseif($paiement->statut === 'rejeté'): ?>
                                             <span class="badge bg-danger">
                                                 <i class="fas fa-times me-1"></i>Rejeté
                                             </span>
-                                        @else
+                                        <?php else: ?>
                                             <span class="badge bg-warning text-dark">
                                                 <i class="fas fa-clock me-1"></i>En attente
                                             </span>
-                                        @endif
+                                        <?php endif; ?>
                                     </td>
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ route('admin.paiements.show', $paiement) }}" 
+                                            <a href="<?php echo e(route('admin.paiements.show', $paiement)); ?>" 
                                                class="btn btn-outline-info" 
                                                title="Voir détails">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            @if($paiement->statut === 'en_attente')
-                                                @can('validate', $paiement)
+                                            <?php if($paiement->statut === 'en_attente'): ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('validate', $paiement)): ?>
                                                     <button type="button" 
                                                             class="btn btn-outline-success" 
-                                                            onclick="approvePaiement({{ $paiement->id }})"
+                                                            onclick="approvePaiement(<?php echo e($paiement->id); ?>)"
                                                             title="Approuver">
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                     <button type="button" 
                                                             class="btn btn-outline-danger" 
-                                                            onclick="rejectPaiement({{ $paiement->id }})"
+                                                            onclick="rejectPaiement(<?php echo e($paiement->id); ?>)"
                                                             title="Rejeter">
                                                         <i class="fas fa-times"></i>
                                                     </button>
-                                                @endcan
-                                            @endif
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
-                                @if($paiement->motif_rejet)
+                                <?php if($paiement->motif_rejet): ?>
                                 <tr class="bg-light">
                                     <td colspan="7">
                                         <small class="text-danger">
                                             <i class="fas fa-exclamation-circle me-1"></i>
-                                            <strong>Motif de rejet:</strong> {{ $paiement->motif_rejet }}
+                                            <strong>Motif de rejet:</strong> <?php echo e($paiement->motif_rejet); ?>
+
                                         </small>
                                     </td>
                                 </tr>
-                                @endif
-                                @endforeach
+                                <?php endif; ?>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="text-center py-5">
                         <i class="fas fa-inbox text-muted" style="font-size: 3rem;"></i>
                         <p class="text-muted mt-3">Aucun paiement enregistré pour cette adhésion</p>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -427,45 +438,45 @@
                 </h6>
             </div>
             <div class="card-body">
-                @if($adhesion->statut === 'en_attente_activation')
-                    @can('activate', $adhesion)
+                <?php if($adhesion->statut === 'en_attente_activation'): ?>
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('activate', $adhesion)): ?>
                         <button type="button" class="btn btn-success w-100 mb-2" data-bs-toggle="modal" data-bs-target="#activateModal">
                             <i class="fas fa-play me-1"></i>Activer & Créditer le solde
                         </button>
-                    @endcan
-                @elseif($adhesion->statut === 'actif')
-                    @can('suspend', $adhesion)
+                    <?php endif; ?>
+                <?php elseif($adhesion->statut === 'actif'): ?>
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('suspend', $adhesion)): ?>
                         <button type="button" class="btn btn-warning w-100 mb-2" data-bs-toggle="modal" data-bs-target="#suspendModal">
                             <i class="fas fa-pause me-1"></i>Suspendre
                         </button>
-                    @endcan
+                    <?php endif; ?>
                     
-                    @can('close', $adhesion)
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('close', $adhesion)): ?>
                         <button type="button" class="btn btn-secondary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#closeModal">
                             <i class="fas fa-stop me-1"></i>Clôturer
                         </button>
-                    @endcan
-                @elseif($adhesion->statut === 'suspendue')
-                    @can('suspend', $adhesion)
-                        <form method="POST" action="{{ route('admin.adhesions.resume', $adhesion) }}" class="mb-2">
-                            @csrf
+                    <?php endif; ?>
+                <?php elseif($adhesion->statut === 'suspendue'): ?>
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('suspend', $adhesion)): ?>
+                        <form method="POST" action="<?php echo e(route('admin.adhesions.resume', $adhesion)); ?>" class="mb-2">
+                            <?php echo csrf_field(); ?>
                             <button type="submit" class="btn btn-info w-100" onclick="return confirm('Reprendre cette adhésion ?')">
                                 <i class="fas fa-play me-1"></i>Reprendre
                             </button>
                         </form>
-                    @endcan
-                @endif
+                    <?php endif; ?>
+                <?php endif; ?>
                 
-                @if($adhesion->renouvelable && in_array($adhesion->statut, ['actif', 'terminee']))
-                    @can('renew', $adhesion)
-                        <form method="POST" action="{{ route('admin.adhesions.renew', $adhesion) }}">
-                            @csrf
+                <?php if($adhesion->renouvelable && in_array($adhesion->statut, ['actif', 'terminee'])): ?>
+                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('renew', $adhesion)): ?>
+                        <form method="POST" action="<?php echo e(route('admin.adhesions.renew', $adhesion)); ?>">
+                            <?php echo csrf_field(); ?>
                             <button type="submit" class="btn btn-primary w-100" onclick="return confirm('Renouveler cette adhésion ?')">
                                 <i class="fas fa-redo me-1"></i>Renouveler
                             </button>
                         </form>
-                    @endcan
-                @endif
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
         </div>
         
@@ -477,54 +488,58 @@
                 </h6>
             </div>
             <div class="card-body">
-                @if($adhesion->adherent)
+                <?php if($adhesion->adherent): ?>
                 <div class="text-center mb-3">
-                    <img src="{{ $adhesion->adherent->user->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($adhesion->adherent->nom.' '.$adhesion->adherent->prenom).'&background=random' }}" 
+                    <img src="<?php echo e($adhesion->adherent->user->avatar_url ?? 'https://ui-avatars.com/api/?name='.urlencode($adhesion->adherent->nom.' '.$adhesion->adherent->prenom).'&background=random'); ?>" 
                          class="rounded-circle mb-2" 
                          width="80" height="80"
                          alt="Photo de l'adhérent">
-                    <h6 class="mb-0">{{ $adhesion->adherent->nom }} {{ $adhesion->adherent->prenom }}</h6>
-                    <small class="text-muted">{{ $adhesion->adherent->user->email ?? '' }}</small>
+                    <h6 class="mb-0"><?php echo e($adhesion->adherent->nom); ?> <?php echo e($adhesion->adherent->prenom); ?></h6>
+                    <small class="text-muted"><?php echo e($adhesion->adherent->user->email ?? ''); ?></small>
                 </div>
                 
                 <div class="mb-2">
-                    <strong>Matricule:</strong> {{ $adhesion->adherent->matricule ?? 'N/A' }}
+                    <strong>Matricule:</strong> <?php echo e($adhesion->adherent->matricule ?? 'N/A'); ?>
+
                 </div>
                 <div class="mb-2">
-                    <strong>Téléphone:</strong> {{ $adhesion->adherent->telephone ?? 'N/A' }}
+                    <strong>Téléphone:</strong> <?php echo e($adhesion->adherent->telephone ?? 'N/A'); ?>
+
                 </div>
                 <div class="mb-2">
                     <strong>Statut:</strong> 
-                    <span class="badge bg-{{ $adhesion->adherent->statut_validation === 'valide' ? 'success' : 'warning' }}">
-                        {{ ucfirst($adhesion->adherent->statut_validation ?? 'En cours') }}
+                    <span class="badge bg-<?php echo e($adhesion->adherent->statut_validation === 'valide' ? 'success' : 'warning'); ?>">
+                        <?php echo e(ucfirst($adhesion->adherent->statut_validation ?? 'En cours')); ?>
+
                     </span>
                 </div>
                 <div class="mb-2">
-                    <strong>Membre depuis:</strong> {{ $adhesion->adherent->created_at->format('m/Y') }}
+                    <strong>Membre depuis:</strong> <?php echo e($adhesion->adherent->created_at->format('m/Y')); ?>
+
                 </div>
                 
                 <div class="mt-3">
-                    <a href="{{ route('admin.adherents.show', $adhesion->adherent) }}" class="btn btn-outline-primary btn-sm w-100">
+                    <a href="<?php echo e(route('admin.adherents.show', $adhesion->adherent)); ?>" class="btn btn-outline-primary btn-sm w-100">
                         <i class="fas fa-user me-1"></i>Voir le profil complet
                     </a>
                 </div>
-                @else
+                <?php else: ?>
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Adhérent non trouvé
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
 
-{{-- Modal pour suspendre l'adhésion --}}
+
 <div class="modal fade" id="suspendModal" tabindex="-1" aria-labelledby="suspendModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" action="{{ route('admin.adhesions.suspend', $adhesion) }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('admin.adhesions.suspend', $adhesion)); ?>">
+                <?php echo csrf_field(); ?>
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" id="suspendModalLabel">
                         <i class="fas fa-pause me-2"></i>Suspendre l'adhésion
@@ -549,12 +564,12 @@
     </div>
 </div>
 
-{{-- Modal pour clôturer l'adhésion --}}
+
 <div class="modal fade" id="closeModal" tabindex="-1" aria-labelledby="closeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" action="{{ route('admin.adhesions.close', $adhesion) }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('admin.adhesions.close', $adhesion)); ?>">
+                <?php echo csrf_field(); ?>
                 <div class="modal-header bg-secondary text-white">
                     <h5 class="modal-title" id="closeModalLabel">
                         <i class="fas fa-stop me-2"></i>Clôturer l'adhésion
@@ -597,12 +612,12 @@
     </div>
 </div>
 
-{{-- Modal pour approuver un paiement --}}
+
 <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="approveForm" method="POST">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title" id="approveModalLabel">
                         <i class="fas fa-check-circle me-2"></i>Approuver le paiement
@@ -627,12 +642,12 @@
     </div>
 </div>
 
-{{-- Modal pour rejeter un paiement --}}
+
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="rejectForm" method="POST">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title" id="rejectModalLabel">
                         <i class="fas fa-times-circle me-2"></i>Rejeter le paiement
@@ -657,12 +672,12 @@
     </div>
 </div>
 
-{{-- Modal pour activer et créditer l'adhésion --}}
+
 <div class="modal fade" id="activateModal" tabindex="-1" aria-labelledby="activateModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST" action="{{ route('admin.adhesions.activate', $adhesion) }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('admin.adhesions.activate', $adhesion)); ?>">
+                <?php echo csrf_field(); ?>
                 <div class="modal-header" style="background: linear-gradient(135deg,#11998e,#38ef7d); color:white;">
                     <h5 class="modal-title" id="activateModalLabel">
                         <i class="fas fa-play-circle me-2"></i>Activer & Créditer le solde
@@ -673,9 +688,9 @@
                     <div class="alert alert-info mb-3">
                         <i class="fas fa-info-circle me-2"></i>
                         Cette action va <strong>activer l'adhésion</strong> et <strong>créditer
-                        {{ number_format($adhesion->montant_souscrit, 0, ',', ' ') }} FCFA</strong>
+                        <?php echo e(number_format($adhesion->montant_souscrit, 0, ',', ' ')); ?> FCFA</strong>
                         sur le compte épargne de
-                        <strong>{{ $adhesion->adherent->prenom ?? '' }} {{ $adhesion->adherent->nom ?? '' }}</strong>.
+                        <strong><?php echo e($adhesion->adherent->prenom ?? ''); ?> <?php echo e($adhesion->adherent->nom ?? ''); ?></strong>.
                     </div>
                     <div class="mb-3">
                         <label for="moyen_paiement" class="form-label fw-bold">
@@ -684,8 +699,11 @@
                         <select class="form-select" id="moyen_paiement" name="moyen_paiement" required>
                             <option value="espece" selected>💵 Espèces</option>
                             <option value="orange_money">📱 Orange Money</option>
-                            <option value="moov_money">📲 Moov Money</option>
+                            <option value="ligdicash">💎 LigdiCash</option>
+                            <option value="cheque">📄 Chèque</option>
                             <option value="virement">🏦 Virement bancaire</option>
+                            <option value="prelevement">🔄 Prélèvement automatique</option>
+                            <option value="carte">💳 Carte bancaire</option>
                             <option value="autre">📋 Autre</option>
                         </select>
                     </div>
@@ -693,11 +711,11 @@
                         <div class="row text-center">
                             <div class="col-6">
                                 <small class="text-muted d-block">Plan</small>
-                                <strong>{{ $adhesion->plan->nom ?? 'N/A' }}</strong>
+                                <strong><?php echo e($adhesion->plan->nom ?? 'N/A'); ?></strong>
                             </div>
                             <div class="col-6">
                                 <small class="text-muted d-block">Montant à créditer</small>
-                                <strong class="text-success">{{ number_format($adhesion->montant_souscrit, 0, ',', ' ') }} FCFA</strong>
+                                <strong class="text-success"><?php echo e(number_format($adhesion->montant_souscrit, 0, ',', ' ')); ?> FCFA</strong>
                             </div>
                         </div>
                     </div>
@@ -713,7 +731,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     function approvePaiement(paiementId) {
         const form = document.getElementById('approveForm');
@@ -730,6 +748,8 @@
         modal.show();
     }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('backoffice.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Projetsw\sif-project\resources\views/backoffice/adhesions/show.blade.php ENDPATH**/ ?>

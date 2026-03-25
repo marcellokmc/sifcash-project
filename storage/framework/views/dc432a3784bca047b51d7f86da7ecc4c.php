@@ -1,8 +1,8 @@
-@extends('layouts.adherent-modern')
 
-@section('title', 'Soumettre un Paiement')
 
-@section('content')
+<?php $__env->startSection('title', 'Soumettre un Paiement'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <!-- Header Mobile-First -->
     <div class="row mb-mobile-3">
@@ -11,8 +11,8 @@
                 <div>
                     <h4 class="mb-1">💸 Nouveau Paiement</h4>
                     <small class="text-muted">
-                        <a href="{{ route('adherent.dashboard') }}" class="text-decoration-none">Tableau de bord</a> / 
-                        <a href="{{ route('adherent.paiements.index') }}" class="text-decoration-none">Paiements</a> / 
+                        <a href="<?php echo e(route('adherent.dashboard')); ?>" class="text-decoration-none">Tableau de bord</a> / 
+                        <a href="<?php echo e(route('adherent.paiements.index')); ?>" class="text-decoration-none">Paiements</a> / 
                         Nouveau
                     </small>
                 </div>
@@ -24,56 +24,85 @@
         <div class="col-12 col-lg-8">
             <div class="card sif-card-mobile">
                 <div class="card-body p-mobile-3">
-                    <form action="{{ route('adherent.paiements.store') }}" method="POST" enctype="multipart/form-data" id="paiement-form" class="form-mobile">
-                        @csrf
+                    <form action="<?php echo e(route('adherent.paiements.store')); ?>" method="POST" enctype="multipart/form-data" id="paiement-form" class="form-mobile">
+                        <?php echo csrf_field(); ?>
 
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="adhesion_id" class="form-label">Adhésion <span class="text-danger">*</span></label>
-                                    @if($adhesions->count() > 0)
-                                        <select class="form-control @error('adhesion_id') is-invalid @enderror" id="adhesion_id" name="adhesion_id" required>
+                                    <?php if($adhesions->count() > 0): ?>
+                                        <select class="form-control <?php $__errorArgs = ['adhesion_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="adhesion_id" name="adhesion_id" required>
                                             <option value="">Sélectionner une adhésion</option>
-                                            @foreach($adhesions as $adhesion)
-                                            <option value="{{ $adhesion->id }}"
-                                                    data-plan="{{ $adhesion->plan->nom }}"
-                                                    data-montant="{{ $adhesion->montant_souscrit }}"
-                                                    data-last-mode="{{ $adhesion->paiements->first()->mode_paiement ?? 'espece' }}"
-                                                    data-periodicite="{{ $adhesion->plan->periodicite }}"
-                                                    {{ old('adhesion_id') == $adhesion->id ? 'selected' : '' }}>
-                                                {{ $adhesion->numero_adhesion }} - {{ $adhesion->plan->nom }}
+                                            <?php $__currentLoopData = $adhesions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $adhesion): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($adhesion->id); ?>"
+                                                    data-plan="<?php echo e($adhesion->plan->nom); ?>"
+                                                    data-montant="<?php echo e($adhesion->montant_souscrit); ?>"
+                                                    data-last-mode="<?php echo e($adhesion->paiements->first()->mode_paiement ?? 'espece'); ?>"
+                                                    data-periodicite="<?php echo e($adhesion->plan->periodicite); ?>"
+                                                    <?php echo e(old('adhesion_id') == $adhesion->id ? 'selected' : ''); ?>>
+                                                <?php echo e($adhesion->numero_adhesion); ?> - <?php echo e($adhesion->plan->nom); ?>
+
                                             </option>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
-                                    @else
+                                    <?php else: ?>
                                         <div class="alert alert-warning">
                                             <i class="fas fa-exclamation-triangle"></i> 
                                             Aucune adhésion active trouvée. 
-                                            <a href="{{ route('adherent.adhesions.index') }}" class="alert-link">Créer une adhésion d'abord</a>.
+                                            <a href="<?php echo e(route('adherent.adhesions.index')); ?>" class="alert-link">Créer une adhésion d'abord</a>.
                                         </div>
                                         <select class="form-control" disabled>
                                             <option>Aucune adhésion disponible</option>
                                         </select>
-                                    @endif
-                                    @error('adhesion_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php endif; ?>
+                                    <?php $__errorArgs = ['adhesion_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="categorie" class="form-label">Catégorie <span class="text-danger">*</span></label>
-                                    <select class="form-control @error('categorie') is-invalid @enderror" id="categorie" name="categorie" required>
+                                    <select class="form-control <?php $__errorArgs = ['categorie'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="categorie" name="categorie" required>
                                         <option value="">Sélectionner une catégorie</option>
-                                        <option value="ouverture" {{ old('categorie') == 'ouverture' ? 'selected' : '' }}>Frais d'ouverture</option>
-                                        <option value="cotisation" {{ old('categorie') == 'cotisation' ? 'selected' : '' }}>Cotisation</option>
-                                        <option value="credit" {{ old('categorie') == 'credit' ? 'selected' : '' }}>Paiement crédit</option>
-                                        <option value="autre" {{ old('categorie') == 'autre' ? 'selected' : '' }}>Autre</option>
+                                        <option value="ouverture" <?php echo e(old('categorie') == 'ouverture' ? 'selected' : ''); ?>>Frais d'ouverture</option>
+                                        <option value="cotisation" <?php echo e(old('categorie') == 'cotisation' ? 'selected' : ''); ?>>Cotisation</option>
+                                        <option value="credit" <?php echo e(old('categorie') == 'credit' ? 'selected' : ''); ?>>Paiement crédit</option>
+                                        <option value="autre" <?php echo e(old('categorie') == 'autre' ? 'selected' : ''); ?>>Autre</option>
                                     </select>
-                                    @error('categorie')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['categorie'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
@@ -83,29 +112,57 @@
                                 <div class="mb-3">
                                     <label for="montant" class="form-label">Montant <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control @error('montant') is-invalid @enderror"
+                                        <input type="number" class="form-control <?php $__errorArgs = ['montant'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                                id="montant" name="montant" step="0.01" min="0.01"
-                                               value="{{ old('montant') }}" required>
+                                               value="<?php echo e(old('montant')); ?>" required>
                                         <span class="input-group-text">FCFA</span>
                                     </div>
-                                    @error('montant')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['montant'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="mode_paiement" class="form-label">Mode de Paiement <span class="text-danger">*</span></label>
-                                    <select class="form-control @error('mode_paiement') is-invalid @enderror" id="mode_paiement" name="mode_paiement" required>
+                                    <select class="form-control <?php $__errorArgs = ['mode_paiement'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="mode_paiement" name="mode_paiement" required>
                                         <option value="">Sélectionner un mode</option>
-                                        <option value="espece" {{ old('mode_paiement', 'espece') == 'espece' ? 'selected' : '' }}>💵 Espèces</option>
-                                        <option value="orange_money" {{ old('mode_paiement') == 'orange_money' ? 'selected' : '' }}>📱 Orange Money</option>
-                                        <option value="moov_money" {{ old('mode_paiement') == 'moov_money' ? 'selected' : '' }}>📲 Moov Money</option>
+                                        <option value="espece" <?php echo e(old('mode_paiement', 'espece') == 'espece' ? 'selected' : ''); ?>>💵 Espèces</option>
+                                        <option value="orange_money" <?php echo e(old('mode_paiement') == 'orange_money' ? 'selected' : ''); ?>>📱 Orange Money</option>
+                                        <option value="moov_money" <?php echo e(old('mode_paiement') == 'moov_money' ? 'selected' : ''); ?>>📲 Moov Money</option>
                                     </select>
-                                    @error('mode_paiement')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['mode_paiement'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
@@ -131,14 +188,28 @@
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="reference_paiement" class="form-label">Référence de la transaction <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('reference_paiement') is-invalid @enderror"
+                                    <input type="text" class="form-control <?php $__errorArgs = ['reference_paiement'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                            id="reference_paiement" name="reference_paiement"
-                                           value="{{ old('reference_paiement') }}" 
+                                           value="<?php echo e(old('reference_paiement')); ?>" 
                                            placeholder="Ex: 1234567890" required>
                                     <small class="form-text">Indispensable pour identifier votre transfert. Saisissez le code reçu par SMS.</small>
-                                    @error('reference_paiement')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['reference_paiement'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
@@ -147,23 +218,51 @@
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="numero_compte_beneficiaire" class="form-label">Numéro de Compte Bénéficiaire</label>
-                                    <input type="text" class="form-control @error('numero_compte_beneficiaire') is-invalid @enderror"
+                                    <input type="text" class="form-control <?php $__errorArgs = ['numero_compte_beneficiaire'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                            id="numero_compte_beneficiaire" name="numero_compte_beneficiaire"
-                                           value="{{ old('numero_compte_beneficiaire') }}">
-                                    @error('numero_compte_beneficiaire')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                           value="<?php echo e(old('numero_compte_beneficiaire')); ?>">
+                                    <?php $__errorArgs = ['numero_compte_beneficiaire'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="banque_emetteur" class="form-label">Banque Émettrice</label>
-                                    <input type="text" class="form-control @error('banque_emetteur') is-invalid @enderror"
+                                    <input type="text" class="form-control <?php $__errorArgs = ['banque_emetteur'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                            id="banque_emetteur" name="banque_emetteur"
-                                           value="{{ old('banque_emetteur') }}">
-                                    @error('banque_emetteur')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                           value="<?php echo e(old('banque_emetteur')); ?>">
+                                    <?php $__errorArgs = ['banque_emetteur'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
@@ -172,41 +271,83 @@
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <label for="reference_cheque" class="form-label">Référence du Chèque</label>
-                                    <input type="text" class="form-control @error('reference_cheque') is-invalid @enderror"
+                                    <input type="text" class="form-control <?php $__errorArgs = ['reference_cheque'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                            id="reference_cheque" name="reference_cheque"
-                                           value="{{ old('reference_cheque') }}">
-                                    @error('reference_cheque')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                           value="<?php echo e(old('reference_cheque')); ?>">
+                                    <?php $__errorArgs = ['reference_cheque'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-3">
                              <label for="preuve" class="form-label">📸 Capture d'écran de votre paiement (Recommandé)</label>
-                             <input type="file" class="form-control @error('preuve') is-invalid @enderror"
+                             <input type="file" class="form-control <?php $__errorArgs = ['preuve'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                     id="preuve" name="preuve" accept=".pdf,.jpg,.jpeg,.png">
                              <div class="form-text">Prenez une capture d'écran du message de confirmation de votre paiement si possible.</div>
-                             @error('preuve')
-                                 <div class="invalid-feedback">{{ $message }}</div>
-                             @enderror
+                             <?php $__errorArgs = ['preuve'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                 <div class="invalid-feedback"><?php echo e($message); ?></div>
+                             <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                          </div>
 
                         <div class="mb-3">
                             <label for="notes" class="form-label">Notes (Optionnel)</label>
-                            <textarea class="form-control @error('notes') is-invalid @enderror"
+                            <textarea class="form-control <?php $__errorArgs = ['notes'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                       id="notes" name="notes" rows="3"
-                                      placeholder="Informations complémentaires...">{{ old('notes') }}</textarea>
-                            @error('notes')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                      placeholder="Informations complémentaires..."><?php echo e(old('notes')); ?></textarea>
+                            <?php $__errorArgs = ['notes'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <div class="btn-group-mobile mt-4">
-                            <button type="submit" class="btn btn-primary btn-mobile" {{ $adhesions->count() == 0 ? 'disabled' : '' }}>
+                            <button type="submit" class="btn btn-primary btn-mobile" <?php echo e($adhesions->count() == 0 ? 'disabled' : ''); ?>>
                                 <i class="fas fa-paper-plane me-1"></i> Soumettre le Paiement
                             </button>
-                            <a href="{{ route('adherent.paiements.index') }}" class="btn btn-outline-secondary btn-mobile">
+                            <a href="<?php echo e(route('adherent.paiements.index')); ?>" class="btn btn-outline-secondary btn-mobile">
                                 <i class="fas fa-times me-1"></i> Annuler
                             </a>
                         </div>
@@ -251,9 +392,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const modePaiementSelect = document.getElementById('mode_paiement');
@@ -395,4 +536,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.adherent-modern', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Projetsw\sif-project\resources\views/adherent/paiements/create.blade.php ENDPATH**/ ?>

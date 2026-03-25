@@ -1,15 +1,13 @@
-@extends('backoffice.layouts.app')
+<?php $__env->startSection('title', 'Gestion des Paiements'); ?>
 
-@section('title', 'Gestion des Paiements')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Tableau de bord</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo e(route('admin.dashboard')); ?>">Tableau de bord</a></li>
                         <li class="breadcrumb-item active">Paiements</li>
                     </ol>
                 </div>
@@ -43,7 +41,7 @@
                         <div class="col-md-3">
                             <div class="mb-3">
                                 <label class="form-label">Recherche</label>
-                                <input type="text" class="form-control" id="search-input" placeholder="Nom, email, référence, téléphone..." value="{{ request('search') }}">
+                                <input type="text" class="form-control" id="search-input" placeholder="Nom, email, référence, téléphone..." value="<?php echo e(request('search')); ?>">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -51,10 +49,10 @@
                                 <label class="form-label">Catégorie</label>
                                 <select class="form-select" id="categorie-filter">
                                     <option value="">Toutes</option>
-                                    <option value="ouverture" {{ request('categorie') == 'ouverture' ? 'selected' : '' }}>Frais d'ouverture</option>
-                                    <option value="cotisation" {{ request('categorie') == 'cotisation' ? 'selected' : '' }}>Cotisation</option>
-                                    <option value="credit" {{ request('categorie') == 'credit' ? 'selected' : '' }}>Paiement crédit</option>
-                                    <option value="autre" {{ request('categorie') == 'autre' ? 'selected' : '' }}>Autre</option>
+                                    <option value="ouverture" <?php echo e(request('categorie') == 'ouverture' ? 'selected' : ''); ?>>Frais d'ouverture</option>
+                                    <option value="cotisation" <?php echo e(request('categorie') == 'cotisation' ? 'selected' : ''); ?>>Cotisation</option>
+                                    <option value="credit" <?php echo e(request('categorie') == 'credit' ? 'selected' : ''); ?>>Paiement crédit</option>
+                                    <option value="autre" <?php echo e(request('categorie') == 'autre' ? 'selected' : ''); ?>>Autre</option>
                                 </select>
                             </div>
                         </div>
@@ -63,24 +61,24 @@
                                 <label class="form-label">Mode</label>
                                 <select class="form-select" id="mode-filter">
                                     <option value="">Tous</option>
-                                    <option value="espece" {{ request('mode') == 'espece' ? 'selected' : '' }}>Espèces</option>
-                                    <option value="orange_money" {{ request('mode') == 'orange_money' ? 'selected' : '' }}>Orange Money</option>
-                                    <option value="moov_money" {{ request('mode') == 'moov_money' ? 'selected' : '' }}>Moov Money</option>
-                                    <option value="virement" {{ request('mode') == 'virement' ? 'selected' : '' }}>Virement</option>
-                                    <option value="autre" {{ request('mode') == 'autre' ? 'selected' : '' }}>Autre</option>
+                                    <option value="espece" <?php echo e(request('mode') == 'espece' ? 'selected' : ''); ?>>Espèces</option>
+                                    <option value="orange_money" <?php echo e(request('mode') == 'orange_money' ? 'selected' : ''); ?>>Orange Money</option>
+                                    <option value="moov_money" <?php echo e(request('mode') == 'moov_money' ? 'selected' : ''); ?>>Moov Money</option>
+                                    <option value="virement" <?php echo e(request('mode') == 'virement' ? 'selected' : ''); ?>>Virement</option>
+                                    <option value="autre" <?php echo e(request('mode') == 'autre' ? 'selected' : ''); ?>>Autre</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="mb-3">
                                 <label class="form-label">Date début</label>
-                                <input type="date" class="form-control" id="date-debut" value="{{ request('date_debut') }}">
+                                <input type="date" class="form-control" id="date-debut" value="<?php echo e(request('date_debut')); ?>">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="mb-3">
                                 <label class="form-label">Date fin</label>
-                                <input type="date" class="form-control" id="date-fin" value="{{ request('date_fin') }}">
+                                <input type="date" class="form-control" id="date-fin" value="<?php echo e(request('date_fin')); ?>">
                             </div>
                         </div>
                         <div class="col-md-1">
@@ -107,76 +105,76 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($paiements as $paiement)
+                                <?php $__empty_1 = true; $__currentLoopData = $paiements; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $paiement): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
                                     <td>
-                                        <span class="fw-semibold">{{ $paiement->date_soumission->format('d/m/Y') }}</span>
+                                        <span class="fw-semibold"><?php echo e($paiement->date_soumission->format('d/m/Y')); ?></span>
                                         <br>
-                                        <small class="text-muted">{{ $paiement->date_soumission->format('H:i') }}</small>
+                                        <small class="text-muted"><?php echo e($paiement->date_soumission->format('H:i')); ?></small>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-sm bg-primary rounded-circle me-2">
-                                                <span class="avatar-title text-white">{{ substr($paiement->adherent->prenom, 0, 1) }}</span>
+                                                <span class="avatar-title text-white"><?php echo e(substr($paiement->adherent->prenom, 0, 1)); ?></span>
                                             </div>
                                             <div>
-                                                <h6 class="mb-0">{{ $paiement->adherent->nom_complet }}</h6>
-                                                <small class="text-muted d-block">{{ $paiement->adherent->email }}</small>
-                                                <small class="text-primary fw-bold"><i class="fas fa-phone-alt me-1"></i>{{ $paiement->adherent->telephone }}</small>
+                                                <h6 class="mb-0"><?php echo e($paiement->adherent->nom_complet); ?></h6>
+                                                <small class="text-muted d-block"><?php echo e($paiement->adherent->email); ?></small>
+                                                <small class="text-primary fw-bold"><i class="fas fa-phone-alt me-1"></i><?php echo e($paiement->adherent->telephone); ?></small>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="fw-semibold text-success">{{ number_format($paiement->montant, 0, ',', ' ') }} FCFA</span>
+                                        <span class="fw-semibold text-success"><?php echo e(number_format($paiement->montant, 0, ',', ' ')); ?> FCFA</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-info">{{ ucfirst($paiement->categorie) }}</span>
+                                        <span class="badge bg-info"><?php echo e(ucfirst($paiement->categorie)); ?></span>
                                     </td>
                                     <td>
-                                        <span class="text-muted">{{ ucfirst(str_replace('_', ' ', $paiement->mode_paiement)) }}</span>
+                                        <span class="text-muted"><?php echo e(ucfirst(str_replace('_', ' ', $paiement->mode_paiement))); ?></span>
                                     </td>
                                     <td>
-                                        @switch($paiement->statut)
-                                            @case('validé')
+                                        <?php switch($paiement->statut):
+                                            case ('validé'): ?>
                                                 <span class="badge bg-success">Validé</span>
-                                                @break
-                                            @case('soumis')
+                                                <?php break; ?>
+                                            <?php case ('soumis'): ?>
                                                 <span class="badge bg-warning">En attente</span>
-                                                @break
-                                            @case('rejeté')
+                                                <?php break; ?>
+                                            <?php case ('rejeté'): ?>
                                                 <span class="badge bg-danger">Rejeté</span>
-                                                @break
-                                            @case('brouillon')
+                                                <?php break; ?>
+                                            <?php case ('brouillon'): ?>
                                                 <span class="badge bg-secondary">Brouillon</span>
-                                                @break
-                                            @default
-                                                <span class="badge bg-light text-dark">{{ ucfirst($paiement->statut) }}</span>
-                                        @endswitch
+                                                <?php break; ?>
+                                            <?php default: ?>
+                                                <span class="badge bg-light text-dark"><?php echo e(ucfirst($paiement->statut)); ?></span>
+                                        <?php endswitch; ?>
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.paiements.show', $paiement) }}" class="btn btn-sm btn-outline-primary" title="Voir">
+                                            <a href="<?php echo e(route('admin.paiements.show', $paiement)); ?>" class="btn btn-sm btn-outline-primary" title="Voir">
                                                 <i class="mdi mdi-eye"></i>
                                             </a>
-                                            @if($paiement->statut === 'soumis')
+                                            <?php if($paiement->statut === 'soumis'): ?>
                                             <button type="button" class="btn btn-sm btn-outline-success"
-                                                    onclick="validatePayment({{ $paiement->id }})" title="Valider">
+                                                    onclick="validatePayment(<?php echo e($paiement->id); ?>)" title="Valider">
                                                 <i class="mdi mdi-check"></i>
                                             </button>
                                             <button type="button" class="btn btn-sm btn-outline-danger"
-                                                    onclick="rejectPayment({{ $paiement->id }})" title="Rejeter">
+                                                    onclick="rejectPayment(<?php echo e($paiement->id); ?>)" title="Rejeter">
                                                 <i class="mdi mdi-close"></i>
                                             </button>
-                                            @endif
-                                            @if($paiement->preuve)
-                                            <a href="{{ route('admin.paiements.quittance', $paiement) }}" class="btn btn-sm btn-outline-info" title="Quittance PDF">
+                                            <?php endif; ?>
+                                            <?php if($paiement->preuve): ?>
+                                            <a href="<?php echo e(route('admin.paiements.quittance', $paiement)); ?>" class="btn btn-sm btn-outline-info" title="Quittance PDF">
                                                 <i class="mdi mdi-file-pdf"></i>
                                             </a>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="7" class="text-center py-4">
                                         <div class="text-muted">
@@ -185,25 +183,26 @@
                                         </div>
                                     </td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
 
-                    @if($paiements->hasPages())
+                    <?php if($paiements->hasPages()): ?>
                     <div class="row">
                         <div class="col-sm-12 col-md-5">
                             <div class="dataTables_info">
-                                Affichage de {{ $paiements->firstItem() }} à {{ $paiements->lastItem() }} sur {{ $paiements->total() }} résultats
+                                Affichage de <?php echo e($paiements->firstItem()); ?> à <?php echo e($paiements->lastItem()); ?> sur <?php echo e($paiements->total()); ?> résultats
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-7">
                             <div class="dataTables_paginate paging_simple_numbers">
-                                {{ $paiements->links() }}
+                                <?php echo e($paiements->links()); ?>
+
                             </div>
                         </div>
                     </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -219,8 +218,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="validate-form" method="POST">
-                @csrf
-                @method('POST')
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('POST'); ?>
                 <div class="modal-body">
                     <div class="alert alert-success">
                         <i class="mdi mdi-check-circle"></i> Êtes-vous sûr de vouloir valider ce paiement ?
@@ -249,20 +248,34 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="reject-form" method="POST">
-                @csrf
-                @method('POST')
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('POST'); ?>
                 <div class="modal-body">
                     <div class="alert alert-danger">
                         <i class="mdi mdi-alert-circle"></i> Êtes-vous sûr de vouloir rejeter ce paiement ?
                     </div>
                     <div class="mb-3">
                         <label for="reject-motif" class="form-label">Motif du rejet <span class="text-danger">*</span></label>
-                        <textarea class="form-control @error('motif_rejet') is-invalid @enderror"
+                        <textarea class="form-control <?php $__errorArgs = ['motif_rejet'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                   id="reject-motif" name="motif_rejet" rows="3"
                                   placeholder="Expliquez pourquoi ce paiement est rejeté..." required></textarea>
-                        @error('motif_rejet')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <?php $__errorArgs = ['motif_rejet'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -273,9 +286,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 function filterPayments(status) {
     const url = new URL(window.location.href);
@@ -333,4 +346,6 @@ setInterval(function() {
     }
 }, 30000);
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('backoffice.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Projetsw\sif-project\resources\views/backoffice/paiements/index.blade.php ENDPATH**/ ?>
